@@ -1,0 +1,12 @@
+language: node_js
+node_js: stable
+# S: Build Lifecycle
+install:
+  - npm install
+
+script: bash ./deploy.sh
+branches:
+  only:
+    - blog-resource
+notifications:
+  email: false
