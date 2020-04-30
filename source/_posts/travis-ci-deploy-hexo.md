@@ -145,7 +145,7 @@ cd -
 
 
 
-## Step5
+## Step 5
 
 [travis-ci](https://travis-ci.org/)接收到github的事件请求就会自动触发job。
 
