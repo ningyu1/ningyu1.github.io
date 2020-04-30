@@ -125,7 +125,7 @@ cd -
 
 进入到public文件夹下执行git命令，这里需要注意的是使用`git push -f`强制推送，如果没有设置`git user.name`和`git user.email`的话提交的用户是`Travis Ci User`
 
-_ps. 这里特殊说明一下变量${access_token}，这里使用travis ci的运行时环境变量，像这种相对重要的信息放到运行时环境变量会安全一些，避免别人拿到我的accesstoken做一些坏事情，哈哈。_
+_ps. 这里特殊说明一下变量 access_token，这里使用travis ci的运行时环境变量，像这种相对重要的信息放到运行时环境变量会安全一些，避免别人拿到我的accesstoken做一些坏事情，哈哈。_
 
 
 
