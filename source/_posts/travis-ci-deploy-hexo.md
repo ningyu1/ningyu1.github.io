@@ -61,19 +61,29 @@ Travis CI支持容器构建，并支持Linux Ubuntu和OSX。您可以在不同�
 
 
 
+## Step 1
+
 首先我们要在github上创建一个repository，给这个repository创建两个分支，我这里使用master作为静态html分支，blog-source作为博客源码分支。
 
 _ps. 分支名称都随意，有人喜欢用master作为源码分支，gh-pages作为静态html分支，都可以请随意。_
 
 
 
+## Step 2
+
 去github上获取accesstoken，可以去<https://github.com/settings/tokens>获取，生成一个token（generate new token），token的scope范围看自己的需求选择，我这里选择的是repo下全部。
 
 生成的token记得自己先保存起来，因为刷新页面后你就再也看不到它了，如果忘记了那就去重新生成一个（regenerate token）
 
+![图四](/img/travis-ci/4.png)
+
+![图五](/img/travis-ci/5.png)
 
 
-在blog库的blog-source分支中添加.travis.yml
+
+## Step 3
+
+在blog库的blog-source分支中添加`.travis.yml`
 
 ```yaml
 language: node_js
@@ -90,38 +100,28 @@ notifications:
 
 hexo采用nodejs开发，所以这里语言选择nodejs，我这里选择nodejs版本是10.16.3，因为高版本nodejs下hexo生成的静态文件有问题，如果是其他的程序可以使用standard。
 
-
-
 install阶段执行npm安装依赖。
 
-
-
-script阶段执行一个外部脚本
+script阶段执行一个外部脚本，在同`.travis.yml`路径下创建shell脚本`deploy.sh`
 
 ```shell
 #!/usr/bin/env sh
-
 # 确保脚本抛出遇到的错误
 set -e
-
 # 生成静态文件
 hexo generate
-
 # 进入生成的文件夹
 cd ./public
-
 #创建.nojekyll 防止Github Pages build错误
 touch .nojekyll
-
 git init
 git add -A
 git commit -m "deploy"
 git push -f "https://${access_token}@github.com/ningyu1/blog.git" master:master
-
 cd -
 ```
 
-脚本中先试用`hexo -g`生成静态html文件，文件生成在当前目录下的public文件夹。
+脚本中先执行`hexo -g（等同于hexo generate）`生成静态html文件，文件生成在当前目录下的public文件夹。
 
 进入到public文件夹下执行git命令，这里需要注意的是使用`git push -f`强制推送，如果没有设置`git user.name`和`git user.email`的话提交的用户是`Travis Ci User`
 
@@ -129,7 +129,9 @@ _ps. 这里特殊说明一下`${access_token}`，这里使用travis ci的运行�
 
 
 
-打开[travis-ci](https://travis-ci.org/)登录，这里可以使用github三方登录，添加一个github仓库，travis跟github集成还是非常紧密和方便的，添加仓库可以直接读取github上的仓库，在列表里面找到blog打开使用travis，如图一。
+## Step 4
+
+登录[travis-ci](https://travis-ci.org/)，可以使用github三方登录，添加一个github仓库，travis跟github集成的还是非常紧密和方便的，添加仓库可以直接读取github上的仓库，在列表里面找到blog打开使用travis，如图一。
 
 ![图一](/img/travis-ci/1.png)
 
@@ -143,6 +145,10 @@ _ps. 这里特殊说明一下`${access_token}`，这里使用travis ci的运行�
 
 
 
+## Step5
+
+[travis-ci](https://travis-ci.org/)接收到github的事件请求就会自动触发job。
+
 一切准备就绪之后提交并推送代码到github仓库，这样travis会接收到github的push event事件，可以去More options->Requests中查看接收到的请求信息，如图三
 
 ![图三](/img/travis-ci/3.png)
@@ -153,7 +159,9 @@ _ps. 这里特殊说明一下`${access_token}`，这里使用travis ci的运行�
 
 
 
-这里我遇到了一个问题，我使用hexo只支持10.x一下的nodejs版本，刚开始使用的standard标准版本的nodejs，然后看到构建日志中输出的版本如下
+## Problem
+
+这里我遇到了一个问题，我使用hexo只支持10.x一下的nodejs版本，刚开始使用的`node_js: standard`，查看job日志可以看到使用的版本号如下
 
 ```
 $ node --version
@@ -164,7 +172,7 @@ $ nvm --version
 0.35.3
 ```
 
-导致hexo生成的html文件都是0 byte，果断的降低了nodejs版本就好了。
+v14.x 版本导致hexo生成的html文件都是0 byte，果断的降低了nodejs版本就好了。
 
 
 
