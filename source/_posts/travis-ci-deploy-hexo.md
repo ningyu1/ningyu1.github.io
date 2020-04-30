@@ -98,7 +98,7 @@ notifications:
   email: false
 ```
 
-hexo采用nodejs开发，所以这里语言选择nodejs，我这里选择nodejs版本是10.16.3，因为高版本nodejs下hexo生成的静态文件有问题，如果是其他的程序可以使用standard。
+hexo采用nodejs开发，所以这里语言选择nodejs，我这里选择nodejs版本是10.16.3，因为高版本nodejs下hexo生成的静态文件有问题，如果是其他的程序可以使用stable。
 
 install阶段执行npm安装依赖。
 
@@ -161,7 +161,7 @@ cd -
 
 ## Problem
 
-这里我遇到了一个问题，我使用hexo只支持10.x一下的nodejs版本，刚开始使用的`node_js: standard`，查看job日志可以看到使用的版本号如下
+这里我遇到了一个问题，我使用hexo只支持10.x一下的nodejs版本，刚开始使用的`node_js: stable`，查看job日志可以看到使用的版本号如下
 
 ```
 $ node --version
