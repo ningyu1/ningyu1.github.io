@@ -73,7 +73,7 @@ _ps. 分支名称都随意，有人喜欢用master作为源码分支，gh-pages�
 
 
 
-在blog库中添加.travis.yml
+在blog库的blog-source分支中添加.travis.yml
 
 ```yaml
 language: node_js
@@ -88,7 +88,7 @@ notifications:
   email: false
 ```
 
-hexo采用node开发，所以这里语言选择nodejs，我这里选择nodejs版本是10.16.3，因为高级版本hexo编译报错，如果是其他的程序可以使用standard。
+hexo采用nodejs开发，所以这里语言选择nodejs，我这里选择nodejs版本是10.16.3，因为高版本nodejs下hexo生成的静态文件有问题，如果是其他的程序可以使用standard。
 
 
 
@@ -123,9 +123,9 @@ cd -
 
 脚本中先试用`hexo -g`生成静态html文件，文件生成在当前目录下的public文件夹。
 
-进入到public文件夹下执行git命令，这里需要注意的是使用git push -f强制推送，如果没有设置git user.name 和user.email的话提交的用户是`Travis Ci User`
+进入到public文件夹下执行git命令，这里需要注意的是使用`git push -f`强制推送，如果没有设置`git user.name`和`git user.email`的话提交的用户是`Travis Ci User`
 
-ps. 这里特殊说明一下_${access_token}，这里使用travis ci的运行时环境变量，放到运行时环境变量相对安全一些，避免别人拿到我的accesstoken做一些坏事情，哈哈。
+_ps. 这里特殊说明一下`${access_token}`，这里使用travis ci的运行时环境变量，放到运行时环境变量相对安全一些，避免别人拿到我的accesstoken做一些坏事情，哈哈。_
 
 
 
