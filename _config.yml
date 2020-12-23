@@ -14,8 +14,8 @@ email: ningbe111@163.com
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: https://ningyu1.github.io/blog
-root: /blog/
+url: https://ningyu1.github.io
+root: /
 permalink: :year:month:day/:title.html
 permalink_defaults:
 
