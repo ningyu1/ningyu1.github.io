@@ -94,7 +94,7 @@ postMessage: 原始链接：<a href="<%- url_for(page.path).replace(/index\.html
 cnzz: false
 
 # 百度统计，如要开启，改为你的 key
-baidu_tongji: 24c4770fb5c99a0b4ad79e4f46cc8fa3
+baidu_tongji: 83434579b8f6b6a6c80fd1b4fe2d9afa
 
 # 腾讯分析，如要开启，输入站点id
 tajs: false
