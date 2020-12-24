@@ -100,8 +100,8 @@ baidu_tongji: 83434579b8f6b6a6c80fd1b4fe2d9afa
 tajs: false
 
 # google
-google_analytics: false
-google_site_verification: tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k
+google_analytics: true
+google_site_verification: C_SSpcL14qNWNQU7O9QmvJahuTC27nn5jPFWPYb_T1Q
 
 # sogou站长验证 http://zhanzhang.sogou.com/
 sogou_site_verification: false
