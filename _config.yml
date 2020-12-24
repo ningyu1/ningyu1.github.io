@@ -114,3 +114,4 @@ sitemap:
     path: sitemap.xml
 baidusitemap:
     path: baidusitemap.xml
+enableRobotsTXT: true

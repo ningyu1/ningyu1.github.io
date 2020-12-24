@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap: https://ningyu1.github.io/sitemap.xml
