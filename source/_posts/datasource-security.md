@@ -123,10 +123,10 @@ public class SecurityBasicDataSource extends BasicDataSource {
 	@Override
 	public void setPassword(String password) {
 		try {
-            //这里可以从任意地方读取数据库配置
+			//这里可以从任意地方读取数据库配置
 			Properties p = ConfigLoaderUtils.loadConfig("jdbc.properties");
 			String publickey = p.getProperty("publickey");
-            //ConfigTools是实现私钥、公钥对加解密实现
+			//ConfigTools是实现私钥、公钥对加解密实现
 			password = ConfigTools.decrypt(publickey, password);
 			super.setPassword(password);
 		} catch(Exception e) {
