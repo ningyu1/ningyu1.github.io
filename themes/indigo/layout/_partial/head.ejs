@@ -9,6 +9,9 @@
     <% if(theme.sogou_site_verification){ %>
     <meta name="sogou_site_verification" content="<%- theme.sogou_site_verification%>">
     <% }%>
+    <% if(theme.baidu_site_verification){ %>
+    <meta name="baidu-site-verification" content="<%- theme.baidu_site_verification%>">
+    <% }%>
     <% if(theme.canonical){ %>
     <link rel="canonical" href="<%- (theme.canonical + url_for(page.path)).replace(/index\.html$/, '') %>">
     <% }%>

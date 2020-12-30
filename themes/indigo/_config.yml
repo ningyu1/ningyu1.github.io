@@ -95,6 +95,8 @@ cnzz: false
 
 # 百度统计，如要开启，改为你的 key
 baidu_tongji: 83434579b8f6b6a6c80fd1b4fe2d9afa
+# 百度站长验证 https://ziyuan.baidu.com/
+baidu_site_verification: AdjyK6UssW
 
 # 腾讯分析，如要开启，输入站点id
 tajs: false
