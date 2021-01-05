@@ -51,3 +51,25 @@ npx hexo generate
 ```shell script
 git commit -m "updated readme [skip ci]"
 ```
+
+本地测试`.travis.yml`配置正确性
+```shell script
+docker run -it -u travis quay.io/travisci/travis-${xxx} /bin/bash
+```
+创建一个docker容器挂在本地文件，并将能够在该容器内安装的文件夹中执行travis compile.
+
+各语言的镜像列表
+```
+https://quay.io/repository/travisci/travis-android
+https://quay.io/repository/travisci/travis-erlang
+https://quay.io/repository/travisci/travis-go
+https://quay.io/repository/travisci/travis-haskell
+https://quay.io/repository/travisci/travis-jvm
+https://quay.io/repository/travisci/travis-node-js
+https://quay.io/repository/travisci/travis-perl
+https://quay.io/repository/travisci/travis-php
+https://quay.io/repository/travisci/travis-python
+https://quay.io/repository/travisci/travis-ruby
+```
+
+ps.以上来自[镜像地址](https://gist.github.com/solarce/9642ed12f4fcc8d118a9)
