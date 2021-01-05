@@ -12,6 +12,9 @@
     <% if(theme.baidu_site_verification){ %>
     <meta name="baidu-site-verification" content="<%- theme.baidu_site_verification%>">
     <% }%>
+    <% if(theme.msvalidate){ %>
+    <meta name="msvalidate.01" content="<%- theme.msvalidate%>" />
+    <% }%>
     <% if(theme.canonical){ %>
     <link rel="canonical" href="<%- (theme.canonical + url_for(page.path)).replace(/index\.html$/, '') %>">
     <% }%>

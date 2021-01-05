@@ -103,10 +103,14 @@ tajs: false
 
 # google
 google_analytics: true
+# google站长验证 https://search.google.com/search-console
 google_site_verification: tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k
 
 # sogou站长验证 http://zhanzhang.sogou.com/
 sogou_site_verification: 22lMbp5Zec
+
+# bing站长验证 https://www.bing.com/webmasters
+msvalidate: BC20DDADC069448DFBCA67D9D7D57546
 
 # less
 less:
