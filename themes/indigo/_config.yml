@@ -112,6 +112,9 @@ sogou_site_verification: PlW7T4UKFR
 # bing站长验证 https://www.bing.com/webmasters
 msvalidate: BC20DDADC069448DFBCA67D9D7D57546
 
+# 360站长验证 http://zhanzhang.so.com/sitetool/site_manage
+360-site-verification: 3addb98f1fb5f6b4d1ce03efc23bf5b8
+
 # less
 less:
   compress: true
