@@ -7,3 +7,5 @@ public/
 .deploy*/
 backup/
 /backup
+db.json
+package-lock.json

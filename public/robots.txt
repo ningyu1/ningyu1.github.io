@@ -1,3 +1,0 @@
-User-agent: *
-Sitemap: https://ningyu1.github.io/sitemap.xml
-Sitemap: https://ningyu1.github.io/baidusitemap.xml

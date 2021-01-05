@@ -26,3 +26,21 @@ _ps. 修改后的publish到npmjs，名称：hexo-generator-baidu-sitemap-ny1，�
 2. 赞赏样式调整
 3. 评论采用gitalk
 4. 增加百度站长校验
+
+# mac下安装hexo
+
+```shell script
+npm install -g hexo_cli
+```
+
+ps.如果报错使用`--save`
+
+```shell script
+npm install hexo --save
+```
+
+安装后采用npx run Hexo
+
+```shell script
+npx hexo generate
+```
