@@ -15,9 +15,6 @@
     <% if(theme.msvalidate){ %>
     <meta name="msvalidate.01" content="<%- theme.msvalidate%>" />
     <% }%>
-    <% if(theme.360_site_verification){ %>
-    <meta name="360-site-verification" content="<%- theme.360_site_verification%>" />
-    <% }%>
     <% if(theme.canonical){ %>
     <link rel="canonical" href="<%- (theme.canonical + url_for(page.path)).replace(/index\.html$/, '') %>">
     <% }%>
