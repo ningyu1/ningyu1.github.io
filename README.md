@@ -44,3 +44,10 @@ npm install hexo --save
 ```shell script
 npx hexo generate
 ```
+
+# 小技巧
+
+排除文件提交不通知travis构建
+```shell script
+git commit -m "updated readme [skip ci]"
+```
