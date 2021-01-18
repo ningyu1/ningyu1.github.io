@@ -17,7 +17,7 @@ menu : "main"
 
 本篇主要讲解在国内安装Homebrew遇到的各种错误如何解决，让你可以轻松安装Homebrew，用mac的同学应该对Homebrew并不陌生，这里简单介绍一下Homebrew
 
-#Homebrew简介
+# Homebrew简介
 
 引用 [官方](https://brew.sh/) 的一句话：Homebrew是Mac OS 不可或缺的套件管理器。
 
@@ -25,7 +25,7 @@ Homebrew是一款Mac OS平台下的软件包管理工具，拥有安装、卸载
 
 所以它是Mac必备神器Homebrew。
 
-#安装时遇到的错误一
+# 安装时遇到的错误一
 
 安装的命令很简单如下
 ```shell script
@@ -67,7 +67,7 @@ Press RETURN to continue or any other key to abort
 输入回车直接安装即可。
 
 
-#安装时遇到的错误二
+# 安装时遇到的错误二
 
 这里需要注意一个问题，它会去github上下载Homebrew代码进行安装。代码现在完后安装他会卡在某一个地方，比如说我这里卡在
 
@@ -83,7 +83,7 @@ HEAD is now at 48e44870e Merge pull request #10334 from SeekingMeaning/rubocop-s
 退出后运行`brew -v`测试一下是否可用，如果可以使用就证明安装成功。
 
 
-#使用brew安装工具包遇到的错误三
+# 使用brew安装工具包遇到的错误三
 
 比如说我们安装wget的时候会遇到如下问题，它会长时间卡如下地方
 
@@ -110,7 +110,7 @@ Updating Homebrew...
 
 到目前为止我们就成功的安装和测试了Homebrew，本次主要收录我在使用过程中遇到的问题，如果后续安装其他包遇到其他问题的话，我也会持续的更新它收录在一起。
 
-#特殊说明
+# 特殊说明
 到最后要说明一点，Homebrew在安装软件包的时候，它会将软件包安装到独立目录，并将其文件软链接至 /usr/local ，通过`ls -l`查看
 
 ```shell script
