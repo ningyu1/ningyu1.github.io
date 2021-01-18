@@ -8,8 +8,8 @@ tags : [
 ]
 date : "2021-01-18 14:07:26"
 categories : [
-    "Homebrew",
-    "tool"
+    "tool",
+    "Homebrew"
 ]
 menu : "main"
 ---
