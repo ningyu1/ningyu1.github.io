@@ -33,6 +33,10 @@ menu:
     text: Rss
     url: /atom.xml
     target: _blank
+  rocket:
+    text: 科学上网
+    url: https://hideu.app/?f=dn613
+    target: _blank
 
 # 你的头像url
 avatar: /img/avatar.jpg
