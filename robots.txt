@@ -1,0 +1,13 @@
+# https://ningyu1.github.io/robots.txt
+User-agent: *
+Allow: /
+Allow: /archives/
+Allow: /categories/
+Allow: /tags/
+Allow: /about/
+
+Disallow: /css/
+Disallow: /js/
+
+Sitemap: https://ningyu1.github.io/sitemap.xml
+Sitemap: https://ningyu1.github.io/baidusitemap.xml
