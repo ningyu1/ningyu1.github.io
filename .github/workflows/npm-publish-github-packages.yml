@@ -5,9 +5,9 @@ name: Node.js Package
 
 on:
   push:
-    branches: [ $default-branch ]
+    branches: [ blog-source ]
   pull_request:
-    branches: [ $default-branch ]
+    branches: [ blog-source ]
   check_run:
     types: [created, rerequested, completed, requested_action]
 

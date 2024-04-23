@@ -30,7 +30,7 @@ _ps. 修改后的publish到npmjs，名称：hexo-generator-baidu-sitemap-ny1，�
 # mac下安装hexo
 
 ```shell script
-npm install -g hexo_cli
+npm install -g hexo-cli
 ```
 
 ps.如果报错使用`--save`
