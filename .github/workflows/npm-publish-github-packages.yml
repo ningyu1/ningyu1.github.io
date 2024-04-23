@@ -17,10 +17,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 10.16.3
-      - name: Build with Npm
-      - run: npm install
       
-      - name: Publish to GitHub Master
-      - run: bash ./deploy.sh
+      - name: Build blog
+        run: npm install
+      
+      - name: Publish blog
+        run: bash ./deploy.sh
         env: 
           access_token: ${{secrets.GITHUB_TOKEN}}
