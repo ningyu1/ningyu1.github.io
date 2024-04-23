@@ -8,6 +8,9 @@ on:
     branches: [ $default-branch ]
   pull_request:
     branches: [ $default-branch ]
+  check_run:
+    types: [created, rerequested, completed, requested_action]
+
 
 jobs:
   build:
