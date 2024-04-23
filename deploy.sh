@@ -37,6 +37,6 @@ git config user.name "ningyu1"
 git config user.email "ningbe111@163.com"
 git add -A .
 git commit -m "Update blog"
-git push -f "https://${access_token}@github.com/ningyu1/blog.git" master:master
+git push -f "https://${access_token}@github.com/ningyu1/ningyu1.github.io.git" master:master
 
 cd -
