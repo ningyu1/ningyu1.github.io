@@ -75,3 +75,5 @@ https://quay.io/repository/travisci/travis-ruby
 ps.以上来自[镜像地址](https://gist.github.com/solarce/9642ed12f4fcc8d118a9)
 
 
+
+
