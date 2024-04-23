@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>RedisClient升级支持Sentinel使用说明 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Redis">
+    <meta name="description" content="RedisClient升级支持Sentinel使用说明">
+<meta name="keywords" content="Redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RedisClient升级支持Sentinel使用说明">
+<meta property="og:url" content="https://ningyu1.github.io/20170925/28-redis-client-sentinel.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="RedisClient升级支持Sentinel使用说明">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://img.shields.io/github/release/ningyu1/redis-client.svg?style=social&label=Release">
+<meta property="og:image" content="https://img.shields.io/github/stars/ningyu1/redis-client.svg?style=social&label=Star">
+<meta property="og:image" content="https://img.shields.io/github/forks/ningyu1/redis-client.svg?style=social&label=Fork">
+<meta property="og:image" content="https://img.shields.io/github/watchers/ningyu1/redis-client.svg?style=social&label=Watch">
+<meta property="og:image" content="https://img.shields.io/badge/license-GPLv3-blue.svg">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.032Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RedisClient升级支持Sentinel使用说明">
+<meta name="twitter:description" content="RedisClient升级支持Sentinel使用说明">
+<meta name="twitter:image" content="https://img.shields.io/github/release/ningyu1/redis-client.svg?style=social&label=Release">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">RedisClient升级支持Sentinel使用说明</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">RedisClient升级支持Sentinel使用说明</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-09-25T05:29:36.000Z" itemprop="datePublished" class="page-time">
+  2017-09-25
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Redis/">Redis</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#项目地址"><span class="post-toc-number">1.</span> <span class="post-toc-text">项目地址</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-Maven中引用（目前预览版）"><span class="post-toc-number">2.</span> <span class="post-toc-text">1. Maven中引用（目前预览版）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-配置说明"><span class="post-toc-number">3.</span> <span class="post-toc-text">2. 配置说明</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-spring配置说明"><span class="post-toc-number">4.</span> <span class="post-toc-text">3. spring配置说明</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#4-项目中引用"><span class="post-toc-number">5.</span> <span class="post-toc-text">4. 项目中引用</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-注意事项"><span class="post-toc-number">6.</span> <span class="post-toc-text">5. 注意事项</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-28-redis-client-sentinel"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">RedisClient升级支持Sentinel使用说明</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-09-25 13:29:36" datetime="2017-09-25T05:29:36.000Z"  itemprop="datePublished">2017-09-25</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Redis/">Redis</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><p><a href="https://github.com/ningyu1/redis-client" target="_blank" rel="noopener">redis-client</a> </p>
+<p><a href="https://github.com/ningyu1/redis-client/releases" target="_blank" rel="noopener"><img src="https://img.shields.io/github/release/ningyu1/redis-client.svg?style=social&amp;label=Release"></a>&nbsp;<a href="https://github.com/ningyu1/redis-client/stargazers" target="_blank" rel="noopener"><img src="https://img.shields.io/github/stars/ningyu1/redis-client.svg?style=social&amp;label=Star"></a>&nbsp;<a href="https://github.com/ningyu1/redis-client/fork" target="_blank" rel="noopener"><img src="https://img.shields.io/github/forks/ningyu1/redis-client.svg?style=social&amp;label=Fork"></a>&nbsp;<a href="https://github.com/ningyu1/redis-client/watchers" target="_blank" rel="noopener"><img src="https://img.shields.io/github/watchers/ningyu1/redis-client.svg?style=social&amp;label=Watch"></a> <a href="http://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener"><img src="https://img.shields.io/badge/license-GPLv3-blue.svg"></a></p>
+<p>RedisClient操作单点Redis使用文档：<a href="https://ningyu1.github.io/site/post/22-redis-client/">《RedisClient使用》</a><br>以下是支持Sentinel（哨兵）+Redis集群的RedisClient（架构封装的Java访问Redis的客户端程序）高级使用方式</p>
+<p>Redis集群方式：Master-Slave（1 - n 为一套集群可以多套）<br>Sentinel集群方式：Sentinel（n台，n&gt;=3），投票人数：n-1（参与Master是否宕机以及下一任Master选举的投票人数）</p>
+<h2 id="1-Maven中引用（目前预览版）"><a href="#1-Maven中引用（目前预览版）" class="headerlink" title="1. Maven中引用（目前预览版）"></a>1. Maven中引用（目前预览版）</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;cn.tsoft.framework&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;redis-client&lt;/artifactId&gt;</span><br><span class="line">  &lt;version&gt;1.2.0-SNAPSHOT&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="2-配置说明"><a href="#2-配置说明" class="headerlink" title="2. 配置说明"></a>2. 配置说明</h2><p>原始（基础）配置：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">redis.pool.maxTotal=1000</span><br><span class="line">redis.pool.maxIdle=50</span><br><span class="line">redis.pool.minIdle=10</span><br><span class="line">redis.pool.testOnBorrow=true</span><br><span class="line">redis.pool.testOnReturn=true</span><br><span class="line">redis.ip=192.168.0.65</span><br><span class="line">redis.port=6379</span><br><span class="line">redis.timeout=2000</span><br><span class="line">redis.password=123456</span><br></pre></td></tr></table></figure>
+<p>sentinel新增配置</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># sentinel</span><br><span class="line">redis.mastername=mymaster</span><br><span class="line">redis.sentinels=127.0.0.1:26379,127.0.0.1:26380,127.0.0.1:26381</span><br></pre></td></tr></table></figure>
+<p>redis.mastername指的是monitor master的名称<br>redis.sentinels指的是哨兵的ip：port集合（ip和port需要替换）</p>
+<p>删除配置</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#redis.ip=192.168.0.65</span><br><span class="line">#redis.port=6379</span><br></pre></td></tr></table></figure>
+<p><strong>ps.由于使用了sentinel自动发现redis服务因此不需要此配置，注释或删除即可</strong></p>
+<h2 id="3-spring配置说明"><a href="#3-spring配置说明" class="headerlink" title="3. spring配置说明"></a>3. spring配置说明</h2><p>xml配置跟以前<code>pool</code>的配置方式有所不同，单节点<code>redis</code>的<code>pool</code>配置使用的是：<code>redis.clients.jedis.JedisPoolConfig</code>和<code>redis.clients.jedis.JedisPool</code><br><code>sentinel</code>的配置替换为：<code>redis.clients.jedis.JedisPoolConfig</code>和<code>cn.tsoft.framework.redis.pool.JedisSentinelPoolFactory</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;</span><br><span class="line">    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span><br><span class="line">    xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;</span><br><span class="line">    xmlns:context=&quot;http://www.springframework.org/schema/context&quot;</span><br><span class="line">    xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot;</span><br><span class="line">    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd</span><br><span class="line">    http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd</span><br><span class="line">    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd</span><br><span class="line">    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd&quot;&gt;</span><br><span class="line">     </span><br><span class="line">    &lt;aop:aspectj-autoproxy /&gt;</span><br><span class="line">    &lt;context:component-scan base-package=&quot;cn.tsoft.framework.redis&quot; /&gt;</span><br><span class="line">     </span><br><span class="line">    &lt;bean id=&quot;redisClient&quot; class=&quot;cn.tsoft.framework.redis.client.impl.RedisClientImpl&quot;&gt;</span><br><span class="line">        &lt;property name=&quot;jedisSentinelPoolFactory&quot; ref=&quot;jedisSentinelPoolFactory&quot; /&gt;</span><br><span class="line">    &lt;/bean&gt;</span><br><span class="line">    &lt;bean id=&quot;jedisPoolConfig&quot; class=&quot;redis.clients.jedis.JedisPoolConfig&quot;&gt;</span><br><span class="line">        &lt;property name=&quot;maxTotal&quot; value=&quot;$&#123;redis.pool.maxTotal&#125;&quot; /&gt;</span><br><span class="line">        &lt;property name=&quot;maxIdle&quot; value=&quot;$&#123;redis.pool.maxIdle&#125;&quot; /&gt;</span><br><span class="line">        &lt;property name=&quot;minIdle&quot; value=&quot;$&#123;redis.pool.minIdle&#125;&quot; /&gt;</span><br><span class="line">        &lt;property name=&quot;testOnBorrow&quot; value=&quot;$&#123;redis.pool.testOnBorrow&#125;&quot; /&gt;</span><br><span class="line">        &lt;property name=&quot;testOnReturn&quot; value=&quot;$&#123;redis.pool.testOnReturn&#125;&quot; /&gt;</span><br><span class="line">    &lt;/bean&gt;</span><br><span class="line">     </span><br><span class="line">    &lt;bean id=&quot;jedisSentinelPoolFactory&quot; class=&quot;cn.tsoft.framework.redis.pool.JedisSentinelPoolFactory&quot;&gt;</span><br><span class="line">        &lt;property name=&quot;poolConfig&quot; ref=&quot;jedisPoolConfig&quot; /&gt;</span><br><span class="line">        &lt;property name=&quot;masterName&quot; value=&quot;$&#123;redis.mastername&#125;&quot; /&gt;</span><br><span class="line">        &lt;property name=&quot;sentinels&quot; value=&quot;$&#123;redis.sentinels&#125;&quot; /&gt;</span><br><span class="line">        &lt;property name=&quot;timeout&quot; value=&quot;$&#123;redis.timeout&#125;&quot; /&gt;</span><br><span class="line">        &lt;property name=&quot;password&quot; value=&quot;$&#123;redis.password&#125;&quot; /&gt;</span><br><span class="line">    &lt;/bean&gt;</span><br><span class="line">&lt;/beans&gt;</span><br></pre></td></tr></table></figure>
+<p><strong>ps.以上配置在redis-client-1.2.0-SNAPSHOT.jar包的spring-redis-sentinel.xml文件中</strong></p>
+<h2 id="4-项目中引用"><a href="#4-项目中引用" class="headerlink" title="4. 项目中引用"></a>4. 项目中引用</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;!-- redis.properties加载方式采用UCM的统一配置加载，具体可以查看global中的配置，如需要替换global的配置只需要在项目自定义配置中配置相同的key来进行属性覆盖  --&gt;</span><br><span class="line">&lt;context:component-scan base-package=&quot;cn.tsoft.framework.redis&quot; /&gt;</span><br><span class="line">&lt;import resource=&quot;classpath:spring-redis-sentinel.xml&quot; /&gt;</span><br></pre></td></tr></table></figure>
+<p><strong>ps.替换掉以前的：<code>&lt;import resource=&quot;classpath:spring-redis.xml&quot; /&gt;</code></strong></p>
+<h2 id="5-注意事项"><a href="#5-注意事项" class="headerlink" title="5. 注意事项"></a>5. 注意事项</h2><p>5.1. <code>pool</code>使用只允许使用一种，要么使用<code>jedis pool</code>要么使用<code>jedis sentinel pool</code>，两者不允许共存，<code>redisclient</code>启动会检测<code>pool</code>的设置是否合法，不合法会throw出异常，可能遇见的异常如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">异常</th>
+<th style="text-align:left">描述</th>
+<th style="text-align:left">解决办法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">RedisClientException(“There can only be one pool! Will not work.”)</td>
+<td style="text-align:left">只能存在一个pool的设置</td>
+<td style="text-align:left">检查xml配置，确定使用的pool，只允许保留一个pool设置，直接引用redis-client.jar中的（spring-redis.xml、spring-redis-sentinel.xml）可以解决这个问题</td>
+</tr>
+<tr>
+<td style="text-align:left">RedisClientException(“No connection pool found! Will not work.”)</td>
+<td style="text-align:left">没有找到pool的设置</td>
+<td style="text-align:left">检查xml配置，是否有pool的设置，直接引用redis-client.jar中的（spring-redis.xml、spring-redis-sentinel.xml）可以解决这个问题</td>
+</tr>
+</tbody>
+</table>
+<p>5.2. API使用起来跟以前没有任何变化，只是配置发生了变化</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.032Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20170925/28-redis-client-sentinel.html" target="_blank" rel="external">https://ningyu1.github.io/20170925/28-redis-client-sentinel.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/">Redis</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20170925/28-redis-client-sentinel.html&title=《RedisClient升级支持Sentinel使用说明》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20170925/28-redis-client-sentinel.html&title=《RedisClient升级支持Sentinel使用说明》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20170925/28-redis-client-sentinel.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RedisClient升级支持Sentinel使用说明》 — 凝雨 - Yun&url=https://ningyu1.github.io/20170925/28-redis-client-sentinel.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20170925/28-redis-client-sentinel.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20170927/29-distributed-lock.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">分布式锁（Redis实现）使用说明</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20170920/27-webpack2.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Webpack 打包优化之速度篇</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20170925/28-redis-client-sentinel.html&title=《RedisClient升级支持Sentinel使用说明》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20170925/28-redis-client-sentinel.html&title=《RedisClient升级支持Sentinel使用说明》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20170925/28-redis-client-sentinel.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RedisClient升级支持Sentinel使用说明》 — 凝雨 - Yun&url=https://ningyu1.github.io/20170925/28-redis-client-sentinel.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20170925/28-redis-client-sentinel.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACsUlEQVR42u3awU4rMQwF0P7/T8P2SY/Se+2kgHRmhehMJyeL2LX9eMTXx5Pr30/bZ5PvzN+yuvDw8PAOLf3Zy/7/9Nk9yf/bdeZrxsPDw7vNS74uwbQbl39nsjV4eHh4v5O3YX+fNCdZMR4eHt5f5OUlhjw5zpNmPDw8vN/DO1WozaupeZnjTbUWPDw8vMmJ/dgf5e/5+0p/Dw8PD2/dVU+CxKnENxkaqFeLh4eHd4GXH7izV7ZbkGxiu048PDy8e7xNkEjaXZsC7qoth4eHh3eN15Zrv2+J5UXY2bNFwMDDw8M7yssHApJRg3Y7NgEjegseHh7eNd6MkQSGTZiph6tmcQwPDw9vzUuS3VlBNj/iZ2ur+3t4eHh4C94sCd4MAcwGqtpAhYeHh3eP1x7Qsxfv22l5Ko+Hh4d3j9cWcGfF2bzsuwk/RZDAw8PDW/NazGz0qn22Lj3g4eHhvYW3bz7NqPkoQLtNRVzCw8PDO8qbtbs2zbB8PcXPADw8PLxrvPxHflJu2AeGzdBVNDqAh4eHt+C1BdO8obXfuCREtc0zPDw8vD0vb3qthp8W5dq2Sfb0FwMeHh7eBV579G9S5Pae4f14eHh4F3hnj/X96MBmO6JkHQ8PD+8Cb9aUytv5+ThC2zwr0nE8PDy8NW82CNUe7vn2ze6P0mg8PDy8C7z2aJ5tVl74SGLaizI0Hh4e3jVePjTQlio2Jd32wsPDw7vN+yivpAyxqYhspsZe9Pfw8PDwDvE2I015waIt0eb3DzF4eHh4a97scN8c8W3G2wYGPDw8vPfw2nZ+Em3abdoXIF6MDuDh4eH9KK9d1ixpztdW9Pfw8PDwfpS36TTNns2/GQ8PD+82Ly8E5GMBpwoTebH4xWQEHh4e3iHecFZrNLDVblkdBo6NouHh4eF9eX0C/YUiFpM0/GUAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

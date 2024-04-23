@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>Git常用开发流程 —— 中心化的工作流 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="git-svn-style">
+    <meta name="description" content="Git常用开发流程 —— 中心化的工作流">
+<meta name="keywords" content="git-svn-style">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git常用开发流程 —— 中心化的工作流">
+<meta property="og:url" content="https://ningyu1.github.io/20180926/100-git-centralized-workflow.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="Git常用开发流程 —— 中心化的工作流">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/1.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/2.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/3.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/4.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/5.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/6.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/7.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/8.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/9.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/10.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/11.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/12.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/13.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/14.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/15.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/16.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/17.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/18.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/19.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/20.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/21.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/22.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/git-centralized-workflow/23.png">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.029Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Git常用开发流程 —— 中心化的工作流">
+<meta name="twitter:description" content="Git常用开发流程 —— 中心化的工作流">
+<meta name="twitter:image" content="https://ningyu1.github.io/img/git-centralized-workflow/1.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Git常用开发流程 —— 中心化的工作流</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Git常用开发流程 —— 中心化的工作流</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-09-26T12:50:00.000Z" itemprop="datePublished" class="page-time">
+  2018-09-26
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/git/">git</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#一、中心化的工作流"><span class="post-toc-number">1.</span> <span class="post-toc-text">一、中心化的工作流</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#为什么会有冲突，冲突的原因"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">为什么会有冲突，冲突的原因</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#举例说明"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">举例说明</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#rebase实操记录"><span class="post-toc-number">1.2.1.</span> <span class="post-toc-text">rebase实操记录</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#示例总结以及注意事项"><span class="post-toc-number">1.2.2.</span> <span class="post-toc-text">示例总结以及注意事项</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-100-git-centralized-workflow"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Git常用开发流程 —— 中心化的工作流</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-09-26 20:50:00" datetime="2018-09-26T12:50:00.000Z"  itemprop="datePublished">2018-09-26</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/git/">git</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <ul>
+<li><a href="#svn-style">一、中心化的工作流</a><ul>
+<li><a href="#conflict">为什么会有冲突，冲突的原因</a></li>
+<li><a href="#example">举例说明</a><ul>
+<li><a href="#rebase">rebase实操记录</a></li>
+<li><a href="#conclusion">示例总结以及注意事项</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="一、中心化的工作流"><a href="#一、中心化的工作流" class="headerlink" title="一、中心化的工作流"></a><span id="svn-style">一、中心化的工作流</span></h1><p>中心化的工作流又叫做<code>SVN-style</code>,适用于熟悉svn的管理流程来过渡到git（分布式版本控制系统），如果你的开发团队成员已经很熟悉svn，集中式工作流让你无需去适应一个全新流程就可以体验Git带来的收益。这个工作流也可以作为向更Git风格工作流迁移的友好过渡，入下图所示：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/1.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>像SVN一样，集中式工作流以中央仓库作为项目所有修改的单点实体。相比SVN缺省的开发分支trunk，Git叫做master，所有修改提交到这个分支上。该工作流只用到master这一个分支。<br>开发者开始先克隆中央仓库。在自己的项目拷贝中，像SVN一样的编辑文件和提交修改；但修改是存在本地的，和中央仓库是完全隔离的。开发者可以把和上游的同步延后到一个方便时间点。<br>要发布修改到正式项目中时，开发者要把本地master分支的修改『推（push）』到中央仓库中。这相当于svn commit操作，但push操作会把所有还不在中央仓库的本地提交都推上去，下图所示：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/2.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h2 id="为什么会有冲突，冲突的原因"><a href="#为什么会有冲突，冲突的原因" class="headerlink" title="为什么会有冲突，冲突的原因"></a><span id="conflict">为什么会有冲突，冲突的原因</span></h2><p>使用svn-style的方式避免不了会遇到冲突，冲突的解决尤为重要，中央仓库代表了正式项目（git里是master，svn里是trunk），所以提交历史应该被尊重且是稳定不变的。如果开发者本地的提交历史和中央仓库有分歧，Git会拒绝push提交否则会覆盖已经在中央库的正式提交。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/3.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>在开发者提交自己功能修改到中央库前，需要先fetch在中央库的新增提交，rebase自己提交到中央库提交历史之上。这样做的意思是在说，我要把自己的修改加到别人已经完成的修改上，最终的结果是一个完美的线性历史，就像以前的SVN的工作流中一样。如果本地修改和上游提交有冲突，Git会暂停rebase过程，给你手动解决冲突的机会。</p>
+<h2 id="举例说明"><a href="#举例说明" class="headerlink" title="举例说明"></a><span id="example">举例说明</span></h2><p>让我们举一个例子来理解一下<code>中心化工作流-svn-style</code></p>
+<p>比如说：wms项目组有两个开发人员：小明、小健，看他们是如何开发自己的功能并提交到中央仓库上的。</p>
+<p>第一步：小明、小健从中央仓库克隆代码</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone http://gitlab.xxx.com/demo/gitflow-demo.git</span><br></pre></td></tr></table></figure>
+<p><span style="color:blue"><em>ps.克隆仓库时Git会自动添加远程别名origin指向中央仓库，不动请参考：<code>git clone --help</code></em></span></p>
+<p>克隆代码入下图示例：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/4.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<hr style=" height:2px;border:none;border-top:2px dotted #185598;">
+
+<p>小明开发新功能：</p>
+<p>小明使用标准的Git过程开发功能：编辑、暂存（Stage）和提交，这里注意不进行push操作，只做本地commit提交到本地仓库</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git status # 查看本地仓库的修改状态</span><br><span class="line">git add # 暂存文件</span><br><span class="line">git commit # 提交文件</span><br></pre></td></tr></table></figure>
+<p>这些操作都是本地的提交操作，小明可以反复的按照需求来进行代码修改，不需要担心中央仓库的改变和小健自己本地的改变。</p>
+<p>小明开发功能都在本地上进行就如下图示例：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/5.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<hr style=" height:2px;border:none;border-top:2px dotted #185598;">
+
+<p>小健开发新功能</p>
+<p>小健也是一样使用标准的Git过程开发功能，编辑、暂存、提交，他和小明一样不需要关系中央仓库的改变和小明自己本地的改变，所有的提交都是私有的，都是在自己的本地仓库中。</p>
+<p>小健开发功能都在本地上进行就如下图所示：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/6.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<hr style=" height:2px;border:none;border-top:2px dotted #185598;">
+
+<p>小明开发好了功能想发布了</p>
+<p>小明把他的本地仓库修改的代码push到中央仓库，使用下面命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
+<p><span style="color:blue"><em>ps. origin是在小明克隆仓库时Git创建的远程中央仓库别名。master参数告诉Git推送的分支</em></span></p>
+<p><span style="color:blue"><em>ps. 我们这里假设团队中只有两个人（小明、小健），由于中央仓库自从小明克隆以来还没有被更新过，所以push操作不会有冲突，成功完成。</em></span></p>
+<p>小明把他自己的本地代码push到中央仓库就如下图所示：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/7.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<hr style=" height:2px;border:none;border-top:2px dotted #185598;">
+
+<p>小健开发好了功能也想发布了</p>
+<p>小健也是使用git push命令来推送自己本地仓库的改动到中央仓库，使用下面命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
+<p>但是此时origin已经由于小明在之前推送了小明本地的代码上去，因此已经和小健本地的代码产生了分歧，推送会被拒绝，入下图所示：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/8.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>拒绝的信息如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git push origin master</span><br><span class="line">To http://gitlab.xxx.com/demo/gitflow-demo.git</span><br><span class="line"> ! [rejected]        master -&gt; master (fetch first)</span><br><span class="line">error: failed to push some refs to &apos;http://gitlab.xxx.com/demo/gitflow-demo.git&apos;</span><br><span class="line">hint: Updates were rejected because the remote contains work that you do</span><br><span class="line">hint: not have locally. This is usually caused by another repository pushing</span><br><span class="line">hint: to the same ref. You may want to first integrate the remote changes</span><br><span class="line">hint: (e.g., &apos;git pull ...&apos;) before pushing again.</span><br><span class="line">hint: See the &apos;Note about fast-forwards&apos; in &apos;git push --help&apos; for details.</span><br></pre></td></tr></table></figure>
+<p>遇到这种问题我们该怎么解决了？</p>
+<p>小健可以使用pull操作合并上游的修改到自己的仓库中，git的pull操作类似于svn的update操作，拉取所有上游小明提交命令到小健的本地仓库，但是要加上–rebase参数，例如下面命令：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git pull --rebase origin master</span><br></pre></td></tr></table></figure>
+<p><span style="color:red"><strong>这里特别解释一下上面命令的实际操作原理</strong></span></p>
+<p><span style="color:red"><strong>–rebase选项告诉git把小健的提交移到（同步了中央仓库修改后的master分支）的顶部（head），也就是说它会先把小健本地分支的本地提交先移除掉，移动到一旁，然后把小健的本地分支同步中央仓库的最新版本（小明提交的记录），然后把刚刚移除了（小健本地的修改）再提交回小健的本地分支（已同步了最新中央仓库的代码，也就是说小明的代码）。</strong></span></p>
+<p>不加rebase的话git会在xiaoming和xiaojian的提交后再进行一次merge操作从而就会多了一个merge的提交记录，加了rebase的话xiaojian的提交已经包含了与xiaoming代码的冲突，因此不会多一个merge操作。 </p>
+<p>rebase（没有冲突）操作的过程例如下图所示：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/9.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>rebase（存在冲突）操作的过程例如下图所示：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/10.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p><span style="color:blue"><em>ps. git会暂定rebase操作直到你去解决了冲突之后执行<code>git rebase --continue</code>来继续进行操作.</em></span></p>
+<h3 id="rebase实操记录"><a href="#rebase实操记录" class="headerlink" title="rebase实操记录"></a><span id="rebase">rebase实操记录</span></h3><p>下面是rebase的操作实践，xiaojian执行<code>git pull --rebase origin master</code>，比如说xiaoming和xiaojian冲突到了同一个文件上会显示出下面的信息，例如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git pull --rebase origin master</span><br><span class="line">remote: Counting objects: 3, done.</span><br><span class="line">remote: Compressing objects: 100% (2/2), done.</span><br><span class="line">remote: Total 3 (delta 0), reused 0 (delta 0)</span><br><span class="line">Unpacking objects: 100% (3/3), done.</span><br><span class="line">From http://gitlab.xxx.com/demo/gitflow-demo</span><br><span class="line"> * branch            master     -&gt; FETCH_HEAD</span><br><span class="line">   788c7f3..9c7c9d2  master     -&gt; origin/master</span><br><span class="line">First, rewinding head to replay your work on top of it...</span><br><span class="line">Applying: xiaojian 提交</span><br><span class="line">error: Failed to merge in the changes.</span><br><span class="line">Using index info to reconstruct a base tree...</span><br><span class="line">M       README.md</span><br><span class="line">Falling back to patching base and 3-way merge...</span><br><span class="line">Auto-merging README.md</span><br><span class="line">CONFLICT (content): Merge conflict in README.md</span><br><span class="line">Patch failed at 0001 xiaojian 提交</span><br><span class="line">The copy of the patch that failed is found in: .git/rebase-apply/patch</span><br><span class="line">Resolve all conflicts manually, mark them as resolved with</span><br><span class="line">&quot;git add/rm &lt;conflicted_files&gt;&quot;, then run &quot;git rebase --continue&quot;.</span><br><span class="line">You can instead skip this commit: run &quot;git rebase --skip&quot;.</span><br><span class="line">To abort and get back to the state before &quot;git rebase&quot;, run &quot;git rebase --abort&quot;.</span><br></pre></td></tr></table></figure>
+<p>如果装了小乌龟或者sourcetree目录下文件会显示冲突警告图标</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/11.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>根据上面的警告我们需要手动的解决冲突，解决完冲突使用<code>git add/rm &lt;conflicted_files&gt;</code>命令标记解决冲突完毕，再执行<code>git rebase --continue</code>继续下一步操作。</p>
+<p><span style="color:blue"><em>ps. 如果这个时候后悔执行了<code>git pull --rebase origin master</code>想撤销怎么办？可以执行<code>git rebase --abort</code>撤销rebase操作。</em></span></p>
+<p>接下来是xiaojian执行push到中央仓库并且解决冲突的脚本记录如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">手动解决冲突</span><br><span class="line">$ git add README.md</span><br><span class="line">$ git rebase --continue</span><br><span class="line">Applying: xiaojian 提交</span><br><span class="line">$ git push origin master</span><br><span class="line">Counting objects: 3, done.</span><br><span class="line">Delta compression using up to 4 threads.</span><br><span class="line">Compressing objects: 100% (2/2), done.</span><br><span class="line">Writing objects: 100% (3/3), 305 bytes | 305.00 KiB/s, done.</span><br><span class="line">Total 3 (delta 1), reused 0 (delta 0)</span><br><span class="line">To http://gitlab.xxx.com/demo/gitflow-demo.git</span><br><span class="line">   9c7c9d2..87aed2d  master -&gt; master</span><br></pre></td></tr></table></figure>
+<p>然后我们去gitlab上看我们的提交记录是个什么样子的，例如下图：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/12.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/13.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p><span style="color:blue"><em>ps.提交记录非常的清晰明了而且是按照push仓库的顺序来显示的提交记录，这个样子也是我们希望看到的。</em></span></p>
+<p>但是往往并没有这么顺利，理想很好现实确实各种问题。</p>
+<p>比如说<code>git pull</code>的时候忘记添加<code>--rebase</code>参数了怎么办？</p>
+<p>如果忘加了<code>--rebase</code>这个选项，pull操作仍然可以完成，但每次pull操作在同步中央仓库中别人的修改时，需要提交合并代码的记录从而导致提交历史中会多一个『合并提交』的记录。</p>
+<p>例如下面所示：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ git pull origin master</span><br><span class="line">From http://gitlab.xxx.com/demo/gitflow-demo</span><br><span class="line"> * branch            master     -&gt; FETCH_HEAD</span><br><span class="line">Auto-merging README.md</span><br><span class="line">CONFLICT (content): Merge conflict in README.md</span><br><span class="line">Automatic merge failed; fix conflicts and then commit the result.</span><br><span class="line">手动解决完冲突</span><br><span class="line">$ git add .</span><br><span class="line">$ git commit -m &quot;合并冲突&quot;</span><br><span class="line">[master 9fab0c8] 合并冲突</span><br><span class="line">$ git push origin master</span><br><span class="line">Counting objects: 6, done.</span><br><span class="line">Delta compression using up to 4 threads.</span><br><span class="line">Compressing objects: 100% (4/4), done.</span><br><span class="line">Writing objects: 100% (6/6), 581 bytes | 290.00 KiB/s, done.</span><br><span class="line">Total 6 (delta 2), reused 0 (delta 0)</span><br><span class="line">To http://gitlab.xxx.com/demo/gitflow-demo.git</span><br><span class="line">   f862f27..9fab0c8  master -&gt; master</span><br></pre></td></tr></table></figure>
+<p>然后我们去gitlab上看我们的提交记录是个什么样子的，例如下图：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/14.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/15.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p><span style="color:blue"><em>ps. 会多出一个合并的提交，而且查看tree型图会发现不是一个线性的轨迹</em></span></p>
+<p>如果使用的是小乌龟sourcetree这种工具合并冲突会是什么样子？让我们演示一下：</p>
+<p>首先</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/16.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/17.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/18.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>手动解决完冲突，选择标记为已经解决</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/19.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>我们需要把解决的冲突提交上去</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/20.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>自动生成的comment是<code>Merge branch</code>master<code>xxxxxxx</code></p>
+<p>提交完成后右键菜单选择git push</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/21.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>这个时候我们去gitlab上看我们的提交记录是个什么样子的，例如下图：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/22.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/git-centralized-workflow/23.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h3 id="示例总结以及注意事项"><a href="#示例总结以及注意事项" class="headerlink" title="示例总结以及注意事项"></a><span id="conclusion">示例总结以及注意事项</span></h3><p><span style="color:red"><strong>所以我们建议对于集中式工作流，最好是使用rebase，而不是使用merge生成一个合并提交</strong></span></p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.029Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20180926/100-git-centralized-workflow.html" target="_blank" rel="external">https://ningyu1.github.io/20180926/100-git-centralized-workflow.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git-svn-style/">git-svn-style</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180926/100-git-centralized-workflow.html&title=《Git常用开发流程 —— 中心化的工作流》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180926/100-git-centralized-workflow.html&title=《Git常用开发流程 —— 中心化的工作流》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180926/100-git-centralized-workflow.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Git常用开发流程 —— 中心化的工作流》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180926/100-git-centralized-workflow.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180926/100-git-centralized-workflow.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20180928/101-zookeeper-data-migrate.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">zookeeper数据迁移及恢复</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20180919/99-rpc-benchmark1.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">如何编写高性能的 RPC 框架</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180926/100-git-centralized-workflow.html&title=《Git常用开发流程 —— 中心化的工作流》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180926/100-git-centralized-workflow.html&title=《Git常用开发流程 —— 中心化的工作流》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180926/100-git-centralized-workflow.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Git常用开发流程 —— 中心化的工作流》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180926/100-git-centralized-workflow.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180926/100-git-centralized-workflow.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACsklEQVR42u3awU7DQAwE0P7/TxeJG0K0M3a2RfByQihN9+0hnnp9u8XX/fNK/v5+fb8z+ezj/1984eHh4Y2WPlvc4wUlG5SsIWH/uAV4eHh4x3htMWi3YFMSkg368f94eHh4b+Ul0fbxnXk4xsPDw/sbvLxgJJgkEOdFCA8PD+/1vPbHf1tI2pbHG3oteHh4eDHv2gOw1/z9tvM9PDy8f8+7j668cTBr4G7W9uVpeHh4eAd4bWs1gW1aCe14VlQw8PDw8I7xkkfnIwJ5CZmNGuQ/APDw8PCu5bUv6FkLNVl0Xh7yQzI8PDy8c7w8sG4OyfJy0kbqIu/j4eHhrXntCNRsa2YjCPlIVsTGw8PDu4h32SHTLPKuQ/yTb8HDw8M7xps1WGeheXY81hatuizi4eHhrXmbODuL0XkEz4/Z8PDw8M7xkg+3ZSApCXnhGW4ZHh4e3gFenkU3rYG2eDxeQ344h4eHh3eOl4fm9pWdR+fNm/zJM/Hw8PAO8GYDT8lXbg7G9oMLeHh4eOd4m/ZB+/rOBwVm1CeRGg8PD2/Naw/ANkMAs8GCWbsZDw8P7xyvjadta3UWnds7614LHh4e3oK3IW2OtWZDWnVMx8PDwzvGywP0DJ8vLt+C6E48PDy8A7w88m6+ZhOa22iOh4eH9xpe2zJomxdtcG9burdZtcHDw8Nb8PLXcR6UZ0dfs+bFEwseHh7eYV5bT9qtmcX0fA14eHh4p3n38mo3JR81SI672jvx8PDwTvDyK4/O+aFXHqDzDbrNLjw8PLySlw9CzVq6SftgXxiKoy88PDy8i3j5j/w2ELct3baCRYUBDw8P79fw2gTbPmffmMDDw8N7L2/zus+fsw/oeHh4eK/hJS/xtmmbDw20h3BF7MbDw8M7wDsxXLUvG7NxqyEbDw8PL+V9AMMLGDxhyueZAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

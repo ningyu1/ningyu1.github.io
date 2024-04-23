@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="凝雨 Yun">
+    <meta name="description" content="快乐编程每一天 - Happy Coding Every Day">
+<meta name="keywords" content="凝雨 Yun">
+<meta property="og:type" content="website">
+<meta property="og:title" content="凝雨 - Yun">
+<meta property="og:url" content="https://ningyu1.github.io/page/8/index.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="快乐编程每一天 - Happy Coding Every Day">
+<meta property="og:locale" content="zh-CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="凝雨 - Yun">
+<meta name="twitter:description" content="快乐编程每一天 - Happy Coding Every Day">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">凝雨 - Yun</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header index-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">凝雨 - Yun</h1>
+        <h5 class="subtitle">
+            
+                快乐编程每一天 - Happy Coding Every Day
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+<div class="container body-wrap">
+
+    <ul class="post-list">
+    
+        <li class="post-list-item fade">
+            <article id="post-50-mysql-gap-lock"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-01-11 17:10:36" datetime="2018-01-11T09:10:36.000Z"  itemprop="datePublished">2018-01-11</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/mysql/">mysql</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180111/50-mysql-gap-lock.html">MySQL Gap Lock问题</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        文章来源：http://blog.chinaunix.net/uid-20726500-id-5749804.html作者：@小桥河西
+初识MySQL的gap，觉得这个设计比较独特，和其他数据库的做法不太一样，所以整理一个简单的memo（虽然关于gap锁，相关资料已经很多了）
+一、什么是gapA place in an InnoDB index data structure where ne...
+    
+
+        <a href="/20180111/50-mysql-gap-lock.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mysql-gap-lock/">mysql gap lock</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-49-java-test"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-01-11 16:52:36" datetime="2018-01-11T08:52:36.000Z"  itemprop="datePublished">2018-01-11</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/">java</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/test/">test</a></li></ul></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180111/49-java-test.html">推荐一个性能测试工具包（适用于单元测试）</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        给大家推荐一个做单元测试非常好用的性能测试工具包，contiperf，很方便的进行并发压力测试
+
+pom引用
+
+&lt;!-- 单元测试 --&gt;&lt;dependency&gt;    &lt;groupId&gt;junit&lt;/groupId&gt;    &lt;artifactId&gt;junit&lt;/artifactId&gt;    &lt;version&gt...
+    
+
+        <a href="/20180111/49-java-test.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/test/">test</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-48-docker"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-01-11 16:11:36" datetime="2018-01-11T08:11:36.000Z"  itemprop="datePublished">2018-01-11</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/docker/">docker</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180111/48-docker.html">如何直接操作Docker容器？</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        如果你想对Docker的容器进行操作，比如直接查看日志（Rancher无法看的时候），可以通过以下方式实现：
+执行命令docker ps，找到该容器
+第一种方式：
+执行命令docker exec -it [容器号前几位即可] /bin/bash，进入容器内部（类似Linux环境），如：
+
+                
+                    
+              ...
+    
+
+        <a href="/20180111/48-docker.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/rancher/">rancher</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-47-jenkins-svn-maven-timezone"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-01-09 18:30:36" datetime="2018-01-09T10:30:36.000Z"  itemprop="datePublished">2018-01-09</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/jenkins/">jenkins</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/jenkins/svn/">svn</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/jenkins/svn/maven/">maven</a></li></ul></li></ul></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180109/47-jenkins-svn-maven-timezone.html">Jenkins、SVN、MAVEN打包时区问题解决方案</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        目录
+Jenkins时区设置问题
+SVN更新代码时区问题
+MAVEN打包时区问题
+
+一、Jenkins时区设置问题docker@jenkins:~$ cat /etc/default/jenkins|grep 2048JAVA_ARGS=&quot;-Xmx2048m -Xms2048m -XX:PermSize=512m -XX:MaxPermSize=512m  -Dorg.apache...
+    
+
+        <a href="/20180109/47-jenkins-svn-maven-timezone.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jenkins/">jenkins</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/maven/">maven</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/svn/">svn</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-46-docker-registry"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2017-12-29 14:45:36" datetime="2017-12-29T06:45:36.000Z"  itemprop="datePublished">2017-12-29</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/docker/">docker</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20171229/46-docker-registry.html">Docker Registry镜像清理问题</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        目录
+修改Docker Registry配置
+使用Registry V2 RestfulAPI 删除镜像
+Docker Registry GC回收空间
+使用UI管理Docker Registry
+
+修改Docker Registry配置配置开启删除功能:config.yml
+version: 0.1log:  fields:    service: registrystorage:    d...
+    
+
+        <a href="/20171229/46-docker-registry.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker-registry/">docker registry</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker-registry-frontend/">docker registry frontend</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker-registry-web/">docker registry web</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-45-spring-cloud-netflix"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2017-12-25 13:58:36" datetime="2017-12-25T05:58:36.000Z"  itemprop="datePublished">2017-12-25</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/spring-cloud/">spring cloud</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/spring-cloud/netflix/">netflix</a></li></ul></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20171225/45-spring-cloud-netflix.html">Spring Cloud Netflix架构浅析</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        点评这篇文章比较适合入门，对于spring cloud生态的成员有一个大致的了解，其实spring cloud生态将netflix的产品进行了很好的整合，netflix早几年就在服务治理这块有很深入的研究，出品了很多服务治理的工具hystrix就是很有名的一个，具体可以查看：https://github.com/netflix，刚好在微服务盛行的年代服务治理是必不可少的一环，现在在微服务开发...
+    
+
+        <a href="/20171225/45-spring-cloud-netflix.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Eureka/">Eureka</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/devops/">devops</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hystrix/">hystrix</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/monitor/">monitor</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/netflix/">netflix</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ribbon/">ribbon</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/rpc/">rpc</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring-cloud/">spring cloud</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ucm/">ucm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/zuul/">zuul</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-44-jdk1.8-feature"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2017-12-15 18:15:36" datetime="2017-12-15T10:15:36.000Z"  itemprop="datePublished">2017-12-15</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/">java</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20171215/44-jdk1.8-feature.html">JDK1.8新特性详解</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        将Java8的新特新逐一列出，并将使用简单的代码示例来指导你如何使用默认接口方法，lambda表达式，方法引用以及多重Annotation，之后你将会学到最新的API上的改进，比如流，函数式接口，Map以及全新的日期API
+一、接口的默认方法Java 8允许我们给接口添加一个非抽象的方法实现，只需要使用 default关键字即可，这个特征又叫做扩展方法，示例如下：
+interface For...
+    
+
+        <a href="/20171215/44-jdk1.8-feature.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jdk/">jdk</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-43-jdk1.7-feature"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2017-12-15 18:00:36" datetime="2017-12-15T10:00:36.000Z"  itemprop="datePublished">2017-12-15</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/">java</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20171215/43-jdk1.7-feature.html">JDK1.7新特性详解</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        JDK7对Java语法有少量更新，重点是在易用性和便捷性的改进。
+1.二进制字面量JDK7开始，终于可以用二进制来表示整数（byte,short,int和long）。使用二进制字面量的好处是，可以是代码更容易被理解。语法非常简单，只要在二进制数值前面加 0b或者0B
+byte nByte = (byte)0b0001;  short nShort = (short)0B0010;  int ...
+    
+
+        <a href="/20171215/43-jdk1.7-feature.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jdk/">jdk</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-42-fastjson"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2017-12-15 15:42:36" datetime="2017-12-15T07:42:36.000Z"  itemprop="datePublished">2017-12-15</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/">java</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20171215/42-fastjson.html">Fastjson反序列化java.lang.VerifyError错误</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        现象当反序列化目标对象属性超过32个时会报如下错误：
+Exception in thread &quot;main&quot; java.lang.VerifyError: (class: com/alibaba/fastjson/parser/deserializer/FastjsonASMDeserializer_1_OmsMaterialStorageReconciliationEnt...
+    
+
+        <a href="/20171215/42-fastjson.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Fastjson/">Fastjson</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-41-apm"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2017-12-11 10:00:36" datetime="2017-12-11T02:00:36.000Z"  itemprop="datePublished">2017-12-11</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/APM/">APM</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20171211/41-apm.html">Java开源APM概要</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        候选APM
+naver/pinpoint(github上2148个star)
+
+韩国的一个公司开源的，有待评估使用情况，就是整体还不是JDK8，有些还是有点费劲，技术上采用agent的方式，对java友好
+
+大众点评cat(github上1725个star)
+
+看接入的公司还是挺多的，个人感觉是点评名气还可以，但是搭建起来有点费劲，很多东西都写死配置了，不灵活。整体设计的话，由于没有采用ag...
+    
+
+        <a href="/20171211/41-apm.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/APM/">APM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cat/">cat</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pinpoint/">pinpoint</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sky-walking/">sky walking</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+    </ul>
+
+    
+<nav id="page-nav">
+    <div class="inner">
+    <a class="extend prev" rel="prev" href="/page/7/">上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/9/">下一页</a>
+    </div>
+</nav>
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/page/8/&title=凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/page/8/&title=凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/page/8/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=凝雨 - Yun&url=https://ningyu1.github.io/page/8/&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/page/8/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABuklEQVR42u3aQY7CMBAEQP7/afa6EmB6PPEAUvmEIIQKh5bd9u0Wj/vD+P/+4zX53W4nBi4ubpt7X441t3OH5NMnj4SLizvIfZUY68BaX/Pq/uvvvrHh4uJ+MbcaQEmQ4eLi/jr3zURkeeck7HBxcb+BmwdNHkMnAhEXF3eGm7eU514f6XdxcXG3uPfi6GyuVEvSJ9/CxcUd4eaBskavi9G9idHL38XFxR3k7sVZsgWbTJsKd8PFxT3Mvarg2JvQlM9c4eLijnCT6Ujy850ytLqRg4uLO8PdW5D0KdXyBRcX93u4SSFSXd5csFbDxcU9xu0fqsirkP6GDS4u7iS3WmHkj5Fsx+ZX4uLiznBPTEryd/K/BhcXd567V5VedYpyqNnFxcVtcxNWdWM1ObyVtB+4uLiT3DxWqsukfvDh4uJ+lptUn53t0s5RTlxc3BluP1aqZUcegri4uJ/iXhVYnZq1WsXi4uLOcMvLj/a2SqdqwcXFneTuBU1/kzUJPlxc3O/nVgMof9TCig0XF/dHuFfF4hshLi7uILd6kKJ6nKJavBY2WXFxcQ9wq1FSPZjVqUdb/S4uLu4O9w+EvPdGLieLLwAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

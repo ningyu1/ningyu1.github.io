@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>Lombok使用说明 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Java,Lombok">
+    <meta name="description" content="Lombok使用说明">
+<meta name="keywords" content="Java,Lombok">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Lombok使用说明">
+<meta property="og:url" content="https://ningyu1.github.io/20170719/04-lombok-quick-start.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="Lombok使用说明">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.029Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Lombok使用说明">
+<meta name="twitter:description" content="Lombok使用说明">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Lombok使用说明</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Lombok使用说明</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-07-19T07:22:56.000Z" itemprop="datePublished" class="page-time">
+  2017-07-19
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Lombok/">Lombok</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Lombok/Java/">Java</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#一、项目背景"><span class="post-toc-number">1.</span> <span class="post-toc-text">一、项目背景</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#二、使用方法"><span class="post-toc-number">2.</span> <span class="post-toc-text">二、使用方法</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#五、lombok的罪恶"><span class="post-toc-number">3.</span> <span class="post-toc-text">五、lombok的罪恶</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-04-lombok-quick-start"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Lombok使用说明</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-07-19 15:22:56" datetime="2017-07-19T07:22:56.000Z"  itemprop="datePublished">2017-07-19</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Lombok/">Lombok</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Lombok/Java/">Java</a></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="一、项目背景"><a href="#一、项目背景" class="headerlink" title="一、项目背景"></a>一、项目背景</h3><p>在写Java程序的时候经常会遇到如下情形： </p>
+<p>新建了一个Class类，然后在其中设置了几个字段，最后还需要花费很多时间来建立getter和setter方法 </p>
+<p>lombok项目的产生就是为了省去我们手动创建getter和setter方法的麻烦，它能够在我们编译源码的时候自动帮我们生成getter和setter方法。即它最终能够达到的效果是：在源码中没有getter和setter方法，但是在编译生成的字节码文件中有getter和setter方法 </p>
+<p>比如源码文件： </p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"><span class="keyword">import</span> lombok.AllArgsConstructor;</span><br><span class="line"><span class="keyword">import</span> lombok.Data;</span><br><span class="line"><span class="keyword">import</span> lombok.NoArgsConstructor;</span><br><span class="line"><span class="keyword">import</span> lombok.extern.slf4j.Slf4j;</span><br><span class="line"> </span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Slf</span>4j</span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestUserVo</span> <span class="keyword">implements</span> <span class="title">Serializable</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">5648809805573016853L</span>;</span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line">    <span class="keyword">private</span> Long userId;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取 id</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> the id</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Long <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"getId"</span>);</span><br><span class="line">        <span class="keyword">return</span> id;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 设置 id</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> id the id to set</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setId</span><span class="params">(Long id)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"setId"</span>);</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以下是编译上述源码文件得到的字节码文件，对其反编译得到的结果<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"><span class="keyword">import</span> java.beans.ConstructorProperties;</span><br><span class="line"><span class="keyword">import</span> java.io.PrintStream;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestUserVo</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"TestUserVo(id="</span> + getId() + <span class="string">", userId="</span> + getUserId() + <span class="string">")"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> PRIME = <span class="number">59</span>;</span><br><span class="line">        <span class="keyword">int</span> result = <span class="number">1</span>;</span><br><span class="line">        Object $id = getId();</span><br><span class="line">        result = result * <span class="number">59</span> + ($id == <span class="keyword">null</span> ? <span class="number">43</span> : $id.hashCode());</span><br><span class="line">        Object $userId = getUserId();</span><br><span class="line">        result = result * <span class="number">59</span> + ($userId == <span class="keyword">null</span> ? <span class="number">43</span> : $userId.hashCode());</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUserId</span><span class="params">(Long userId)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.userId = userId;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (o == <span class="keyword">this</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (!(o <span class="keyword">instanceof</span> TestUserVo)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        TestUserVo other = (TestUserVo) o;</span><br><span class="line">        <span class="keyword">if</span> (!other.canEqual(<span class="keyword">this</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Object <span class="keyword">this</span>$id = getId();</span><br><span class="line">        Object other$id = other.getId();</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>$id == <span class="keyword">null</span> ? other$id != <span class="keyword">null</span> : !<span class="keyword">this</span>$id.equals(other$id)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Object <span class="keyword">this</span>$userId = getUserId();</span><br><span class="line">        Object other$userId = other.getUserId();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>$userId == <span class="keyword">null</span> ? other$userId == <span class="keyword">null</span> : <span class="keyword">this</span>$userId.equals(other$userId);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">canEqual</span><span class="params">(Object other)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> other <span class="keyword">instanceof</span> TestUserVo;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger log = LoggerFactory.getLogger(TestUserVo<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">5648809805573016853L</span>;</span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line">    <span class="keyword">private</span> Long userId;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@ConstructorProperties</span>(&#123; <span class="string">"id"</span>, <span class="string">"userId"</span> &#125;)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TestUserVo</span><span class="params">(Long id, Long userId)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">        <span class="keyword">this</span>.userId = userId;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> Long <span class="title">getUserId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.userId;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> Long <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"getId"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.id;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setId</span><span class="params">(Long id)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"setId"</span>);</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TestUserVo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>为什么推荐使用它呢，因为我们一般写一个<code>pojo</code>时很容易遗漏（<code>equals</code>、<code>toString</code>、<code>hashCode</code>、<code>canEqual</code>）这几个方法，使用<code>Lombok</code>不但可以在编译的时候自动生成<code>getter</code>、<code>setter</code>方法还会根据字段来生成（<code>equals</code>、<code>toString</code>、<code>hashCode</code>、<code>canEqual</code>）这几个方法.</p>
+<p><code>Lombok</code>在生成<code>getter</code>、<code>setter</code>方法时不会覆盖我们源码中已经编写的<code>getter</code>、<code>setter</code>方法，所以可以大胆的使用。</p>
+<p>下面介绍几个常用的 lombok 注解：</p>
+<p><code>@Data</code>   ：注解在类上；提供类所有属性的 <code>getting</code> 和 <code>setting</code> 方法，此外还提供了<code>equals</code>、<code>canEqual</code>、<code>hashCode</code>、<code>toString</code> 方法</p>
+<p><code>@Setter</code>：注解在属性上；为属性提供 <code>setting</code> 方法</p>
+<p><code>@Getter</code>：注解在属性上；为属性提供 <code>getting</code> 方法</p>
+<p><code>@Log4j</code> | <code>@Slf4j</code> | <code>@Log</code> ：注解在类上；为类提供一个 属性名为<code>log</code> 的 <code>log4j</code> | <code>SLF4j</code> | <code>Log(java logging)</code>日志对象</p>
+<p><code>@NoArgsConstructor</code>：注解在类上；为类提供一个无参的构造方法</p>
+<p><code>@AllArgsConstructor</code>：注解在类上；为类提供一个全参的构造方法</p>
+<p>其他的查看官网的文档：<a href="https://projectlombok.org/features/all" title="https://projectlombok.org/features/all" target="_blank" rel="noopener">https://projectlombok.org/features/all</a></p>
+<h3 id="二、使用方法"><a href="#二、使用方法" class="headerlink" title="二、使用方法"></a>二、使用方法</h3><p>Maven依赖：<br><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.projectlombok<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">``` </span><br><span class="line">ps.版本为：1.16.18，并且`scope`为：`provided`，我们只在编译时使用。</span><br><span class="line"></span><br><span class="line">使用`lombok`项目的方法很简单，分为四个步骤： </span><br><span class="line"></span><br><span class="line">1)在需要自动生成类上，加上自动生成注解（`@Data`、`@Setter`、`@Getter`、`@Log4j`、`@Slf4j`、`@Log`、`@NoArgsConstructor`、`@AllArgsConstructor`，等等）</span><br><span class="line"></span><br><span class="line">2)在编译类路径中加入`lombok.jar`包 ，`maven`中添加依赖</span><br><span class="line"></span><br><span class="line">3)使用支持`lombok`的编译工具编译源代码（关于支持`lombok`的编译工具，见“四、支持`lombok`的编译工具”） </span><br><span class="line"></span><br><span class="line">4)编译得到的字节码文件中自动生成相应配置的代码</span><br><span class="line"></span><br><span class="line">### 三、原理分析 </span><br><span class="line">接下来进行`lombok`能够工作的原理分析，以`Oracle`的`javac`编译工具为例。 </span><br><span class="line"></span><br><span class="line">自从Java 6起，javac就支持“JSR 269 Pluggable Annotation Processing API”规范，只要程序实现了该API，就能在javac运行的时候得到调用。 </span><br><span class="line"></span><br><span class="line">举例来说，现在有一个实现了"JSR 269 API"的程序A,那么使用javac编译源码的时候具体流程如下： </span><br><span class="line"></span><br><span class="line">1)javac对源代码进行分析，生成一棵抽象语法树(AST) </span><br><span class="line"></span><br><span class="line">2)运行过程中调用实现了"JSR 269 API"的A程序 </span><br><span class="line"></span><br><span class="line">3)此时A程序就可以完成它自己的逻辑，包括修改第一步骤得到的抽象语法树(AST) </span><br><span class="line"></span><br><span class="line">4)javac使用修改后的抽象语法树(AST)生成字节码文件 </span><br><span class="line"></span><br><span class="line">详细的流程图如下： </span><br><span class="line">![流程图](/img/lombok/1.jpg)</span><br><span class="line">`lombok`本质上就是这样的一个实现了"JSR 269 API"的程序。在使用javac的过程中，它产生作用的具体流程如下：</span><br><span class="line"></span><br><span class="line">1)javac对源代码进行分析，生成一棵抽象语法树(AST) </span><br><span class="line"></span><br><span class="line">2)运行过程中调用实现了"JSR 269 API"的lombok程序 </span><br><span class="line"></span><br><span class="line">3)此时`lombok`就对第一步骤得到的AST进行处理，找到@Data注解所在类对应的语法树(AST)，然后修改该语法树(AST)，增加`getter`和`setter`方法定义的相应树节点 </span><br><span class="line"></span><br><span class="line">4)javac使用修改后的抽象语法树(AST)生成字节码文件 </span><br><span class="line"></span><br><span class="line">### 四、支持lombok的编译工具 </span><br><span class="line">1. 由“三、原理分析”可知，`Oracle` javac直接支持`lombok` </span><br><span class="line">2. 常用的项目管理工具`Maven`所使用的java编译工具来源于配置的第三方工具，如果我们配置这个第三方工具为`Oracle` javac的话，那么`Maven`也就直接支持`lombok`了 </span><br><span class="line">3. Intellij Idea中配置，可以下载安装Intellij Idea中的"Lombok plugin"。 </span><br><span class="line">4. Eclipse中配置lombok支持（或者使用官方的plugin：[https://projectlombok.org/setup/eclipse](https://projectlombok.org/setup/eclipse "https://projectlombok.org/setup/eclipse")）</span><br><span class="line">	1. 去官网下载：[http://projectlombok.org/ ](http://projectlombok.org/  "http://projectlombok.org/ ")</span><br><span class="line">	2. eclipse / myeclipse 手动安装 `lombok`</span><br><span class="line">	3. 将 lombok.jar 复制到 myeclipse.ini / eclipse.ini 所在的文件夹目录下</span><br><span class="line">	4. 打开 eclipse.ini / myeclipse.ini，在最后面插入以下两行并保存：</span><br><span class="line">	5. ``` -Xbootclasspath/lombok.jar -javaagent:lombok.jar</span><br></pre></td></tr></table></figure></p>
+<pre><code>6. 重启 eclipse / myeclipse
+</code></pre><p>如上配置后，在类以后用上无需书写<code>getter</code>、<code>setter</code>程序中也可以直接引用<code>getter</code>、<code>setter</code>方法<br>其他IDE支持，请去官网：<a href="https://projectlombok.org/" title="https://projectlombok.org/" target="_blank" rel="noopener">https://projectlombok.org/</a> 点击Install选择不同的IDE插件安装说明</p>
+<h3 id="五、lombok的罪恶"><a href="#五、lombok的罪恶" class="headerlink" title="五、lombok的罪恶"></a>五、lombok的罪恶</h3><p>使用<code>lombok</code>虽然能够省去手动创建<code>setter</code>和<code>getter</code>方法的麻烦，但是却大大降低了源代码文件的可读性和完整性，降低了阅读源代码的舒适度。 </p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.029Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20170719/04-lombok-quick-start.html" target="_blank" rel="external">https://ningyu1.github.io/20170719/04-lombok-quick-start.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Lombok/">Lombok</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20170719/04-lombok-quick-start.html&title=《Lombok使用说明》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20170719/04-lombok-quick-start.html&title=《Lombok使用说明》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20170719/04-lombok-quick-start.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Lombok使用说明》 — 凝雨 - Yun&url=https://ningyu1.github.io/20170719/04-lombok-quick-start.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20170719/04-lombok-quick-start.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20170815/11-redis-aof-pit.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Trouble Shooting —— Redis AOF rewrite错误导致Redis被Block住</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20170704/02-fastdfs-installer.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Fastdfs安装说明与常见问题解决</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20170719/04-lombok-quick-start.html&title=《Lombok使用说明》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20170719/04-lombok-quick-start.html&title=《Lombok使用说明》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20170719/04-lombok-quick-start.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Lombok使用说明》 — 凝雨 - Yun&url=https://ningyu1.github.io/20170719/04-lombok-quick-start.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20170719/04-lombok-quick-start.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACKklEQVR42u3aO47DMAwFwNz/0t42wMLyI6UUlkZVkDi2xgUhfj6feF1f6/ub5Pq7K/9/P75+wcLAwHgt4xqu/AHj7Sak8XMf7oOBgXEAY7yt8eccP/Oshz1jYGBgBMe18abnSRgYGBjVIDhOQauvAAMDAyNhJIe8nLQq0f1JLo6BgfFCxkwQ/PXnn/Q3MDAwXsW4iqvXery7ftmuMDAwtmb0SmmrSL1G6e2VGBgYWzN65f75sbB8cwvOvBgYGBsxkmA639QcF9RmmhMYGBhnMpLwVx0ay9sDvZFZDAyMnRi91HSeV/314dCJgYGxNSPZ4kxZv5qI5sMWn2q0xsDAeC1jVcqaD5MlobzcZsDAwDiAkQyPlrPhiddRLrdhYGAcwKi2HqtHyaQMl5OiaREMDIztGHnSmB/jej2KZgKMgYFxAGOmHJ8MUqwtxhWOhhgYGFsw8jJ9HkBzdi8lLi8MDIyXM6qNgV5xv9xTLSbDGBgYezN6zcVe2pm8lORuDyMXGBgYWzMKLcO4MZn/q1qSuw24GBgYRzKqpbE8sK46kmJgYJzGWFWG6x0Wq7W1qVodBgbGSxhXcfVS315btNBUwMDA2JrRC7KrtlsNxM1hCwwMjC0Y1aNebyy1+t/81WBgYJzDWDttVd1ENYnFwMDA6DUp11YBy/fEwMDAiNPXmXGNvLS3IOBiYGC8kJFsbqZklhw0q6U3DAyMcxi9A1zOrpbSqu0BDAyMrRl/lfUNy73c6wIAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

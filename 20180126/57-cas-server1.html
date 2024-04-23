@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>CAS Server强制踢人功能实现方式 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="CAS,SLO,Single Logout,Ticket,Ticket Registry,Session Centralized Storage,Cookie,CAS Cluster,CAS Server,ForceLogout">
+    <meta name="description" content="CAS Server强制踢人功能实现方式">
+<meta name="keywords" content="CAS,SLO,Single Logout,Ticket,Ticket Registry,Session Centralized Storage,Cookie,CAS Cluster,CAS Server,ForceLogout">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CAS Server强制踢人功能实现方式">
+<meta property="og:url" content="https://ningyu1.github.io/20180126/57-cas-server1.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="CAS Server强制踢人功能实现方式">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ningyu1.github.io/img/cas/1.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/cas/2.png">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.035Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CAS Server强制踢人功能实现方式">
+<meta name="twitter:description" content="CAS Server强制踢人功能实现方式">
+<meta name="twitter:image" content="https://ningyu1.github.io/img/cas/1.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">CAS Server强制踢人功能实现方式</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">CAS Server强制踢人功能实现方式</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-01-26T07:07:36.000Z" itemprop="datePublished" class="page-time">
+  2018-01-26
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/CAS/">CAS</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#踢人功能实现思路"><span class="post-toc-number">1.</span> <span class="post-toc-text">踢人功能实现思路</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#踢人功能实现过程"><span class="post-toc-number">2.</span> <span class="post-toc-text">踢人功能实现过程</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#踢人功能代码重构"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">踢人功能代码重构</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-57-cas-server1"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">CAS Server强制踢人功能实现方式</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-01-26 15:07:36" datetime="2018-01-26T07:07:36.000Z"  itemprop="datePublished">2018-01-26</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/CAS/">CAS</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>前面写过一篇关于CAS Server使用的经验总结，主要总结了CAS Server在使用的时候遇到的一些常见问题，比如说：证书、SLO、集群session处理、自定义用户认证、Ticket持久化等问题，传送门：<a href="https://ningyu1.github.io/site/post/54-cas-server/">CAS使用经验总结，纯干货</a>，这次在基础上又增加了一个很常见很普通的问题，那就是踢人功能。</p>
+<p>在管理系统这个领域里面踢人功能并不陌生，为了更好的管理用户串用账号，安全等方面考虑，接下来我们就细说一下CAS如何实现踢人的功能。</p>
+<p>先说一下踢人功能的场景：</p>
+<p>用户A在机器A上登录了APP1，用户A在机器B上登录APP1，在这种情况下后者登录需要踢掉前者的登录状态。</p>
+<p>用户A在机器A上登录了APP1，用户B在机器B上登录了APP1，在这种情况下不存在踢人操作。</p>
+<p>用户A在机器A上登录了APP1，用户A在机器B上登录了APP2，在这种情况下要分情况了，可以踢也可以不踢，这个就根据产品情况来选择，我们本次测试不能解决这个场景，如何解决我还在摸索中。</p>
+<p>要做踢人功能之前先了解一下CAS的认证授权机制是如何完成的？</p>
+<p>我这里直接引用官网的架构图：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/cas/1.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>CAS Server与应用的Session交互图：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/cas/2.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>其实CAS就是生成维护Ticket信息和应用session做绑定，当然它的Ticket实现还是比较复杂的，有树形关系以及和Service关联关系，从Ticket的源码能看的出来它有root的判断和Service的映射列表。</p>
+<p>根据上面对CAS的理解，接下来我们说CAS怎么操作踢人功能？</p>
+<h1 id="踢人功能实现思路"><a href="#踢人功能实现思路" class="headerlink" title="踢人功能实现思路"></a>踢人功能实现思路</h1><p>在登录认证的时候记录一下，在下次登录获取到登录的人员列表，然后去匹配找出是否存在相同的用户，如果存在相同的用户，就注销掉这个用户的登录信息，这个是常规的思路和做法，但是在CAS里如何去找到切入点来进行判断操作呢？</p>
+<p>我们在上一篇中提到了自定义认证逻辑，那么我们就可以继续在认证的这个切入点去进一步分析。</p>
+<p>这里要先搞清楚一个概念：<code>Authentication</code>和<code>Authorization</code>这两者是不同的。</p>
+<p><code>Authentication</code>：字面意思认证，怎么理解这个认证呢？举个例子：我们每个人都有身份证，比如你去买火车票，买火车票需要出示身份证，那这个身份证就是证明你是你自己的凭证，那这个证明的过程就是认证。</p>
+<p><code>Authorization</code>：字面意思授权，怎么理解这个授权呢？举个例子：继续拿买火车票来说，你刚才出示了身份证证明了你自己，然后给了钱买了一张火车票，铁道部给了你一张票，这个票授权了你可以乘坐X车次X座位的权限其他车次你无权乘坐，那么这张票就是证明你确实买了X车次X座位的凭证，这就是授权。</p>
+<p>换回系统的角度来说，认证就是验证用户名密码，授权就是验证你能不能操作某个功能的权限。</p>
+<p>理解完认证和授权的区别，我们就开始从认证这块的切入点去看如何操作，CAS提供了这个类<code>TicketRegistry</code>它是管理所有<code>Ticket</code>的接口，通过调用<code>TicketRegistry.getTickets()</code>方法可以获取到所有认证用户的凭证。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Retrieve all tickets from the registry.</span><br><span class="line"> *</span><br><span class="line"> * @return collection of tickets currently stored in the registry. Tickets</span><br><span class="line"> * might or might not be valid i.e. expired.</span><br><span class="line"> */</span><br><span class="line">Collection&lt;Ticket&gt; getTickets();</span><br></pre></td></tr></table></figure>
+<p>那有了凭证信息就好更进一步操作。</p>
+<p>CAS提供了<code>TicketGrantingTicket</code>，这个类是<code>Ticket</code>接口的一个实现类，可以通过<code>TicketGrantingTicket.getAuthentication().getPrincipal().getId()</code>来获取用户的身份。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * @return the unique id for the Principal</span><br><span class="line"> */</span><br><span class="line">String getId();</span><br></pre></td></tr></table></figure>
+<p><code>getId()</code>返回的是登录的用户名，那拿到了用户名就要考虑如何注销的事情了。</p>
+<p>刚才说到了它<code>TicketGrantingTicket</code>是<code>Ticket</code>接口的实现类，它的<code>t.markTicketExpired()</code>方法就是标记<code>Ticket</code>过期的动作。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Mark a ticket as expired.</span><br><span class="line"> */</span><br><span class="line">void markTicketExpired();</span><br></pre></td></tr></table></figure>
+<p>光标记过期还不能完成注销操作，还需要通过<code>ticketRegistry.deleteTicket(t.getId())</code>来删除<code>Ticket</code>信息。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Remove a specific ticket from the registry.</span><br><span class="line"> * If ticket to delete is TGT then related service tickets are removed as well.</span><br><span class="line"> *</span><br><span class="line"> * @param ticketId The id of the ticket to delete.</span><br><span class="line"> * @return the number of tickets deleted including children.</span><br><span class="line"> */</span><br><span class="line">int deleteTicket(String ticketId);</span><br></pre></td></tr></table></figure>
+<p>上面的分析过程看上去是可行的，那我们就来测试一下是否可以达到踢人功能的目的。</p>
+<h1 id="踢人功能实现过程"><a href="#踢人功能实现过程" class="headerlink" title="踢人功能实现过程"></a>踢人功能实现过程</h1><p>话不多说直接帖实现代码</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 登录成功，踢掉前一个相同登录的人</span><br><span class="line"> * </span><br><span class="line"> * @param username</span><br><span class="line"> */</span><br><span class="line">public void forceLogout(final String username) &#123;</span><br><span class="line">	TicketRegistry ticketRegistry = (TicketRegistry) ApplicationContextProvider.getApplicationContext().getBean(&quot;ticketRegistry&quot;);</span><br><span class="line">	final Collection&lt;Ticket&gt; ticketsInCache = ticketRegistry.getTickets();</span><br><span class="line">	for (final Ticket ticket : ticketsInCache) &#123;</span><br><span class="line">		TicketGrantingTicket t = null;</span><br><span class="line">		try &#123;</span><br><span class="line">			log.info(&quot;cast TicketGrantingTicketImpl&quot;);</span><br><span class="line">			t = (TicketGrantingTicketImpl) ticket;</span><br><span class="line">		&#125; catch (Exception e) &#123;</span><br><span class="line">			log.error(&quot;cast TicketGrantingTicketImpl is error:&quot;, e);</span><br><span class="line">			t = ((ServiceTicketImpl) ticket).getGrantingTicket();</span><br><span class="line">		&#125;</span><br><span class="line">		if (t.getAuthentication().getPrincipal().getId().equals(username) &amp;&amp; t.getId() != null) &#123;</span><br><span class="line">			/***</span><br><span class="line">			 * 注销方法一 涉及到cookie的删除，但是无法获取response 该方法有待考究 未测试</span><br><span class="line">			 */</span><br><span class="line">			// centralAuthenticationService.destroyTicketGrantingTicket(t.getId());</span><br><span class="line">			/***</span><br><span class="line">			 * 注销方法二</span><br><span class="line">			 */</span><br><span class="line">			// t.expire();</span><br><span class="line">			t.markTicketExpired();</span><br><span class="line">			ticketRegistry.deleteTicket(t.getId());</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的代码放到认证的切入点上调用，切入的位置如下：</p>
+<ol>
+<li>项目：<code>cas-site</code></li>
+<li>类：<code>org.apereo.cas.adaptors.jdbc.QueryAndEncodeDatabaseAuthenticationHandler</code></li>
+<li>方法：<code>authenticateUsernamePasswordInternal()</code>的<code>createHandlerResult()</code>之前调用。</li>
+</ol>
+<p>代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@Override</span><br><span class="line">protected HandlerResult authenticateUsernamePasswordInternal(final UsernamePasswordCredential transformedCredential)</span><br><span class="line">        throws GeneralSecurityException, PreventedException &#123;</span><br><span class="line"></span><br><span class="line">    if (StringUtils.isBlank(this.sql) || StringUtils.isBlank(this.algorithmName) || getJdbcTemplate() == null) &#123;</span><br><span class="line">        throw new GeneralSecurityException(&quot;Authentication handler is not configured correctly&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    final String username = transformedCredential.getUsername();</span><br><span class="line">    try &#123;</span><br><span class="line">        // Get password and salt</span><br><span class="line">        final Map&lt;String, Object&gt; rows = getJdbcTemplate().queryForMap(this.sql, username);</span><br><span class="line">        final String encodedPassword = rows.get(&quot;password&quot;).toString();</span><br><span class="line">        final String dbSalt = rows.get(&quot;salt&quot;).toString();</span><br><span class="line">        SaltPasswordEncoder passwordEncoder = new SaltPasswordEncoder();</span><br><span class="line">        passwordEncoder.setSalt(dbSalt);</span><br><span class="line">        if (!passwordEncoder.matches(transformedCredential.getPassword(), encodedPassword)) &#123;</span><br><span class="line">            throw new FailedLoginException(&quot;Password does not match value on record.&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">		// 登录成功，踢掉前一个相同登录的人</span><br><span class="line">        forceLogout(username);</span><br><span class="line">        return createHandlerResult(transformedCredential, this.principalFactory.createPrincipal(username), null);</span><br><span class="line"></span><br><span class="line">    &#125; catch (final IncorrectResultSizeDataAccessException e) &#123;</span><br><span class="line">        if (e.getActualSize() == 0) &#123;</span><br><span class="line">            throw new AccountNotFoundException(username + &quot; not found with SQL query&quot;);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            throw new FailedLoginException(&quot;Multiple records found for &quot; + username);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; catch (final DataAccessException e) &#123;</span><br><span class="line">        throw new PreventedException(&quot;SQL exception while executing query for &quot; + username, e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>cas-site项目我已经放入到了github，在这篇<a href="https://ningyu1.github.io/site/post/54-cas-server/">《CAS使用经验总结，纯干货》</a>博文中可以找到。</p>
+<p>万事俱备只欠东风了，接下来就是启动程序来验证它。</p>
+<p>理想很美好，现实很骨感，出现了如下错误：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">javax.persistence.TransactionRequiredException: No EntityManager with actual transaction available for current thread - cannot reliably process &apos;remove&apos; call</span><br><span class="line">	at org.springframework.orm.jpa.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler.invoke(SharedEntityManagerCreator.java:282) ~[spring-orm-4.3.4.RELEASE.jar:4.3.4.RELEASE]</span><br><span class="line">	at com.sun.proxy.$Proxy175.remove(Unknown Source) ~[?:?]</span><br><span class="line">	at org.apereo.cas.ticket.registry.JpaTicketRegistry.removeTicket(JpaTicketRegistry.java:72) ~[cas-server-support-jpa-ticket-registry-5.0.4.jar:5.0.4]</span><br><span class="line">	at org.apereo.cas.ticket.registry.JpaTicketRegistry.deleteTicketsFromResultList(JpaTicketRegistry.java:214) ~[cas-server-support-jpa-ticket-registry-5.0.4.jar:5.0.4]</span><br><span class="line">	at org.apereo.cas.ticket.registry.JpaTicketRegistry.deleteTicketGrantingTickets(JpaTicketRegistry.java:244) ~[cas-server-support-jpa-ticket-registry-5.0.4.jar:5.0.4]</span><br><span class="line">	at org.apereo.cas.ticket.registry.JpaTicketRegistry.deleteSingleTicket(JpaTicketRegistry.java:158) ~[cas-server-support-jpa-ticket-registry-5.0.4.jar:5.0.4]</span><br><span class="line">	at org.apereo.cas.ticket.registry.AbstractTicketRegistry.deleteTicket(AbstractTicketRegistry.java:125) ~[cas-server-core-tickets-5.0.4.jar:5.0.4]</span><br><span class="line">	at org.apereo.cas.ticket.registry.AbstractTicketRegistry$$FastClassBySpringCGLIB$$d3c67a11.invoke(&lt;generated&gt;) ~[cas-server-core-tickets-5.0.4.jar:5.0.4]</span><br><span class="line">	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:204) ~[spring-core-4.3.4.RELEASE.jar:4.3.4.RELEASE]</span><br><span class="line">	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:651) ~[spring-aop-4.3.4.RELEASE.jar:4.3.4.RELEASE]</span><br><span class="line">	at org.apereo.cas.ticket.registry.JpaTicketRegistry$$EnhancerBySpringCGLIB$$b6d104b8.deleteTicket(&lt;generated&gt;) ~[cas-server-support-jpa-ticket-registry-5.0.4.jar:5.0.4]</span><br><span class="line">	at org.apereo.cas.ticket.registry.AbstractTicketRegistry$$FastClassBySpringCGLIB$$d3c67a11.invoke(&lt;generated&gt;) ~[cas-server-core-tickets-5.0.4.jar:5.0.4]</span><br><span class="line">	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:204) ~[spring-core-4.3.4.RELEASE.jar:4.3.4.RELEASE]</span><br><span class="line">	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:651) ~[spring-aop-4.3.4.RELEASE.jar:4.3.4.RELEASE]</span><br><span class="line">	at org.apereo.cas.ticket.registry.JpaTicketRegistry$$EnhancerBySpringCGLIB$$ef44b76a.deleteTicket(&lt;generated&gt;) ~[cas-server-support-jpa-ticket-registry-5.0.4.jar:5.0.4]</span><br><span class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:1.8.0_31]</span><br><span class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:1.8.0_31]</span><br><span class="line">	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:1.8.0_31]</span><br><span class="line">	at java.lang.reflect.Method.invoke(Method.java:483) ~[?:1.8.0_31]</span><br></pre></td></tr></table></figure>
+<p><strong>ps.异常堆栈很长我只截了一部分展示出来。</strong></p>
+<p>这个错误是个什么鬼？从异常字面理解：在当前的线程中没有找到可用的事务，无法处理“删除”调用。</p>
+<p>这个错误是<code>JPA</code>的错误，因为我的<code>Ticket Registry</code>配置的是<code>JPA</code>的方式，我猜测换成其他方式也会有类似的错误，我去掉<code>JPA</code>采用<code>InMemroy</code>的方式处理<code>Ticket Registry</code>，再次进行测试。</p>
+<p>果然出现了类似的错误，如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">javax.persistence.TransactionRequiredException: no transaction is in progress</span><br><span class="line">	at org.hibernate.internal.SessionImpl.checkTransactionNeeded(SessionImpl.java:3428) ~[hibernate-core-5.2.2.Final.jar:5.2.2.Final]</span><br><span class="line">	at org.hibernate.internal.SessionImpl.find(SessionImpl.java:3362) ~[hibernate-core-5.2.2.Final.jar:5.2.2.Final]</span><br><span class="line">	at org.hibernate.internal.SessionImpl.find(SessionImpl.java:3342) ~[hibernate-core-5.2.2.Final.jar:5.2.2.Final]</span><br><span class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:1.8.0_31]</span><br><span class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:1.8.0_31]</span><br><span class="line">	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:1.8.0_31]</span><br><span class="line">	at java.lang.reflect.Method.invoke(Method.java:483) ~[?:1.8.0_31]</span><br><span class="line">	at org.springframework.orm.jpa.ExtendedEntityManagerCreator$ExtendedEntityManagerInvocationHandler.invoke(ExtendedEntityManagerCreator.java:347) ~[spring-orm-4.3.4.RELEASE.jar:4.3.4.RELEASE]</span><br><span class="line">	at com.sun.proxy.$Proxy175.find(Unknown Source) ~[?:?]</span><br><span class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:1.8.0_31]</span><br><span class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:1.8.0_31]</span><br><span class="line">	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:1.8.0_31]</span><br><span class="line">	at java.lang.reflect.Method.invoke(Method.java:483) ~[?:1.8.0_31]</span><br><span class="line">	at org.springframework.orm.jpa.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler.invoke(SharedEntityManagerCreator.java:298) ~[spring-orm-4.3.4.RELEASE.jar:4.3.4.RELEASE]</span><br><span class="line">	at com.sun.proxy.$Proxy175.find(Unknown Source) ~[?:?]</span><br></pre></td></tr></table></figure>
+<p>说白了就是没有开启事务被禁止操作了。</p>
+<p>这个怎么解决？cas-site采用的是<code>overlays</code>的方式构建，要看具体功能就要翻CAS的源码来看它是如何控制事务的。</p>
+<p>于是去翻CAS的源码，翻源码也要讲究技巧的，要不然翻一天都翻不到关键点。</p>
+<p>我们这里需要找如何开启事务的代码，还好CAS使用的是<code>Spring</code>来管理事务的，<code>Spring</code>的事务开启无非就这两种：一种是<code>AOP</code>方式，一种是手动方式。</p>
+<p>那么<code>AOP</code>的方式可以使用注解（<code>Annotation</code>）也可以使用<code>XML</code>的配置去做。</p>
+<p>CAS v5.0.4使用的<code>Spring Boot</code>的方式构建，说白了就是使用编程（<code>Java Config</code>）的方式替换<code>XML</code>的配置方式。而且我们使用的<code>Ticket Registry</code>是<code>JPA</code>，<code>JPA</code>的操作肯定要处理事务的，因此我们就锁定到注解（<code>Annotation</code>）的方式和<code>JPA</code>的实现上去找。</p>
+<p>最终目标定位到了<code>cas-server-support-jpq-ticket-registry-5.0.4.jar</code>这个包上。</p>
+<p>查看这个包的<code>org.apereo.cas.ticket.registry.JpaTicketRegistry</code>类代码</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * JPA implementation of a CAS &#123;@link TicketRegistry&#125;. This implementation of</span><br><span class="line"> * ticket registry is suitable for HA environments.</span><br><span class="line"> *</span><br><span class="line"> * @author Scott Battaglia</span><br><span class="line"> * @author Marvin S. Addison</span><br><span class="line"> * @since 3.2.1</span><br><span class="line"> */</span><br><span class="line">@EnableTransactionManagement(proxyTargetClass = true)</span><br><span class="line">@Transactional(transactionManager = &quot;ticketTransactionManager&quot;, readOnly = false)</span><br><span class="line">public class JpaTicketRegistry extends AbstractTicketRegistry &#123;</span><br><span class="line">.....................其余的省略..............................</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>很明显就是我们说的注解（<code>Annotation</code>）的使用方式，我们再次修改代码。</p>
+<h2 id="踢人功能代码重构"><a href="#踢人功能代码重构" class="headerlink" title="踢人功能代码重构"></a>踢人功能代码重构</h2><p><code>@EnableTransactionManagement(proxyTargetClass = true)</code>开启代理的方式，那我们就要抽一个接口和一个实现类来做，这里的具体原因就不多说了做多了都明白。</p>
+<p><code>@Transactional(transactionManager = &quot;ticketTransactionManager&quot;, readOnly = false)</code>在实现类上直接使用这个注解方式。</p>
+<p>直接贴重构后的代码：</p>
+<p>新建接口<code>ForceLogoutManager</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public interface ForceLogoutManager &#123;</span><br><span class="line"></span><br><span class="line">	public void doLogout(final String username);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>新建实现类<code>ForceLogoutManagerImpl</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import java.util.Collection;</span><br><span class="line">import org.apereo.cas.ticket.ServiceTicketImpl;</span><br><span class="line">import org.apereo.cas.ticket.Ticket;</span><br><span class="line">import org.apereo.cas.ticket.TicketGrantingTicket;</span><br><span class="line">import org.apereo.cas.ticket.TicketGrantingTicketImpl;</span><br><span class="line">import org.apereo.cas.ticket.registry.TicketRegistry;</span><br><span class="line">import org.apereo.cas.util.ApplicationContextProvider;</span><br><span class="line">import org.slf4j.Logger;</span><br><span class="line">import org.slf4j.LoggerFactory;</span><br><span class="line">import org.springframework.stereotype.Component;</span><br><span class="line">import org.springframework.transaction.annotation.EnableTransactionManagement;</span><br><span class="line">import org.springframework.transaction.annotation.Transactional;</span><br><span class="line"></span><br><span class="line">@EnableTransactionManagement(proxyTargetClass = true)</span><br><span class="line">@Transactional(transactionManager = &quot;ticketTransactionManager&quot;, readOnly = false)</span><br><span class="line">@Component(&quot;forceLogoutManager&quot;)</span><br><span class="line">public class ForceLogoutManagerImpl implements ForceLogoutManager &#123;</span><br><span class="line">	</span><br><span class="line">	private final Logger log = LoggerFactory.getLogger(this.getClass());</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 登录成功，踢掉前一个相同登录的人</span><br><span class="line">	 * </span><br><span class="line">	 * @param username</span><br><span class="line">	 */</span><br><span class="line">	public void doLogout(final String username) &#123;</span><br><span class="line">		TicketRegistry ticketRegistry = (TicketRegistry) ApplicationContextProvider.getApplicationContext()</span><br><span class="line">				.getBean(&quot;ticketRegistry&quot;);</span><br><span class="line">		final Collection&lt;Ticket&gt; ticketsInCache = ticketRegistry.getTickets();</span><br><span class="line">		for (final Ticket ticket : ticketsInCache) &#123;</span><br><span class="line">			TicketGrantingTicket t = null;</span><br><span class="line">			try &#123;</span><br><span class="line">				log.info(&quot;cast TicketGrantingTicketImpl&quot;);</span><br><span class="line">				t = (TicketGrantingTicketImpl) ticket;</span><br><span class="line">			&#125; catch (Exception e) &#123;</span><br><span class="line">				log.error(&quot;cast TicketGrantingTicketImpl is error:&quot;, e);</span><br><span class="line">				t = ((ServiceTicketImpl) ticket).getGrantingTicket();</span><br><span class="line">			&#125;</span><br><span class="line">			if (t.getAuthentication().getPrincipal().getId().equals(username) &amp;&amp; t.getId() != null) &#123;</span><br><span class="line">				/***</span><br><span class="line">				 * 注销方法一 涉及到cookie的删除，但是无法获取response 该方法有待考究 未测试</span><br><span class="line">				 */</span><br><span class="line">				// centralAuthenticationService.destroyTicketGrantingTicket(t.getId());</span><br><span class="line">				/***</span><br><span class="line">				 * 注销方法二</span><br><span class="line">				 */</span><br><span class="line">				// t.expire();</span><br><span class="line">				t.markTicketExpired();</span><br><span class="line">				ticketRegistry.deleteTicket(t.getId());</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>修改<code>org.apereo.cas.adaptors.jdbc.QueryAndEncodeDatabaseAuthenticationHandler</code>类<code>authenticateUsernamePasswordInternal</code>方法</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public ForceLogoutManager getForceLogoutManager() &#123;</span><br><span class="line">	return (ForceLogoutManager) ApplicationContextProvider.getApplicationContext().getBean(&quot;forceLogoutManager&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">protected HandlerResult authenticateUsernamePasswordInternal(final UsernamePasswordCredential transformedCredential)</span><br><span class="line">        throws GeneralSecurityException, PreventedException &#123;</span><br><span class="line"></span><br><span class="line">    if (StringUtils.isBlank(this.sql) || StringUtils.isBlank(this.algorithmName) || getJdbcTemplate() == null) &#123;</span><br><span class="line">        throw new GeneralSecurityException(&quot;Authentication handler is not configured correctly&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    final String username = transformedCredential.getUsername();</span><br><span class="line">    try &#123;</span><br><span class="line">        // Get password and salt</span><br><span class="line">        final Map&lt;String, Object&gt; rows = getJdbcTemplate().queryForMap(this.sql, username);</span><br><span class="line">        final String encodedPassword = rows.get(&quot;password&quot;).toString();</span><br><span class="line">        final String dbSalt = rows.get(&quot;salt&quot;).toString();</span><br><span class="line">        SaltPasswordEncoder passwordEncoder = new SaltPasswordEncoder();</span><br><span class="line">        passwordEncoder.setSalt(dbSalt);</span><br><span class="line">        if (!passwordEncoder.matches(transformedCredential.getPassword(), encodedPassword)) &#123;</span><br><span class="line">            throw new FailedLoginException(&quot;Password does not match value on record.&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">		// 登录成功，踢掉前一个相同登录的人</span><br><span class="line">        getForceLogoutManager().doLogout(username);</span><br><span class="line">        return createHandlerResult(transformedCredential, this.principalFactory.createPrincipal(username), null);</span><br><span class="line"></span><br><span class="line">    &#125; catch (final IncorrectResultSizeDataAccessException e) &#123;</span><br><span class="line">        if (e.getActualSize() == 0) &#123;</span><br><span class="line">            throw new AccountNotFoundException(username + &quot; not found with SQL query&quot;);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            throw new FailedLoginException(&quot;Multiple records found for &quot; + username);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; catch (final DataAccessException e) &#123;</span><br><span class="line">        throw new PreventedException(&quot;SQL exception while executing query for &quot; + username, e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再次启动测试。</p>
+<p>很顺利调用没有任何问题，到这里基于CAS v5.0.4的踢人功能的处理过程就整理完毕了。</p>
+<p>最后还有一句话，我的愿望是：世界和平，快乐编程每一天，keep real！</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.035Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20180126/57-cas-server1.html" target="_blank" rel="external">https://ningyu1.github.io/20180126/57-cas-server1.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CAS/">CAS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CAS-Cluster/">CAS Cluster</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CAS-Server/">CAS Server</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cookie/">Cookie</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ForceLogout/">ForceLogout</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SLO/">SLO</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Session-Centralized-Storage/">Session Centralized Storage</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Single-Logout/">Single Logout</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ticket/">Ticket</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ticket-Registry/">Ticket Registry</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180126/57-cas-server1.html&title=《CAS Server强制踢人功能实现方式》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180126/57-cas-server1.html&title=《CAS Server强制踢人功能实现方式》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180126/57-cas-server1.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《CAS Server强制踢人功能实现方式》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180126/57-cas-server1.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180126/57-cas-server1.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20180130/58-git-ssh.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Git SSH Key settings and passphrase reset</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20180125/56-websocket-ssl.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Trouble Shooting —— HTTPS(SSL)站点使用WebSocket(ws)出现SecurityError问题</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180126/57-cas-server1.html&title=《CAS Server强制踢人功能实现方式》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180126/57-cas-server1.html&title=《CAS Server强制踢人功能实现方式》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180126/57-cas-server1.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《CAS Server强制踢人功能实现方式》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180126/57-cas-server1.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180126/57-cas-server1.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACI0lEQVR42u3aQW7DMAwEwPz/0+m5QJ0uSTuApNEpQG3J0wNBiny94vW+WMnzvVNeTywMDIxlGe+PKzkgJ13tOXkGAwPjHMbnj/v8O/nr1fHJDtE/DgMDA6N4fC+5zPfEwMDAyINsHnB7RSwGBgZGtZisvpVfqH21FsfAwFiQkYfC7/9+pL+BgYGxFONdXHnw7aV6vYWBgbE3Iw9weQszSQ3naR8GBsY5jOTlaoh8Yizsn30wMDAOYOQH33tZ1hsRuwy4GBgYmzImyVwSmqtlbR5qC51YDAyMjRjVz/0cLuelb56SYmBgnMBILsLyBue8OToqhjEwMLZj9AatkuDYC8r58NmvczEwMLZm3FWyjq7JiuE42gcDA2MjRi/w9UrQnJ0E8cuWAAYGxnaMSbjM16SILRTJGBgYWzMmQbP6O/nQyTMYGBgnMHpXaZOEL29qNkcuMDAwFmdUhySqhWiSUFYZf+yAgYGxNSNvOiaXbtUhjOooWKGzgYGBsR3jOwE3H7noFdIYGBhnMqqX8uWmY9yWiAI9BgbGAYx7AZNEsDcohoGBsSujNzaRDITlIxejINubAcHAwFiKUQ1zvSZlMn7RG+kowzAwMJZl3Btkqxdz89IXAwPjHEah6h2klb30MUJiYGBgjKc5quVoOYfFwMDAiAe88nGK5K08GcXAwDiBkQ899D63lyw+ct2GgYGxIKOXd+WflbxVDejNpiYGBsZ6jB9XhrJQ93tb+QAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

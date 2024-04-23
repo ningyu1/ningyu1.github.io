@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>使用Travis CI部署Hexo | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="travis-ci,hexo">
+    <meta name="description" content="使用Travis CI部署Hexo">
+<meta name="keywords" content="travis-ci,hexo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Travis CI部署Hexo">
+<meta property="og:url" content="https://ningyu1.github.io/20200430/travis-ci-deploy-hexo.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="使用Travis CI部署Hexo">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ningyu1.github.io/img/travis-ci/4.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/travis-ci/5.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/travis-ci/1.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/travis-ci/2.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/travis-ci/3.png">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.039Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用Travis CI部署Hexo">
+<meta name="twitter:description" content="使用Travis CI部署Hexo">
+<meta name="twitter:image" content="https://ningyu1.github.io/img/travis-ci/4.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">使用Travis CI部署Hexo</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">使用Travis CI部署Hexo</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2020-04-30T04:19:26.000Z" itemprop="datePublished" class="page-time">
+  2020-04-30
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/travis-ci/">travis-ci</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Travis-CI的介绍"><span class="post-toc-number">1.</span> <span class="post-toc-text">Travis CI的介绍</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#它有什么作用？"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">它有什么作用？</span></a></li></ol></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#使用Travsi-CI发布Hexo"><span class="post-toc-number"></span> <span class="post-toc-text">使用Travsi CI发布Hexo</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Step-1"><span class="post-toc-number"></span> <span class="post-toc-text">Step 1</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Step-2"><span class="post-toc-number"></span> <span class="post-toc-text">Step 2</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Step-3"><span class="post-toc-number"></span> <span class="post-toc-text">Step 3</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Step-4"><span class="post-toc-number"></span> <span class="post-toc-text">Step 4</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Step-5"><span class="post-toc-number"></span> <span class="post-toc-text">Step 5</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Problem"><span class="post-toc-number"></span> <span class="post-toc-text">Problem</span></a>
+        </nav>
+    </aside>
+
+
+<article id="post-travis-ci-deploy-hexo"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">使用Travis CI部署Hexo</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2020-04-30 12:19:26" datetime="2020-04-30T04:19:26.000Z"  itemprop="datePublished">2020-04-30</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/travis-ci/">travis-ci</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>今天说一下使用travis ci来部署hexo，在说这个之前呢要先提几个概念，CI/CD（是一种通过在应用开发阶段引入自动化来频繁向客户交付应用的方法）。</p>
+<p>什么是CI？ 持续集成，Continuous Integration，简称 CI</p>
+<p>什么是CD？ 持续交付，Continuous Deployment，简称CD</p>
+<p>我们都知道软件开发写代码只是其中的一部分，写出代码后需要构建（build）、测试（test）、发布（deploy）。</p>
+<p>这些都是比较按部就班的操作，所以有很多工具化的支持，为了提高软件开发效率，构建和测试的工具有很多，我们最熟知的是<a href="https://jenkins.io/" target="_blank" rel="noopener">jenkins</a>，相信很多人都用过，还有很多如<a href="https://about.gitlab.com/features/gitlab-ci-cd/" target="_blank" rel="noopener">gitlab-ci</a>、<a href="https://travis-ci.org/" target="_blank" rel="noopener">travis-ci</a>、等。</p>
+<p>今天我们就说一下<a href="https://travis-ci.org/" target="_blank" rel="noopener">travis-ci</a>的简单使用，刚好我的blog每次都要编译然后提交到github，刚好用它做一个演示。</p>
+<h3 id="Travis-CI的介绍"><a href="#Travis-CI的介绍" class="headerlink" title="Travis CI的介绍"></a>Travis CI的介绍</h3><p>Travis CI</p>
+<p>是CI / CD生态系统中比较常见的名号之一，最初设定为开源项目，并在多年扩展之后转为闭源项目。它专注于CI工作，通过自动化测试和警报系统提高构建过程的效能。</p>
+<h4 id="它有什么作用？"><a href="#它有什么作用？" class="headerlink" title="它有什么作用？"></a>它有什么作用？</h4><p>Travis-CI允许用户在部署代码时对代码进行快速测试。它支持代码大小变更，可识别构建与测试中发生的一切变更。检测到变更后，Travis CI可以提供有关变更是否成功的反馈。</p>
+<p>开发人员可以使用Travis CI对运行时进行观察，并行运行多项测试，并将该工具与Slack、HipChat以及Email等集成，从而通过多种渠道获取问题或构建失败通知。</p>
+<p>Travis CI支持容器构建，并支持Linux Ubuntu和OSX。您可以在不同的编程语言中使用它，例如Java，C＃，Clojure，GO，Haskell，Swift，Perl等等。其具备一份相对有限的第三方集成列表，但由于关注重点在于CI而非CD，因此其可能解决不了您的实际问题。</p>
+<h1 id="使用Travsi-CI发布Hexo"><a href="#使用Travsi-CI发布Hexo" class="headerlink" title="使用Travsi CI发布Hexo"></a>使用Travsi CI发布Hexo</h1><p>我的blog使用的是<a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>，它有丰富的模板可以选择，支持markdown写文章再构建生成静态html，所以当时就选用了它。</p>
+<p>在做之前我们需要准备一些东西，如下：</p>
+<h2 id="Step-1"><a href="#Step-1" class="headerlink" title="Step 1"></a>Step 1</h2><p>首先我们要在github上创建一个repository，给这个repository创建两个分支，我这里使用master作为静态html分支，blog-source作为博客源码分支。</p>
+<p><em>ps. 分支名称都随意，有人喜欢用master作为源码分支，gh-pages作为静态html分支，都可以请随意。</em></p>
+<h2 id="Step-2"><a href="#Step-2" class="headerlink" title="Step 2"></a>Step 2</h2><p>去github上获取accesstoken，可以去<a href="https://github.com/settings/tokens" target="_blank" rel="noopener">https://github.com/settings/tokens</a>获取，生成一个token（generate new token），token的scope范围看自己的需求选择，我这里选择的是repo下全部。</p>
+<p>生成的token记得自己先保存起来，因为刷新页面后你就再也看不到它了，如果忘记了那就去重新生成一个（regenerate token）</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/travis-ci/4.png" alt="图四" title>
+                </div>
+                <div class="image-caption">图四</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/travis-ci/5.png" alt="图五" title>
+                </div>
+                <div class="image-caption">图五</div>
+            </figure>
+<h2 id="Step-3"><a href="#Step-3" class="headerlink" title="Step 3"></a>Step 3</h2><p>在blog库的blog-source分支中添加<code>.travis.yml</code></p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">language:</span> <span class="string">node_js</span></span><br><span class="line"><span class="attr">node_js:</span> <span class="number">10.16</span><span class="number">.3</span></span><br><span class="line"><span class="attr">install:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">npm</span> <span class="string">install</span></span><br><span class="line"><span class="attr">script:</span> <span class="string">bash</span> <span class="string">./deploy.sh</span></span><br><span class="line"><span class="attr">branches:</span></span><br><span class="line">  <span class="attr">only:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">blog-source</span></span><br><span class="line"><span class="attr">notifications:</span></span><br><span class="line">  <span class="attr">email:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<p>hexo采用nodejs开发，所以这里语言选择nodejs，我这里选择nodejs版本是10.16.3，因为高版本nodejs下hexo生成的静态文件有问题，如果是其他的程序可以使用stable。</p>
+<p>install阶段执行npm安装依赖。</p>
+<p>script阶段执行一个外部脚本，在同<code>.travis.yml</code>路径下创建shell脚本<code>deploy.sh</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span>!/usr/bin/env sh</span><br><span class="line"><span class="meta">#</span> 确保脚本抛出遇到的错误</span><br><span class="line">set -e</span><br><span class="line"><span class="meta">#</span> 生成静态文件</span><br><span class="line">hexo generate</span><br><span class="line"><span class="meta">#</span> 进入生成的文件夹</span><br><span class="line">cd ./public</span><br><span class="line"><span class="meta">#</span>创建.nojekyll 防止Github Pages build错误</span><br><span class="line">touch .nojekyll</span><br><span class="line">git init</span><br><span class="line">git add -A</span><br><span class="line">git commit -m "deploy"</span><br><span class="line">git push -f "https://$&#123;access_token&#125;@github.com/ningyu1/blog.git" master:master</span><br><span class="line">cd -</span><br></pre></td></tr></table></figure>
+<p>脚本中先执行<code>hexo -g（等同于hexo generate）</code>生成静态html文件，文件生成在当前目录下的public文件夹。</p>
+<p>进入到public文件夹下执行git命令，这里需要注意的是使用<code>git push -f</code>强制推送，如果没有设置<code>git user.name</code>和<code>git user.email</code>的话提交的用户是<code>Travis Ci User</code></p>
+<p><em>ps. 这里特殊说明一下变量 <code>${access_token}</code>，这里使用travis ci的运行时环境变量，像这种相对重要的信息放到运行时环境变量会安全一些，避免别人拿到我的AccessToken做一些坏事情，哈哈。</em></p>
+<h2 id="Step-4"><a href="#Step-4" class="headerlink" title="Step 4"></a>Step 4</h2><p>登录<a href="https://travis-ci.org/" target="_blank" rel="noopener">travis-ci</a>，可以使用github三方登录，添加一个github仓库，travis跟github集成的还是非常紧密和方便的，添加仓库可以直接读取github上的仓库，在列表里面找到blog打开使用travis，如图一。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/travis-ci/1.png" alt="图一" title>
+                </div>
+                <div class="image-caption">图一</div>
+            </figure>
+<p>进入dashbord查看刚才添加的库信息，选择More options-&gt;Settings，添加Environment Variables</p>
+<p>创建一个access_token的环境变量，可以选择那些branch使用，DISPLAY VALUE IN BUILD LOG是控制构建日志中是否要输出变量的值，为了安全起见建议不用开启，如图二</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/travis-ci/2.png" alt="图二" title>
+                </div>
+                <div class="image-caption">图二</div>
+            </figure>
+<h2 id="Step-5"><a href="#Step-5" class="headerlink" title="Step 5"></a>Step 5</h2><p><a href="https://travis-ci.org/" target="_blank" rel="noopener">travis-ci</a>接收到github的事件请求就会自动触发job。</p>
+<p>一切准备就绪之后提交并推送代码到github仓库，这样travis会接收到github的push event事件，可以去More options-&gt;Requests中查看接收到的请求信息，如图三</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/travis-ci/3.png" alt="图三" title>
+                </div>
+                <div class="image-caption">图三</div>
+            </figure>
+<p>如果没有啥特殊情况看构建日志就可以看到成功信息。</p>
+<h2 id="Problem"><a href="#Problem" class="headerlink" title="Problem"></a>Problem</h2><p>这里我遇到了一个问题，我使用hexo只支持10.x一下的nodejs版本，刚开始使用的<code>node_js: stable</code>，查看job日志可以看到使用的版本号如下</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ node --version</span><br><span class="line">v14.0.0</span><br><span class="line">$ npm --version</span><br><span class="line">6.14.4</span><br><span class="line">$ nvm --version</span><br><span class="line">0.35.3</span><br></pre></td></tr></table></figure>
+<p>v14.x 版本导致hexo生成的html文件都是0 byte，果断的降低了nodejs版本就好了。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.039Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20200430/travis-ci-deploy-hexo.html" target="_blank" rel="external">https://ningyu1.github.io/20200430/travis-ci-deploy-hexo.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/travis-ci/">travis-ci</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20200430/travis-ci-deploy-hexo.html&title=《使用Travis CI部署Hexo》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20200430/travis-ci-deploy-hexo.html&title=《使用Travis CI部署Hexo》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20200430/travis-ci-deploy-hexo.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《使用Travis CI部署Hexo》 — 凝雨 - Yun&url=https://ningyu1.github.io/20200430/travis-ci-deploy-hexo.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20200430/travis-ci-deploy-hexo.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20201229/datasource-security.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">讲一讲数据安全，如何有效预防脱库</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20200325/one-minute-transaction-ACID.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">一分钟弄清楚事务四要素：ACID</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20200430/travis-ci-deploy-hexo.html&title=《使用Travis CI部署Hexo》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20200430/travis-ci-deploy-hexo.html&title=《使用Travis CI部署Hexo》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20200430/travis-ci-deploy-hexo.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《使用Travis CI部署Hexo》 — 凝雨 - Yun&url=https://ningyu1.github.io/20200430/travis-ci-deploy-hexo.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20200430/travis-ci-deploy-hexo.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACNElEQVR42u3aSW7EMAwFUd//0g4QZNexXZ9UApgqrRpxPDwtCHE4DrzO73X/l8+r5H/Su1pLhgwZr2Wct+vzlVcvI0+4unrFI98mQ4aMfRj8cfchkofRdPsevlmGDBkyQPDlYToNuDJkyJBRC7g8OKYHPhkyZMjoJLGk6MY/qBOmZciQsRsjbQz85+8/7G/IkCHjJYwzXLyglrYNat/z8wQZMmSMZqSDFGljkhwua8lzax5EhgwZr2Lw8JemlLWEk6fKMmTI2IeRjlaQhJPwOjn3w9bIkCFjKIMX5dNUkye9C6KoDBkyhjLSZDVNfXlCy6mXVUMZMmRswCCBtXbII5vFkb/8liFDxgaMTvmMHwdrAxyoCSpDhozRjDSBTANlp5HJWxQyZMiYzUjHJvgn1g6OxbEPGTJkbMBIi2KktVkr4aXhHj1ahgwZL2fwIYk4CIYbwZNY1I+VIUPGIEY6KrHqKg++qFEhQ4aM0YzO2FZKSke+eKNChgwZ+zD4DTyk1hLUYmdDhgwZQxm18hk/UPaRqDwnQ4aMDRi8EEYYaYDmSezldsiQIWM0Iy118bEwvh1HuFDYlSFDxiDGGa5aKa0GDpqdMmTIGM2ohblWbW9RoJchQ8ZujE4img6HkR0lhbllkyMyZMh4FSOtt9cKc0djPWylDBkyZOAWQud8ysO9DBkyZKStR14a6xfgFhwNZciQ8VpG7TXpgY8nqPG9MmTIGM1YkECCZgDfoP67ZMiQMYjxBYNj0T+lwUp8AAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>通过对Maven的依赖分析剔除无用的jar引用 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="maven,dependency:analyze">
+    <meta name="description" content="通过对Maven的依赖分析剔除无用的jar引用">
+<meta name="keywords" content="maven,dependency:analyze">
+<meta property="og:type" content="article">
+<meta property="og:title" content="通过对Maven的依赖分析剔除无用的jar引用">
+<meta property="og:url" content="https://ningyu1.github.io/20180711/93-maven-depenpency-analyze.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="通过对Maven的依赖分析剔除无用的jar引用">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.038Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="通过对Maven的依赖分析剔除无用的jar引用">
+<meta name="twitter:description" content="通过对Maven的依赖分析剔除无用的jar引用">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">通过对Maven的依赖分析剔除无用的jar引用</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">通过对Maven的依赖分析剔除无用的jar引用</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-07-11T06:11:00.000Z" itemprop="datePublished" class="page-time">
+  2018-07-11
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/maven/">maven</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Used-undeclared-dependencies-found"><span class="post-toc-number">1.</span> <span class="post-toc-text">Used undeclared dependencies found</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Unused-declared-dependencies-found"><span class="post-toc-number">2.</span> <span class="post-toc-text">Unused declared dependencies found</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-93-maven-depenpency-analyze"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">通过对Maven的依赖分析剔除无用的jar引用</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-07-11 14:11:00" datetime="2018-07-11T06:11:00.000Z"  itemprop="datePublished">2018-07-11</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/maven/">maven</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>当项目开发维护了一段时间时，经常会有项目打包速度慢，jar依赖多，依赖关系错综复杂，这种问题是项目维护最常见的问题，由于开发人员在bugfix或者feature开发时往往只是往项目中添加jar依赖，那我们如何分析出项目中哪些依赖是用到的，哪些依赖是不用的？</p>
+<p>使用<a href="http://maven.apache.org/plugins/maven-dependency-plugin/analyze-mojo.html" target="_blank" rel="noopener">Maven analyze</a>来进行分析</p>
+<p>使用如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mvn dependency:analyze</span><br></pre></td></tr></table></figure>
+<p>会输出如下的日志：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[INFO] --- maven-dependency-plugin:2.8:analyze (default-cli) @ xxxproject ---</span><br><span class="line">[WARNING] Used undeclared dependencies found:</span><br><span class="line">[WARNING]    org.springframework:spring-beans:jar:4.0.0.RELEASE:compile</span><br><span class="line">[WARNING]    org.springframework:spring-context:jar:4.0.0.RELEASE:compile</span><br><span class="line">[WARNING] Unused declared dependencies found:</span><br><span class="line">[WARNING]    com.alibaba:dubbo:jar:2.5.3:compile</span><br><span class="line">[WARNING]    com.baidu.disconf:disconf-client:jar:2.6.32:compile</span><br><span class="line">[WARNING]    org.mybatis:mybatis:jar:3.2.7:compile</span><br><span class="line">[WARNING]    org.mybatis:mybatis-spring:jar:1.2.2:compile</span><br><span class="line">[WARNING]    mysql:mysql-connector-java:jar:5.1.41:compile</span><br><span class="line">[WARNING]    com.alibaba:druid:jar:1.0.9:compile</span><br><span class="line">[WARNING]    com.github.sgroschupf:zkclient:jar:0.1:compile</span><br><span class="line">[WARNING]    org.apache.zookeeper:zookeeper:jar:3.4.6:compile</span><br><span class="line">[WARNING]    org.springframework:spring-jdbc:jar:4.0.0.RELEASE:compile</span><br><span class="line">[WARNING]    org.slf4j:log4j-over-slf4j:jar:1.7.5:compile</span><br><span class="line">[WARNING]    org.slf4j:jcl-over-slf4j:jar:1.7.5:runtime</span><br><span class="line">[WARNING]    ch.qos.logback:logback-classic:jar:1.0.13:compile</span><br></pre></td></tr></table></figure>
+<p>我们就来说一下日志中的<code>Used undeclared dependencies found</code>和<code>Unused declared dependencies found</code></p>
+<h2 id="Used-undeclared-dependencies-found"><a href="#Used-undeclared-dependencies-found" class="headerlink" title="Used undeclared dependencies found"></a>Used undeclared dependencies found</h2><p>这个是指某些依赖的包在代码中有用到它的代码，但是它并不是直接的依赖（就是说没有在pom中直接声明），是通过引入传递下来的包。</p>
+<p>举个例子：</p>
+<p><code>project</code>在<code>pom</code>中声明了<code>A.ja</code>r的依赖（没有声明<code>B.jar</code>的依赖）<br><code>A.jar</code>的依赖关系：<code>A.jar</code> -&gt; <code>B.jar</code><br>通过<code>mvn dependency:analyze</code>出现<br><code>[WARNING] Used undeclared dependencies found: B.jar</code><br>就说明<code>project</code>中的代码用到了<code>B.jar</code>的代码<br>这个时候你就可以把<code>B.jar</code>直接声明在pom中</p>
+<h2 id="Unused-declared-dependencies-found"><a href="#Unused-declared-dependencies-found" class="headerlink" title="Unused declared dependencies found"></a>Unused declared dependencies found</h2><p>这个是指我们在pom中声明了依赖，但是在实际代码中并没有用到这个包！也就是多余的包。<br>这个时候我们就可以把这个依赖从pom中剔除。</p>
+<p><span style="color:blue"><br><em>但是这里我们需要注意：<br>这里说的实际代码没有用到，指的是在main/java和test里没有用的，但是并不是意味着真的没有用到这些包，有可能配置文件中引用或者其他扩展点自动加载这些包，所以我们在删除依赖的时候一定要小心，做好备份，因为这类引用maven是分析不出来的。</em><br></span></p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.038Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20180711/93-maven-depenpency-analyze.html" target="_blank" rel="external">https://ningyu1.github.io/20180711/93-maven-depenpency-analyze.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dependency-analyze/">dependency:analyze</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/maven/">maven</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180711/93-maven-depenpency-analyze.html&title=《通过对Maven的依赖分析剔除无用的jar引用》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180711/93-maven-depenpency-analyze.html&title=《通过对Maven的依赖分析剔除无用的jar引用》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180711/93-maven-depenpency-analyze.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《通过对Maven的依赖分析剔除无用的jar引用》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180711/93-maven-depenpency-analyze.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180711/93-maven-depenpency-analyze.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20180717/94-embedded-redisServer.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">使用Embedded RedisServer写UT</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20180627/92-CORS-ajax.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">跨域踩坑经验总结（内涵：跨域知识科普）</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180711/93-maven-depenpency-analyze.html&title=《通过对Maven的依赖分析剔除无用的jar引用》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180711/93-maven-depenpency-analyze.html&title=《通过对Maven的依赖分析剔除无用的jar引用》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180711/93-maven-depenpency-analyze.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《通过对Maven的依赖分析剔除无用的jar引用》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180711/93-maven-depenpency-analyze.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180711/93-maven-depenpency-analyze.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACvElEQVR42u3aS27jMBAFwNz/0pntDATJrz9MhEFpZTgW5WIANv3YX1/x9X25/n7/+sm7d66vr2Ne/3o38tqFh4eHN/7qd0MnD3seZ/LVn6fm7ll4eHh453jJcM+Y6tKfT0p1cvHw8PDexss31jkp3xXj4eHh/R+8XmBRLSp4eHh4b+NtDZeXkOrm+3jWgoeHhxfz8lOk97w+cr6Hh4eHNz5VTw6xJqNVQ9vyaHh4eHgHeNVj+wR5onFqEvji4eHh7fKqMUE1wuhFHtWDt9u78PDw8A7w8gCiF9FOPj+JQsr5Ch4eHl6Rl4cO1WAiaQLoNRPkI+Ph4eGd4OVLcy9grU5WtSFsIc/Aw8PDa/0ezwHVcpJvf6ttVdH5Hh4eHt4BXr74nogbknGapQIPDw/vR3iTw/7TLQL5BOHh4eH9Fm++xCdha95KlU/l7ZYaDw8Pb4mXbFW3mp+qoe2RnjI8PDy88XOrAUGvMFRLRX5X1DSAh4eHt8SrbmfnTVFJU8Jkgj6UBDw8PLwlXrUhYNQIFTRyTSLjD60DeHh4eKu8LVI1vOiVpegfg4eHh3eMNz/U70Wx1cA3iYDLvxjw8PDwBrxkCd6NDPJSlEzEh8KAh4eHt8SrbosLQUAwTrVhq1eK8PDw8M7xqo0CSaiahwi9w7AogMbDw8M7zOsNutUE0Awdnu/Cw8PD+0FeXjAmy31+PNYLL/Dw8PDO8XpBw7zAVIOG6vEbHh4e3i7vu3gld+Xb4urmPj82++d8Dw8PD2+VV11we3FD0m6Vb82T4Lh84eHh4RV5vYV+UhJ6o/WmFQ8PD+8cL28ImCz9eSSRV7OoMODh4eG9hteLevPmrfy73X4eDw8P72W8agyRT0rvOl738PDw8IphRN4Q0DuU6h1xRYUBDw8Pb5W38IM/3iLnBeP56Qtnenh4eHgd3h+uLPk+9Q+flwAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="凝雨 Yun">
+    <meta name="description" content="快乐编程每一天 - Happy Coding Every Day">
+<meta name="keywords" content="凝雨 Yun">
+<meta property="og:type" content="website">
+<meta property="og:title" content="凝雨 - Yun">
+<meta property="og:url" content="https://ningyu1.github.io/page/6/index.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="快乐编程每一天 - Happy Coding Every Day">
+<meta property="og:locale" content="zh-CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="凝雨 - Yun">
+<meta name="twitter:description" content="快乐编程每一天 - Happy Coding Every Day">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">凝雨 - Yun</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header index-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">凝雨 - Yun</h1>
+        <h5 class="subtitle">
+            
+                快乐编程每一天 - Happy Coding Every Day
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+<div class="container body-wrap">
+
+    <ul class="post-list">
+    
+        <li class="post-list-item fade">
+            <article id="post-70-cas-server-pit"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-03-16 12:02:53" datetime="2018-03-16T04:02:53.000Z"  itemprop="datePublished">2018-03-16</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/CAS/">CAS</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180316/70-cas-server-pit.html">Trouble Shooting —— CAS Server集群环境下TGC验证问题排查，需要开启会话保持</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        问题现象CAS部署结构：
+两台cas server通过nginx做负载均衡，两个cas server的ticket registry配置的jpa方式，指向同一个库。两个cas server的tomcat做了TomcatRedisSessionManager，使用redis集中存储session。
+目前的现象：
+页面上请求cas登录地址，登录过后频繁刷新登录页面，有时返回已登录，有时返回未登录...
+    
+
+        <a href="/20180316/70-cas-server-pit.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CAS/">CAS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Invalid-cookie-Required-remote-address-does-not-match-ip/">Invalid cookie. Required remote address does not match ip</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TomcatRedisSessionManager/">TomcatRedisSessionManager</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iphash/">iphash</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/trouble-shooting/">trouble shooting</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-69-java-reflect"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-03-13 15:31:53" datetime="2018-03-13T07:31:53.000Z"  itemprop="datePublished">2018-03-13</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/dubbo/">dubbo</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/dubbo/json/">json</a></li></ul></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180313/69-java-reflect.html">Json序列化、反序列化支持泛型，Dubbo对泛型参数方法进行反射调用</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        最近在对Dubbo接口进行反射调用时，遇到了参数类型较为复杂的情况下，使用反射方式无法调用的问题。
+由于Dubbo使用了proxy代理对象，因此在反射上调用是存在一定的问题，从反射对象上获取的方法和参数类型可能会导致无法正常的调用。
+首先先让我们看一个复杂参数的接口定义
+public String testMethod(Map&lt;String,ResourceVo&gt; map, Li...
+    
+
+        <a href="/20180313/69-java-reflect.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GenericService/">GenericService</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dubbo/">dubbo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/gson/">gson</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/json/">json</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-68-jmeter-plugin-dubbo-1.2.0"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-03-13 13:18:21" datetime="2018-03-13T05:18:21.000Z"  itemprop="datePublished">2018-03-13</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/test/">test</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180313/68-jmeter-plugin-dubbo-1.2.0.html">New Version V1.2.0, Dubbo Plugin for Apache JMeter</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        项目地址jmeter-plugin-dubbo项目已经transfer到dubbo group下
+github: jmeter-plugin-dubbo 
+码云: jmeter-plugin-dubbo
+V1.2.0
+使用gson进行json序列化、反序列化
+使用dubbo泛化调用方式重构反射调用方式
+支持复杂类型、支持泛型，例如：”java.lang.List,Map&lt;String,...
+    
+
+        <a href="/20180313/68-jmeter-plugin-dubbo-1.2.0.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dubbo-Jmeter插件/">Dubbo Jmeter插件</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dubbo可视化测试工具/">Dubbo可视化测试工具</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Jmeter对Dubbo接口进行可视化压力测试/">Jmeter对Dubbo接口进行可视化压力测试</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dubbo/">dubbo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jmeter/">jmeter</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/test/">test</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-67-python-requirements"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-03-09 14:19:54" datetime="2018-03-09T06:19:54.000Z"  itemprop="datePublished">2018-03-09</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/python/">python</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180309/67-python-requirements.html">Python项目生成requirements.txt的多种方式，用于类库迁移必备</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        我相信任何软件程序都会有依赖的类库，尤其现在开源如此的火爆，很多轮子可以拿来直接使用不再需要自己再去开发（拿来主义者），这样大大的提高开发效率。NPM就是轮子最多的地方，哈哈！开个玩笑！
+我们做开发时为何需要对依赖库进行管理？当依赖类库过多时，如何管理类库的版本？
+我相信大家都知道怎么回答这个问题，为了更加规范管理项目结构，提高开发效率所以我们需要对依赖库进行管理，不管使用任何开发语言，如今...
+    
+
+        <a href="/20180309/67-python-requirements.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/freeze/">freeze</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pip/">pip</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pipreqs/">pipreqs</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-66-jmeter-plugin-dubbo-bugfix"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-03-07 18:00:54" datetime="2018-03-07T10:00:54.000Z"  itemprop="datePublished">2018-03-07</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/test/">test</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180307/66-jmeter-plugin-dubbo-bugfix.html">Bug Fix Version V1.1.0, Dubbo Plugin for Apache JMeter</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        首先先感谢网友 @流浪的云 提的bug，让我感觉到写这个工具没有白费还有点价值，非常感谢，
+他在使用jmeter-plugin-dubbo插件时发现GUI中输入的信息无法使用Jmeter变量${var}与函数来进行参数化，以下是我修复这个问题的记录。
+项目地址jmeter-plugin-dubbo项目已经transfer到dubbo group下
+github: jmeter-plugin-...
+    
+
+        <a href="/20180307/66-jmeter-plugin-dubbo-bugfix.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dubbo-Jmeter插件/">Dubbo Jmeter插件</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dubbo可视化测试工具/">Dubbo可视化测试工具</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Jmeter对Dubbo接口进行可视化压力测试/">Jmeter对Dubbo接口进行可视化压力测试</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dubbo/">dubbo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jmeter/">jmeter</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/test/">test</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-65-java-inner-class"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-03-06 16:50:17" datetime="2018-03-06T08:50:17.000Z"  itemprop="datePublished">2018-03-06</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/">java</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180306/65-java-inner-class.html">Java中内部类使用注意事项，内部类对序列化与反序列化的影响</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        现在很多服务架构都是微服务、分布式架构，开发模式也都是模块化开发，在分布式的开发方式下服务之间的调用不管是RPC还是RESTful或是其他SOA方案，均离不开序列化与反序列化，尤其是使用Java开发，Bean实现序列化接口几乎已经是必备的要求，而且这个要求已经纳入到很多大厂公司的开发规范中，开发规范中强制要求实现序列化接口和重写toString、hashCode方法。
+前面提到了序列化与反序...
+    
+
+        <a href="/20180306/65-java-inner-class.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dubbo-json/">dubbo json</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/fastjson/">fastjson</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/gson/">gson</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/inner-class/">inner class</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/innerClassSerialization/">innerClassSerialization</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/non-static/">non-static</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/static/">static</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-64-rancher-agent-instance"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-03-05 17:23:11" datetime="2018-03-05T09:23:11.000Z"  itemprop="datePublished">2018-03-05</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/rancher/">rancher</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/rancher/docker/">docker</a></li></ul></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180305/64-rancher-agent-instance.html">Trouble Shooting —— Docker rancher/agent-instance cannot start automatically</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        今天发现一个docker机器莫名其妙的无工作了，于是进入宿主机查看信息如下：
+docker@xxx:~$ docker psbe4238200956        rancher/agent:v1.0.2                          &quot;/run.sh run&quot;            5 months ago        Up 34 minutes ...
+    
+
+        <a href="/20180305/64-rancher-agent-instance.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/rancher/">rancher</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/rancher-agent-instance-v0-8-3/">rancher/agent-instance:v0.8.3</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/rancher-agent-v1-0-2/">rancher/agent:v1.0.2</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/trouble-shooting/">trouble shooting</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-63-python-virtualenv"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-03-02 11:22:28" datetime="2018-03-02T03:22:28.000Z"  itemprop="datePublished">2018-03-02</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/python/">python</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180302/63-python-virtualenv.html">构建Python多个虚拟环境来进行不同版本开发之神器-virtualenv</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        我们都知道Python的类库很多，但是大多支持的版本还是Python2.x系列，Python3支持的类库相对较少，因此我们在开发的时候经常还使用的Python2系列的版本，Python3对语法进行了比较大的重构，Python3中将一些Python2的模块名称做了修改，虽然兼容Python2但还是需要我们做一些处理来保证代码在不同Python版本中能够正常运作，如果我们想同时使用Python2...
+    
+
+        <a href="/20180302/63-python-virtualenv.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/virtualenv/">virtualenv</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/virtualenvwrapper/">virtualenvwrapper</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-62-ant-path-matcher"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-02-27 16:15:49" datetime="2018-02-27T08:15:49.000Z"  itemprop="datePublished">2018-02-27</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/restful/">restful</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180227/62-ant-path-matcher.html">RESTful访问权限管理实现思路，采用路径匹配神器之AntPathMatcher</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        我们经常在写程序时需要对路径进行匹配，比如说：资源的拦截与加载、RESTful访问控制、审计日志采集、等，伟大的SpringMVC在匹配Controller路径时是如何实现的？全都归功于ant匹配规则。
+Spring源码之AntPathMatcher，这个工具类匹配很强大，采用的是ant匹配规则。
+什么是ant匹配规则？
+
+
+
+字符wildcard
+描述
+
+
+
+
+?
+匹配一个字符（match...
+    
+
+        <a href="/20180227/62-ant-path-matcher.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/antPathMatcher/">antPathMatcher</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/restful/">restful</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-61-disconf-ext"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-02-11 11:26:49" datetime="2018-02-11T03:26:49.000Z"  itemprop="datePublished">2018-02-11</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/ucm/">ucm</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180211/61-disconf-ext.html">扩展Disconf支持Global共享配置，简化业务应用参数配置</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        当我们使用统一配置中心（UCM）后或许都会出现这种烦恼，项目中的配置项目多，当项目引用到基础中间件时都要增加基础中间件的配置，例如：zk参数、redis参数、rpc参数、loadbalance参数、mq参数、等。这些配置都是基础的中间件配置，应该做成共享的方式让所有APP都共享，而并不是在用的时候再去APP中添加，Global的配置基础中间件团队维护即可。
+为什么要有公共共享的配置？因为在A...
+    
+
+        <a href="/20180211/61-disconf-ext.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/disconf/">disconf</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ucm/">ucm</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+    </ul>
+
+    
+<nav id="page-nav">
+    <div class="inner">
+    <a class="extend prev" rel="prev" href="/page/5/">上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/7/">下一页</a>
+    </div>
+</nav>
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/page/6/&title=凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/page/6/&title=凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/page/6/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=凝雨 - Yun&url=https://ningyu1.github.io/page/6/&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/page/6/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABw0lEQVR42u3aQY6EMAwEQP7/6d0PLKFthwititNIA6HCwUraua74+ile+WjXGxcuLu6Ym7z47gV396xHyP/9Y0q4uLgHuXcVo3fP+tk77np8XFzcL3PXRS3/FxcX9z9xo0GLT+Hi4n6Tu63QDJZBm/dquLi4A26eUr73+5V8FxcXt8XtNUjykjcJSf94ChcX9wi3ukxZLzvyRkvvvbi4uGe4yXDr0pNPphqmPHxXXFzc17jJoiRplPYWRr0zV7i4uOe5vYXLJAwtN3JwcXEPcpPDE8mg2wrWeq+Gi4t7nJsfwNp1/KK8+cHFxX2Nm5et+ZGIcsvkLjDFxcU9yO3Fo0mvJh/nIZTBxcU9yO01QXst1WqJLDdZcXFxx9wcMYlF5lHLVf1muLi4Y24eakwaq0n5SwoiLi7uSW5+VKIaoVaL3cMkcXFxD3LzuHO+GOod5cTFxT3DnZSVnJ4XtW3dGFxc3AG31yLtFcFeWtOcDC4u7phb3X683UR5CFtxcXEPcueFpoeutm9xcXG/ya0WoOQYR3nHhouL+2Hu3q1OJMTFxT3IzUPSqBU6CE8fpoeLi3uEu6FPG8cl1Xh0lO/i4uJ2uL/UWUjnhLgFUgAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

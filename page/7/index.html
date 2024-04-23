@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="凝雨 Yun">
+    <meta name="description" content="快乐编程每一天 - Happy Coding Every Day">
+<meta name="keywords" content="凝雨 Yun">
+<meta property="og:type" content="website">
+<meta property="og:title" content="凝雨 - Yun">
+<meta property="og:url" content="https://ningyu1.github.io/page/7/index.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="快乐编程每一天 - Happy Coding Every Day">
+<meta property="og:locale" content="zh-CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="凝雨 - Yun">
+<meta name="twitter:description" content="快乐编程每一天 - Happy Coding Every Day">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">凝雨 - Yun</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header index-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">凝雨 - Yun</h1>
+        <h5 class="subtitle">
+            
+                快乐编程每一天 - Happy Coding Every Day
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+<div class="container body-wrap">
+
+    <ul class="post-list">
+    
+        <li class="post-list-item fade">
+            <article id="post-60-jmeter-plugins-dubbo-support"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-02-09 15:39:49" datetime="2018-02-09T07:39:49.000Z"  itemprop="datePublished">2018-02-09</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/test/">test</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180209/60-jmeter-plugins-dubbo-support.html">Dubbo接口如何在Jmeter中测试，自研Dubbo Plugin for Apache JMeter</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        最近公司测试需要对Dubbo的RPC接口进行测试，测试工具使用的是Jmeter，按照常规的做法需要包装一个Java请求，再配合Jmeter的Java Sample去做测试，这种做法是最简单最普遍的，但是这个方法不够灵活和方便，那我们能不能写一个Jmeter Plugin来解决这个问题？让Dubbo RPC接口测试更为方便一些？
+那我们先了解一下Jmeter的插件机制
+Jmeter Plugi...
+    
+
+        <a href="/20180209/60-jmeter-plugins-dubbo-support.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dubbo-Jmeter插件/">Dubbo Jmeter插件</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dubbo可视化测试工具/">Dubbo可视化测试工具</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Jmeter对Dubbo接口进行可视化压力测试/">Jmeter对Dubbo接口进行可视化压力测试</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dubbo/">dubbo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jmeter/">jmeter</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/test/">test</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-59-py2exe-pyinstaller"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-02-07 11:57:49" datetime="2018-02-07T03:57:49.000Z"  itemprop="datePublished">2018-02-07</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/python/">python</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180207/59-py2exe-pyinstaller.html">如何将Python脚本打包成可执行文件？</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        我们有时候经常会使用python写一些小工具，在Linux环境下可以很方便运行，因为Linux默认都会有python环境，我们只需要添加python脚本依赖的类库即可执行。但是有的时候我们需要把小工具给到一些麻瓜去用的时候就会出现一些问题，他们大多是在Windows上运行工具，那就必须要先准备python的可运行环境才行，这就给麻瓜们带来了使用成本，我们能否将python脚本打包成windo...
+    
+
+        <a href="/20180207/59-py2exe-pyinstaller.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/bbFreeze/">bbFreeze</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cx-Freeze/">cx_Freeze</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/py2app/">py2app</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/py2exe/">py2exe</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pyinstaller/">pyinstaller</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-58-git-ssh"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-01-30 16:10:20" datetime="2018-01-30T08:10:20.000Z"  itemprop="datePublished">2018-01-30</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/git/">git</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180130/58-git-ssh.html">Git SSH Key settings and passphrase reset</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        在使用github仓库的时候我们经常会看到clone有两种方式:https、ssh，https的方式使用起来非常简单但是每次在pull、push的时候需要输入密码，一两次还可以忍受但是作为常态是有点崩溃的，这个时候我们可以使用ssh的方式，ssh的好处就是在pull、push的时候可以使用密码也可以不使用密码，但是前提是要设置好ssh key，如果你是Repository的管理员那很好设置，...
+    
+
+        <a href="/20180130/58-git-ssh.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/passphrase/">passphrase</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ssh-key/">ssh key</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-57-cas-server1"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-01-26 15:07:36" datetime="2018-01-26T07:07:36.000Z"  itemprop="datePublished">2018-01-26</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/CAS/">CAS</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180126/57-cas-server1.html">CAS Server强制踢人功能实现方式</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        前面写过一篇关于CAS Server使用的经验总结，主要总结了CAS Server在使用的时候遇到的一些常见问题，比如说：证书、SLO、集群session处理、自定义用户认证、Ticket持久化等问题，传送门：CAS使用经验总结，纯干货，这次在基础上又增加了一个很常见很普通的问题，那就是踢人功能。
+在管理系统这个领域里面踢人功能并不陌生，为了更好的管理用户串用账号，安全等方面考虑，接下来我们...
+    
+
+        <a href="/20180126/57-cas-server1.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CAS/">CAS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CAS-Cluster/">CAS Cluster</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CAS-Server/">CAS Server</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cookie/">Cookie</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ForceLogout/">ForceLogout</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SLO/">SLO</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Session-Centralized-Storage/">Session Centralized Storage</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Single-Logout/">Single Logout</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ticket/">Ticket</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ticket-Registry/">Ticket Registry</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-56-websocket-ssl"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-01-25 17:04:36" datetime="2018-01-25T09:04:36.000Z"  itemprop="datePublished">2018-01-25</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/WebSocket/">WebSocket</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180125/56-websocket-ssl.html">Trouble Shooting —— HTTPS(SSL)站点使用WebSocket(ws)出现SecurityError问题</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        最近发生了一个问题我觉得挺有意思的，所以针对这个问题总结一下。
+最近公司服务上了https(SSL)，在https(SSL)的环境下呢本因为可以愉快的玩耍，但是后来发现程序有使用websocket（ws://domain.com），这里就有朋友想了使用ws跟ssl有什么关系？我可以很明确的告诉你当然有关系。
+当你的站点使用的是http的时候，使用ws可以很愉快的玩耍。当换成了https(SS...
+    
+
+        <a href="/20180125/56-websocket-ssl.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SecurityError/">SecurityError</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WebSocket/">WebSocket</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ssl/">ssl</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ws/">ws</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/wss/">wss</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-55-java-jvm-analysis"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-01-23 14:36:36" datetime="2018-01-23T06:36:36.000Z"  itemprop="datePublished">2018-01-23</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Java/">Java</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180123/55-java-jvm-analysis.html">生产环境如何快速跟踪、分析、定位问题-Java</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        我相信做技术的都会遇到过这样的问题，生产环境服务遇到宕机的情况下如何去分析问题？比如说JVM内存爆掉、CPU持续高位运行、线程被夯住或线程deadlocks，面对这样的问题，如何在生产环境第一时间跟踪分析与定位问题很关键。下来让我们看看通过如下步骤在第一时间分析问题。
+CPU占用较高场景收集当前CPU占用较高的线程信息，执行如下命令：
+top -H -p PID -b -d 1 -n 1 &...
+    
+
+        <a href="/20180123/55-java-jvm-analysis.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CPU-TOP/">CPU TOP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/">JVM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM-dump/">JVM dump</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Jmap/">Jmap</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Jstack/">Jstack</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-54-cas-server"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-01-19 16:25:36" datetime="2018-01-19T08:25:36.000Z"  itemprop="datePublished">2018-01-19</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/CAS/">CAS</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180119/54-cas-server.html">CAS使用经验总结，纯干货</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        最近在处理公司项目对接到CAS server，在使用CAS发生了很多问题，下面整理一下遇到的问题与解决方式，希望可以帮助到需要的工程师们
+CAS它是什么？它能做什么？这些我就不概述了，自行去搜索了解，https://baike.baidu.com/item/CAS/1329561
+我们在使用CAS的时候基本都会遇到如下的几种问题：
+
+证书问题
+Client接入配置
+SLO（Single Lo...
+    
+
+        <a href="/20180119/54-cas-server.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CAS/">CAS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CAS-Cluster/">CAS Cluster</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CAS-Server/">CAS Server</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cert/">Cert</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cookie/">Cookie</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SLO/">SLO</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SSL/">SSL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Session-Centralized-Storage/">Session Centralized Storage</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Single-Logout/">Single Logout</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ticket/">Ticket</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ticket-Registry/">Ticket Registry</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-53-ssl-cert-3"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-01-15 14:08:36" datetime="2018-01-15T06:08:36.000Z"  itemprop="datePublished">2018-01-15</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/ssl/">ssl</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180115/53-ssl-cert-3.html">Java访问SSL地址，使用证书方式和免验证证书方式</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        前文回顾《Openssl生成自签名证书，简单步骤》中讲述了如何生成自签名证书。
+《使用自签名证书，简单步骤》中讲述了如何使用自签名证书。
+下面讲述在Java中如何访问SSL地址，使用证书访问和免验证证书访问。
+Java安装证书访问SSL地址使用InstallCert安装证书《使用自签名证书，简单步骤》这篇文章中介绍的InstallCert生成jssecacerts文件。将ssecacerts...
+    
+
+        <a href="/20180115/53-ssl-cert-3.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/openssl/">openssl</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ssl/">ssl</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-52-ssl-cert-2"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-01-12 19:13:36" datetime="2018-01-12T11:13:36.000Z"  itemprop="datePublished">2018-01-12</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/ssl/">ssl</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180112/52-ssl-cert-2.html">使用自签名证书，简单步骤</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        在前文《Openssl生成自签名证书，简单步骤》中讲述了如何生成自签名证书，接下来整理证书使用遇到的问题。
+证书使用的方式也有很多中，可以使用keytool生成或导入导出证书，这里对keytool不做过多描述，可以通过–help查看使用方法。
+证书文件可以放到应用服务器、负载均衡、jvm中使用，如：IIS、tomcat、nginx或者loadbalance、jdk等等。
+这里介绍一个简单的工...
+    
+
+        <a href="/20180112/52-ssl-cert-2.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/InstallCert/">InstallCert</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/openssl/">openssl</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ssl/">ssl</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
+            <article id="post-51-ssl-cert"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2018-01-12 17:06:36" datetime="2018-01-12T09:06:36.000Z"  itemprop="datePublished">2018-01-12</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/ssl/">ssl</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/20180112/51-ssl-cert.html">Openssl生成自签名证书，简单步骤</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        最近在调试服务时需要使用证书，因此对证书的生成和使用做了一些整理，网上关于这部分资料也很多，但是很杂乱，我整理出以下简单的步骤生成自签名证书，具体让我们来看一看吧。
+第一种方式通过openssl生成私钥
+openssl genrsa -out server.key 1024
+使用私钥生成自签名的cert证书文件，以下是通过参数只定证书需要的信息
+openssl req -new -x509 ...
+    
+
+        <a href="/20180112/51-ssl-cert.html" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/openssl/">openssl</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ssl/">ssl</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+    </ul>
+
+    
+<nav id="page-nav">
+    <div class="inner">
+    <a class="extend prev" rel="prev" href="/page/6/">上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/8/">下一页</a>
+    </div>
+</nav>
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/page/7/&title=凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/page/7/&title=凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/page/7/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=凝雨 - Yun&url=https://ningyu1.github.io/page/7/&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/page/7/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABwElEQVR42u3aQZLCMAwEQP7/6ewHcDKybJOtap+oEEzDYSqS/PnE6xqs0T35bp8dCxcXt829btfonv4OybtffhIuLu5B7igxRveMviz/7P09w+u4uLiv5F7xyh+ScHFx/zu3Wqck7+Li4r6TmwdNlZ7ss6VWw8XFbXDXfuXc6y39XVxc3CnuVVzVJkinSfrlU7i4uEe4eaBUf0C1qVoYx+Li4m7mzoVUHlVzTZOHCMPFxT3CTdIuH5rOHeCI9sHFxT3CzR9o8utzQ9nWIAcXF3cpN4mkfg+zE1gPuYuLi7uBu6MVMnf8ovOX4eLi7uBWKXOtkPLI5L6/i4uLu5l7Hy7JFtWm6tyduLi4Z7h5cFSvVAexC2o1XFzcRdxqc3Nti2Sys4uLi3uQmz8H5aPZfECbByIuLu55bhJtCaUzcH3443BxcQ9yq6VI5zjF3FFOXFzcM9y5WMnbrJ2IxMXF/RU3X3PHL1rtj+rBLFxc3KXccvnRGJ1Wd8DFxf0tNw+aavujH3y4uLjv5+bRlhdO5YoNFxf3Zdx8HFstdSIhLi7uQW5S/FQfdOaapw974uLiHuHODT77pdHatiwuLu4i7h9dYJCflL4YNwAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

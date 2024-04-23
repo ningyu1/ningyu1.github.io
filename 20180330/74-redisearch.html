@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>RediSearch基于Redis的高性能全文搜索引擎，资料整理 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="redisearch,redis,in-memory,highly available full text search">
+    <meta name="description" content="RediSearch基于Redis的高性能全文搜索引擎，资料整理">
+<meta name="keywords" content="redisearch,redis,in-memory,highly available full text search">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RediSearch基于Redis的高性能全文搜索引擎，资料整理">
+<meta property="og:url" content="https://ningyu1.github.io/20180330/74-redisearch.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="RediSearch基于Redis的高性能全文搜索引擎，资料整理">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ningyu1.github.io/img/redisearch/1.jpg">
+<meta property="og:image" content="https://ningyu1.github.io/img/redisearch/2.jpg">
+<meta property="og:image" content="https://ningyu1.github.io/img/redisearch/3.jpg">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.037Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RediSearch基于Redis的高性能全文搜索引擎，资料整理">
+<meta name="twitter:description" content="RediSearch基于Redis的高性能全文搜索引擎，资料整理">
+<meta name="twitter:image" content="https://ningyu1.github.io/img/redisearch/1.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">RediSearch基于Redis的高性能全文搜索引擎，资料整理</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">RediSearch基于Redis的高性能全文搜索引擎，资料整理</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-03-30T04:24:00.000Z" itemprop="datePublished" class="page-time">
+  2018-03-30
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/redisearch/">redisearch</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#RediSearch"><span class="post-toc-number">1.</span> <span class="post-toc-text">RediSearch</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#主要特点"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">主要特点</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#集群"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">集群</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#暂不支持"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">暂不支持</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#支持的Client类库"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">支持的Client类库</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#性能"><span class="post-toc-number">1.5.</span> <span class="post-toc-text">性能</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结："><span class="post-toc-number">1.6.</span> <span class="post-toc-text">总结：</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#案例资料："><span class="post-toc-number">1.7.</span> <span class="post-toc-text">案例资料：</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-74-redisearch"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">RediSearch基于Redis的高性能全文搜索引擎，资料整理</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-03-30 12:24:00" datetime="2018-03-30T04:24:00.000Z"  itemprop="datePublished">2018-03-30</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/redisearch/">redisearch</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>最近在参考<a href="http://www.cnblogs.com/netfocus/p/4055346.html" target="_blank" rel="noopener">CQRS DDD架构</a>来进行公司的库存中心重构设计，在<code>CQRS</code>架构中需要一个<code>in-memory</code>的方式快速修改库存在通过消息驱动异步更新到<code>DB</code>，也就是说内存的数据是最新的，<code>DB</code>的数据是异步持久化的，在某一个时刻内存和<code>DB</code>的数据是存在不一致的，但是满足最终一致性。</p>
+<p>这样我们就需要内存当作前置<code>DB</code>在使用，因此不单纯的只满足修改数据，还需要满足<code>Query</code>的要求，内存结构的数据<code>Query</code>是比较麻烦的，它不像<code>DB</code>那样已经实现好了索引检索，需要我们自己来设计<code>Key</code>的机构和搜索索引的构建。</p>
+<p>当然行业里也有这样的做法，对数据修改的时候双写到内存(<code>Redis</code>)和<code>ElasticSearch</code>再异步到<code>DB</code>，这样<code>Query</code>全部走向<code>ElasticSearch</code>，但是我觉得这样做的复杂度会增加很多，所以就在看如何基于<code>Redis</code>来设计一个搜索引擎。</p>
+<p>看到了<code>RedisLabs</code>团队开发的基于<code>Redis</code>的搜索引擎：<code>RediSearch</code></p>
+<h1 id="RediSearch"><a href="#RediSearch" class="headerlink" title="RediSearch"></a>RediSearch</h1><p><a href="https://github.com/RedisLabsModules/RediSearch" target="_blank" rel="noopener">Github: RediSearch</a></p>
+<p><a href="http://redisearch.io" target="_blank" rel="noopener">官方站点</a></p>
+<p>官方给出的描述</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Redisearch implements a search engine on top of redis, but unlike other redis search libraries, it does not use internal data structures like sorted sets.</span><br><span class="line">Inverted indexes are stored as a special compressed data type that allows for fast indexing and search speed, and low memory footprint.</span><br><span class="line">This also enables more advanced features, like exact phrase matching and numeric filtering for text queries, that are not possible or efficient with traditional redis search approaches.</span><br></pre></td></tr></table></figure>
+<h2 id="主要特点"><a href="#主要特点" class="headerlink" title="主要特点"></a>主要特点</h2><p>高性能的全文搜索引擎（Faster, in-memory, highly available full text search），可作为Redis Module运行在Redis上。但是它与其他Redis搜索库不同的是，它不使用Redis内部数据结构，例如：集合、排序集（ps.后面会写一篇基于Redis的数据结构来设计搜索引擎），Redis原声的搜索还是有很大的局限性，简单的分词搜索是可以满足，但是应用到复杂的场景就不太适合。</p>
+<ul>
+<li>Full-Text indexing of multiple fields in documents.</li>
+<li>Incremental indexing without performance loss.</li>
+<li>Document ranking (provided manually by the user at index time).</li>
+<li>Field weights.</li>
+<li>Complex boolean queries with AND, OR, NOT operators between sub-queries.</li>
+<li>Prefix matching in full-text queries.</li>
+<li>Auto-complete suggestions (with fuzzy prefix suggestions)</li>
+<li>Exact Phrase Search.</li>
+<li>Stemming based query expansion in many languages (using Snowball).</li>
+<li>Support for logographic (Chinese, etc.) tokenization and querying (using Friso)</li>
+<li>Limiting searches to specific document fields (up to 128 fields supported).</li>
+<li>Numeric filters and ranges.</li>
+<li>Geographical search utilizing redis’ own GEO commands.</li>
+<li>Supports any utf-8 encoded text.</li>
+<li>Retrieve full document content or just ids.</li>
+<li>Automatically index existing HASH keys as documents.</li>
+<li>Document Deletion (Update can be done by deletion and then re-insertion).</li>
+<li>Sortable properties (i.e. sorting users by age or name).</li>
+</ul>
+<p>下面是中文版本</p>
+<ul>
+<li>多个字段的文档的全文索引。</li>
+<li>没有性能损失增量索引。</li>
+<li>文档排名(由用户提供手动指数时间)。</li>
+<li>字段权重。</li>
+<li>在子查询之间使用AND，OR，NOT运算符进行复杂的布尔查询。</li>
+<li>前缀匹配全文查询。</li>
+<li>自动完成建议以模糊前缀(建议)</li>
+<li>准确短语搜索。</li>
+<li>阻止基于查询扩展多种语言(使用Snowball)。</li>
+<li>支持语标的(中国等)标记和查询(使用Friso)</li>
+<li>将搜索限制在特定的文档字段(128字段支持)。</li>
+<li>数字过滤器和范围。</li>
+<li>利用redis自己的GEO命令进行地理搜索。</li>
+<li>支持任何utf-8编码的文本。</li>
+<li>获取完整的文档内容或者只是id。</li>
+<li>自动索引现有HASH keys文件。</li>
+<li>文档删除(更新可以通过删除然后re-insertion)。</li>
+<li>可排序属性（即按年龄或名称对用户进行排序）。</li>
+</ul>
+<h2 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h2><p><span style="color:blue"><em>当然还支持分布式集群，只不过集群还是试验阶段还不建议正式应用到企业级应用上。</em></span></p>
+<h2 id="暂不支持"><a href="#暂不支持" class="headerlink" title="暂不支持"></a>暂不支持</h2><ul>
+<li>Spelling correction（拼写更正）</li>
+<li>Aggregations（集合）</li>
+</ul>
+<h2 id="支持的Client类库"><a href="#支持的Client类库" class="headerlink" title="支持的Client类库"></a>支持的Client类库</h2><p>Official (Redis Labs) and community Clients:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Language</th>
+<th style="text-align:center">Library</th>
+<th style="text-align:center">Author</th>
+<th style="text-align:center">License</th>
+<th style="text-align:center">Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Python</td>
+<td style="text-align:center">redisearch-py</td>
+<td style="text-align:center">Redis Labs</td>
+<td style="text-align:center">BSD</td>
+<td style="text-align:center">Usually the most up-to-date client library</td>
+</tr>
+<tr>
+<td style="text-align:center">Java</td>
+<td style="text-align:center">JRediSearch</td>
+<td style="text-align:center">Redis Labs</td>
+<td style="text-align:center">BSD</td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td style="text-align:center">Go</td>
+<td style="text-align:center">redisearch-go</td>
+<td style="text-align:center">Redis Labs</td>
+<td style="text-align:center">BSD</td>
+<td style="text-align:center">Incomplete API</td>
+</tr>
+<tr>
+<td style="text-align:center">JavaScript</td>
+<td style="text-align:center">RedRediSearch</td>
+<td style="text-align:center">Kyle J. Davis</td>
+<td style="text-align:center">MIT</td>
+<td style="text-align:center">Partial API, compatible with Reds</td>
+</tr>
+<tr>
+<td style="text-align:center">C#</td>
+<td style="text-align:center">NRediSearch</td>
+<td style="text-align:center">Marc Gravell</td>
+<td style="text-align:center">MIT</td>
+<td style="text-align:center">Part of StackExchange.Redis</td>
+</tr>
+<tr>
+<td style="text-align:center">PHP</td>
+<td style="text-align:center">redisearch-php</td>
+<td style="text-align:center">Ethan Hann</td>
+<td style="text-align:center">MIT</td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td style="text-align:center">Ruby on Rails</td>
+<td style="text-align:center">redi_search_rails</td>
+<td style="text-align:center">Dmitry Polyakovsky</td>
+<td style="text-align:center">MIT</td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td style="text-align:center">Ruby</td>
+<td style="text-align:center">redisearch-rb</td>
+<td style="text-align:center">Victor Ruiz</td>
+<td style="text-align:center">MIT</td>
+<td style="text-align:center">-</td>
+</tr>
+</tbody>
+</table>
+<p>类库支持的还算丰富，可以尝试使用一下。</p>
+<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p>性能对比是以ElasticSearch、Solr来进行对比，官方的benchmark数据，<a href="https://github.com/RedisLabs/RediSearchBenchmark" target="_blank" rel="noopener">benchmark程序地址</a></p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/redisearch/1.jpg" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/redisearch/2.jpg" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/redisearch/3.jpg" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>从数据上看，使用RediSearch的吞吐量高、延迟低，但是相比于ElasticSearch和Solr支持的特性上还有些欠缺比如：中文的模糊搜索支持的不是很好，但是其性能很高在某些场景是可以作为搜索引擎的替代方案来试用。</p>
+<h2 id="案例资料："><a href="#案例资料：" class="headerlink" title="案例资料："></a>案例资料：</h2><ol>
+<li><a href="https://www.csdn.net/article/a/2011-11-11/307327?bsh_bid=36806832" target="_blank" rel="noopener">利用RediSearch构建高效实时搜索案例</a></li>
+<li><a href="https://segmentfault.com/a/1190000009821423" target="_blank" rel="noopener">一步步实现 Redis 搜索引擎</a></li>
+<li><a href="https://www.v2ex.com/t/334928" target="_blank" rel="noopener">我们做了一个支持全文搜索和关系查询的 Redis</a></li>
+</ol>
+<p>上述就是关于RediSearch的资料整理，后面会尝试使用它来构建搜索引擎，会记录使用过程经历。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.037Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20180330/74-redisearch.html" target="_blank" rel="external">https://ningyu1.github.io/20180330/74-redisearch.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/highly-available-full-text-search/">highly available full text search</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/in-memory/">in-memory</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/redis/">redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/redisearch/">redisearch</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180330/74-redisearch.html&title=《RediSearch基于Redis的高性能全文搜索引擎，资料整理》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180330/74-redisearch.html&title=《RediSearch基于Redis的高性能全文搜索引擎，资料整理》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180330/74-redisearch.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RediSearch基于Redis的高性能全文搜索引擎，资料整理》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180330/74-redisearch.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180330/74-redisearch.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20180408/75-mysql-lock-wait-timeout-exceeded.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">MySql Lock wait timeout exceeded该如何处理？</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20180323/73-cas-server-pit1.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Trouble Shooting —— CAS Server集群环境下报错：Server redirected too many  times (20)</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180330/74-redisearch.html&title=《RediSearch基于Redis的高性能全文搜索引擎，资料整理》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180330/74-redisearch.html&title=《RediSearch基于Redis的高性能全文搜索引擎，资料整理》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180330/74-redisearch.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RediSearch基于Redis的高性能全文搜索引擎，资料整理》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180330/74-redisearch.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180330/74-redisearch.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACKUlEQVR42u3aSW7EMAwFUd//0s4BAjn1STuAqNKq0YPk1wtCHK4Lr/vXWn26eic95fpiyZAhY1vG/bhSRv/T53OXVBkyZBzAWEWw1XfI1qvH4meR78uQIUPG6jW5DqaBW4YMGTLeZTz/luxPklgZMmTISJPY56IYvyzyct4nubgMGTI2ZPBQ+P+vP+lvyJAhYyvGHa404KZJaW3JkCFjNiNNRDvI2nREMJYhQ4aMoYxacf+7Aa809b1qHQkZMmRsziAFep5w8sJZq+QnQ4aMAxhpCO4UztKWAwrZMmTIGM14C8lLafxx06KeDBkyZjPSoYpaIE6vj/F/L0OGjKGMt1JQvlv6oGjITIYMGaMZ/BrHQzDfLc1Ag3aFDBkyjmGQgMsblsGAF/hTgqamDBkyNmd0yl7p49aS2NbMiAwZMkYwalexTkmuH3CDq6EMGTJGMGrBrnaNqwXfYniVIUPGIEY6DNEfmCDf56MbKJWVIUPGOAbfupbcphEyOFeGDBkHMDoFLz5C0UmG/wjKMmTIOIYR/KxB4lfMoCQnQ4aMAxi1hJP8lr/T6U7KkCFjKuMOF09fa4Ni/G9F8x0yZMgYwej0B9PQ2Rmq6Bf7ZMiQsTuDB1myXW1QjDcqZMiQcTKjWI4PS2YkAeaBW4YMGTJ4AtlJO4OQ2tlIhgwZBzM61Fqr8pOAK0OGjE0YtWZA8chwROPlcpsMGTI2ZHQmNfjBaZuBnyhDhozRjB/kSJNhYzEbcwAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

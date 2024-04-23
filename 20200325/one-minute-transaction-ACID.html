@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>一分钟弄清楚事务四要素：ACID | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="transaction,acid">
+    <meta name="description" content="一分钟弄清楚事务四要素：ACID">
+<meta name="keywords" content="transaction,acid">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一分钟弄清楚事务四要素：ACID">
+<meta property="og:url" content="https://ningyu1.github.io/20200325/one-minute-transaction-ACID.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="一分钟弄清楚事务四要素：ACID">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.039Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一分钟弄清楚事务四要素：ACID">
+<meta name="twitter:description" content="一分钟弄清楚事务四要素：ACID">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">一分钟弄清楚事务四要素：ACID</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">一分钟弄清楚事务四要素：ACID</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2020-03-24T18:19:26.000Z" itemprop="datePublished" class="page-time">
+  2020-03-25
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/transaction/">transaction</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#事务四要素：ACID"><span class="post-toc-number">1.</span> <span class="post-toc-text">事务四要素：ACID</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#原子性（Atomicity）"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">原子性（Atomicity）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#一致性（Consistency）"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">一致性（Consistency）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#隔离性（Isolation）"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">隔离性（Isolation）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#持久性（Durability）"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">持久性（Durability）</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#总结"><span class="post-toc-number">2.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#附录"><span class="post-toc-number">3.</span> <span class="post-toc-text">附录</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-one-minute-transaction-ACID"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">一分钟弄清楚事务四要素：ACID</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2020-03-25 02:19:26" datetime="2020-03-24T18:19:26.000Z"  itemprop="datePublished">2020-03-25</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/transaction/">transaction</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>在学习数据库时一定都听说过事务的四要素：ACID，但是大多数人对事务四要素的理解一直停留在课本概念层面并没有仔细的琢磨，当我们在实际工作中遇到问题时经常要去回顾这四要素的概念，甚至很多人说不清事务四要素具体是什么。</p>
+<p>相信大家在实际工作中最常遇到的问题就是死锁（dead lock），说到死锁就不得不说先说事务，我们都知道死锁是并发事务时经常会遇到的问题，当然死锁的场景也非常多并且与数据库事务隔离级别有着很大的关系，这些不懂都没有关系，今天我们就花一分钟来理解消化事务的四要素。</p>
+<h1 id="事务四要素：ACID"><a href="#事务四要素：ACID" class="headerlink" title="事务四要素：ACID"></a>事务四要素：ACID</h1><p>说到事务的四个要素，最容易理解的就是原子性，但是其他三个要素：一致性、隔离性、持久性也是非常重要，恰恰也是经常被人忽视的。</p>
+<h2 id="原子性（Atomicity）"><a href="#原子性（Atomicity）" class="headerlink" title="原子性（Atomicity）"></a>原子性（Atomicity）</h2><p>原子性非常容易被人理解，直白点说就是一个事务中的所有操作（CRUD）就像是一个原子操作一样不可分割开来，要么全部成功，要么全部失败，不允许部分成功部分失败。</p>
+<p>举个例子：</p>
+<ol>
+<li>往篮子里放入一个苹果</li>
+<li>随后从篮子里拿出一个梨<br>这两个动作要么都成功，要么都失败，不存在只往篮子里放苹果而没拿梨，也不存在只从篮子里拿梨而没有放苹果。</li>
+</ol>
+<p>原子性的侧重点在于多个动作必须同时成功或者同时失败。</p>
+<h2 id="一致性（Consistency）"><a href="#一致性（Consistency）" class="headerlink" title="一致性（Consistency）"></a>一致性（Consistency）</h2><p>网上争议最多的就是对一致性的理解，公说公有理婆说婆有理，我觉得还是仁者见仁智者见智。</p>
+<p>说法一：事务开始和结束后，数据库的完整性约束没有被破坏，如外键约束。<br>说法二：一个事务单元需要提交之后才会被其他事务可见。</p>
+<p>网上有很多用张三给李四转账的例子来说明一致性，但是看起来感觉跟原子性的概念雷同，这也是经常会有人傻傻分不清一致性和原子性的区别。</p>
+<p>说法三：一致性和原子性的区别在于两者的侧重点不同，原子性关注的是状态，要么全部成功，要么全部失败，不存在部分成功的状态。而一致性关注的是数据的可见性，一个事务的中间状态的数据对外部不可见，只有最初状态和最终状态的数据对外可见。</p>
+<p>其实这个说法是对的，但是理解起来不通俗易懂甚至有些模糊，很难让人很通俗易懂的明白其中的区别。</p>
+<p>而且看到上面区别解释后又会有人提出挑战说，当事务的隔离级别是Read Uncommitted（读未提交）时，可以把事务的中间状态数据对其他事务可见，这个不就是违背了一致性么？</p>
+<p>其实事务的隔离级别就是在事务的四要素和性能上面做平衡，有时候为了提高性能，会适度的破坏一致性原则。</p>
+<p><a href="https://www.zhihu.com/question/31346392" target="_blank" rel="noopener">这篇文章</a>是我见过对一致性理解最靠谱的。</p>
+<p>说回到主题一致性的理解上，<strong>我对一致性的理解是这样的，一致性关注的点是数据的操作结果是否与用户业务预期一致，这里有两点需要注意。</strong></p>
+<ol>
+<li><strong>一致性关注的是结果状态</strong>，什么是结果状态？<strong>它是一个要达到的预期效果并非是一个保证手段</strong>。而数据库的唯一建、外键、主键等这些约束建和AID原则：原子性（A）、隔离性（I）、持久性（D）以及提交、回滚等动作是保证结果能达到与预期效果一致的手段。</li>
+<li><strong>一致性它是由用户的业务决定的并非数据库决定的</strong>，网上很多的例子解释一致性都是狭义的理解，为什么这样说的？比如说账户扣钱，如果业务约束账户不允许为负数，那当扣成负数的时候就会通过回滚来保持一致性，如果业务约束账户允许为负数，那当扣成负数也可以正常提交来保持一致性，那这两个最终的状态是完全不一样的，但都是满足用户预先设置好的约束规则，所以一致性是由用户来决定的，从结果来看只要符合业务预期约束就是满足一致性的。</li>
+</ol>
+<h2 id="隔离性（Isolation）"><a href="#隔离性（Isolation）" class="headerlink" title="隔离性（Isolation）"></a>隔离性（Isolation）</h2><p>并发事务之间不会互相影响，就像串行执行一样，也就是说并发事务之间都是互相隔离的，你不影响我，我也不影响你。<br>隔离性侧重点是并发事务之间的影响，说到并发事务就要提到数据库的隔离级别，有的时候会通过调整数据库的隔离级别来适度的破坏一致性和隔离性，从而提高数据库处理性能。</p>
+<p><em>ps. 画外音，隔离性是我们需要重点关注的，因为不同的隔离级别，可能对应的加锁过程不一样，而正是因为引入了各种各样的隔离级别，才让锁问题变得格外复杂。解决和分析死锁问题，重点就是要搞清楚数据库的隔离级别。那么隔离级别是个什么东西呢？我们会在后面出单独的文章来重点说明。</em></p>
+<h2 id="持久性（Durability）"><a href="#持久性（Durability）" class="headerlink" title="持久性（Durability）"></a>持久性（Durability）</h2><p>持久性就非常好理解了，事务提交后即持久化到磁盘不会丢失。<br>持久性侧重的是数据不丢失，这个跟网上讨论最多的 （<a href="http://fanyilun.me/2015/12/29/%E4%BA%8B%E5%8A%A1%E7%9A%84%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E4%BB%A5%E5%8F%8AMysql%E4%BA%8B%E5%8A%A1%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_blank" rel="noopener">“丢失更新”</a>、<a href="https://www.aneasystone.com/archives/2017/10/solving-dead-locks-one.html" target="_blank" rel="noopener">“提交覆盖”</a>、<a href="https://en.wikipedia.org/wiki/Read-modify-write" target="_blank" rel="noopener">“Read-Modify-Write问题”</a>）很容易混淆，看起来效果都是没有存入正确的数据，看起来好像数据丢失了一样。<br>实际上两者区别很大的，前者是说数据存到物理磁盘不会丢失，而后者则说的是并发事务中的相互影响导致最终的数据结果不同。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>这一章我们对事务的ACID进行了快速的理解，这里容易混淆的有原子性和一致性。</p>
+<ol>
+<li>原子性的侧重点在于操作完整不可分隔，往篮子里放入一个苹果随后从篮子里拿出一个梨，不存在只往篮子里放入苹果没有拿梨，也不存在只从篮子里拿梨没有放入苹果。</li>
+<li>一致性的侧重点在于结果状态是否与用户的预期效果一致。</li>
+<li>隔离性的侧重点在于并发事务之间互不影响，切记不是你中有我我中有你。</li>
+<li>持久性的侧重点在于数据落盘不丢，切记不是并发事务导致的最终数据结果丢失。</li>
+</ol>
+<p>下一章我们会从事务的隔离级别来进行快速学习和掌握，隔离级别会分两章来进行，先让大家搞清楚我们最常挂在嘴边的也是面试最常问道的：脏读、幻读、不可重复度、可重复度、丢失更新的定义和区别，我会尽量用通俗易懂的方式来让大家明白。</p>
+<h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h1><p>这里从网上找了一些关于事务的文章，不用太纠结对错，仁者见仁，智者见智，有句俗话是这样说的：不要太认真，认真你就输了，哈哈。。。。</p>
+<ol>
+<li><a href="https://www.aneasystone.com/archives/2017/10/solving-dead-locks-one.html" target="_blank" rel="noopener">https://www.aneasystone.com/archives/2017/10/solving-dead-locks-one.html</a></li>
+<li><a href="https://www.cnblogs.com/autointerface/p/11959711.html" target="_blank" rel="noopener">https://www.cnblogs.com/autointerface/p/11959711.html</a></li>
+<li><a href="http://novoland.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93/2014/07/26/MySQL%E6%80%BB%E7%BB%93.html" target="_blank" rel="noopener">http://novoland.github.io/%E6%95%B0%E6%8D%AE%E5%BA%93/2014/07/26/MySQL%E6%80%BB%E7%BB%93.html</a></li>
+</ol>
+<p><em>ps. 文章中有哪些错误的地方欢迎指正。</em></p>
+<p>好像文章有点长阅读起来超过了一分钟，看来功力还不够没有压缩到一分钟，希望能帮助到需要的人。</p>
+<p>Love and peace！</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.039Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20200325/one-minute-transaction-ACID.html" target="_blank" rel="external">https://ningyu1.github.io/20200325/one-minute-transaction-ACID.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/acid/">acid</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/transaction/">transaction</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20200325/one-minute-transaction-ACID.html&title=《一分钟弄清楚事务四要素：ACID》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20200325/one-minute-transaction-ACID.html&title=《一分钟弄清楚事务四要素：ACID》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20200325/one-minute-transaction-ACID.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《一分钟弄清楚事务四要素：ACID》 — 凝雨 - Yun&url=https://ningyu1.github.io/20200325/one-minute-transaction-ACID.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20200325/one-minute-transaction-ACID.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20200430/travis-ci-deploy-hexo.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">使用Travis CI部署Hexo</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20191016/dubbo-network-interfaces.md.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">[转]研究 Dubbo 网卡地址注册时的一点思考</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20200325/one-minute-transaction-ACID.html&title=《一分钟弄清楚事务四要素：ACID》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20200325/one-minute-transaction-ACID.html&title=《一分钟弄清楚事务四要素：ACID》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20200325/one-minute-transaction-ACID.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《一分钟弄清楚事务四要素：ACID》 — 凝雨 - Yun&url=https://ningyu1.github.io/20200325/one-minute-transaction-ACID.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20200325/one-minute-transaction-ACID.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACrElEQVR42u3a0Y4aMQwF0P3/n26fq13ovfa4otLhCcEwyQlS7LHz9RW/fn17td++ep/86tUnj73w8PDw1lP/PmR7zav7v/8kmWc+Hzw8PLxrXnK7dvj37GSJ2/ng4eHhfSavDR4JqU3l8fDw8P53XruJzxJ3PDw8vE/jtbdrJ70PKue1Fjw8PLyYl3eRPuf9SX8PDw8Pb91VbzfcNiFug1A9Wzw8PLwDXtvcmiXNm0ZaXvB9eSUeHh7eo7zNUaf2+NQmYOTX/zEHPDw8vGNeW7rNB07u/37rzxPu+p/Bw8PDG/GSrXzW6GqbW/tk/YdnBTw8PLxHeflW227os1ARHaJqm2F4eHh4j/LeJ83vt+xNm39WsGiLF3h4eHgXvHYXTYJB0Xkr7zZbMjw8PLxr3qbZ3y5Qfp/2WAMeHh7eHS8fPi+tzsqvJyEBDw8P7yzbzAu4eSN/P9FNITiKfnh4eHgHvNlE84NT7SGA+tAAHh4e3gEvKTrkB7Pa5tks4R4WI/Dw8PDOeMlUZi20DT4JMz/8GXh4eHhnvHyAWSDJjwvsE/E/3uPh4eGd8WZDzsoWbcNs1QbDw8PDO+AlW/ksvU6WY3ZQtQ4zeHh4eP+cN4O1ZdlZMyyaDx4eHt4BL6G2B1Jn4DZs5MEGDw8P71lesbGWhYPNlfnoUTECDw8P74A3O3Q1a01tPkmCwQ+BAQ8PD++At2l6tal5u3BtoHqgdoKHh4cXhIR2223bWsmk23H/gsTDw8M74LUFiGfT7lk6/gAGDw8Pb82rH+9HS5AXczeB4WUDDA8PD++A19Yw2jZVMulZW+4vv8XDw8P7YF5eut0cSshHx8PDw/s0XrsQs1CxKRbj4eHhXfOeaj5FBYI4+Z6l7Hh4eHjXvP0D/6w1lSTcm7IyHh4e3gHvN6U9VLkxFPvvAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

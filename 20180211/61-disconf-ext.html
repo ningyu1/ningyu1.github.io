@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>扩展Disconf支持Global共享配置，简化业务应用参数配置 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="disconf,ucm">
+    <meta name="description" content="扩展Disconf支持Global共享配置，简化业务应用参数配置">
+<meta name="keywords" content="disconf,ucm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="扩展Disconf支持Global共享配置，简化业务应用参数配置">
+<meta property="og:url" content="https://ningyu1.github.io/20180211/61-disconf-ext.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="扩展Disconf支持Global共享配置，简化业务应用参数配置">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://img.shields.io/github/release/ningyu1/disconf-client-ext.svg?style=social&label=Release">
+<meta property="og:image" content="https://img.shields.io/github/stars/ningyu1/disconf-client-ext.svg?style=social&label=Star">
+<meta property="og:image" content="https://img.shields.io/github/forks/ningyu1/disconf-client-ext.svg?style=social&label=Fork">
+<meta property="og:image" content="https://img.shields.io/github/watchers/ningyu1/disconf-client-ext.svg?style=social&label=Watch">
+<meta property="og:image" content="https://img.shields.io/badge/license-GPLv3-blue.svg">
+<meta property="og:image" content="https://ningyu1.github.io/img/disconf-ext/1.png">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.036Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="扩展Disconf支持Global共享配置，简化业务应用参数配置">
+<meta name="twitter:description" content="扩展Disconf支持Global共享配置，简化业务应用参数配置">
+<meta name="twitter:image" content="https://img.shields.io/github/release/ningyu1/disconf-client-ext.svg?style=social&label=Release">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">扩展Disconf支持Global共享配置，简化业务应用参数配置</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">扩展Disconf支持Global共享配置，简化业务应用参数配置</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-02-11T03:26:49.000Z" itemprop="datePublished" class="page-time">
+  2018-02-11
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/ucm/">ucm</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#为什么要有公共共享的配置？"><span class="post-toc-number">1.</span> <span class="post-toc-text">为什么要有公共共享的配置？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#这时候有朋友就会问我了如果做成全局共享配置，那不同项目需要修改全局某个参数怎么办呢？"><span class="post-toc-number">2.</span> <span class="post-toc-text">这时候有朋友就会问我了如果做成全局共享配置，那不同项目需要修改全局某个参数怎么办呢？</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#那我们如何来解决这个问题？我们能否扩展Disconf让其支持Global共享配置呢？"><span class="post-toc-number"></span> <span class="post-toc-text">那我们如何来解决这个问题？我们能否扩展Disconf让其支持Global共享配置呢？</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#扩展思路"><span class="post-toc-number"></span> <span class="post-toc-text">扩展思路</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Disconf扫描管理"><span class="post-toc-number"></span> <span class="post-toc-text">Disconf扫描管理</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Reloadable-Properties"><span class="post-toc-number"></span> <span class="post-toc-text">Reloadable Properties</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#项目地址"><span class="post-toc-number"></span> <span class="post-toc-text">项目地址</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#disconf-client-ext的使用"><span class="post-toc-number"></span> <span class="post-toc-text">disconf-client-ext的使用</span></a>
+        </nav>
+    </aside>
+
+
+<article id="post-61-disconf-ext"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">扩展Disconf支持Global共享配置，简化业务应用参数配置</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-02-11 11:26:49" datetime="2018-02-11T03:26:49.000Z"  itemprop="datePublished">2018-02-11</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/ucm/">ucm</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>当我们使用统一配置中心（<code>UCM</code>）后或许都会出现这种烦恼，项目中的配置项目多，当项目引用到基础中间件时都要增加基础中间件的配置，例如：zk参数、redis参数、rpc参数、loadbalance参数、mq参数、等。这些配置都是基础的中间件配置，应该做成共享的方式让所有APP都共享，而并不是在用的时候再去APP中添加，Global的配置基础中间件团队维护即可。</p>
+<h3 id="为什么要有公共共享的配置？"><a href="#为什么要有公共共享的配置？" class="headerlink" title="为什么要有公共共享的配置？"></a>为什么要有公共共享的配置？</h3><p>因为在APP配置中有很多是公共的配置，如果没有Global就需要在自己的APP中配置这些配置信息，导致APP中配置信息过多不好维护，公共的配置信息修改需要通知各业务APP修改自己APP中的配置，没有达到一处修改，各处使用的目标。</p>
+<h3 id="这时候有朋友就会问我了如果做成全局共享配置，那不同项目需要修改全局某个参数怎么办呢？"><a href="#这时候有朋友就会问我了如果做成全局共享配置，那不同项目需要修改全局某个参数怎么办呢？" class="headerlink" title="这时候有朋友就会问我了如果做成全局共享配置，那不同项目需要修改全局某个参数怎么办呢？"></a>这时候有朋友就会问我了如果做成全局共享配置，那不同项目需要修改全局某个参数怎么办呢？</h3><p>这个需求也很正常，比如loadbalance参数确实需要根据不同项目的具体情况去配置参数，对于这种问题其实很好解决，我们可以使用APP中的配置去覆盖Global配置，也就是说当APP中的配置项与Global配置项相同的情况下，以APP的配置为主即可。</p>
+<p>这样一来APP的配置生效的优先级为：Local conf &gt; Project conf &gt; Global conf，当出现相同配置项以APP自身的配置为主去覆盖。</p>
+<p>增加了Global的支持后，APP中的配置减少了，避免了一些由于配置导致的错误，也可以通过Global的方式去规范APP的配置，让业务开发不关心公共配置的细节，在使用的时候直接使用无需维护。</p>
+<p><code>Disconf</code>作为一个比较老牌的<code>UCM</code>在这方面支持的并不好，它并没有共享配置这个概念，这样一来公共的配置就需要在每个APP中都要配置一份，操作起来很烦人。</p>
+<h1 id="那我们如何来解决这个问题？我们能否扩展Disconf让其支持Global共享配置呢？"><a href="#那我们如何来解决这个问题？我们能否扩展Disconf让其支持Global共享配置呢？" class="headerlink" title="那我们如何来解决这个问题？我们能否扩展Disconf让其支持Global共享配置呢？"></a>那我们如何来解决这个问题？我们能否扩展<code>Disconf</code>让其支持<code>Global</code>共享配置呢？</h1><h2 id="扩展思路"><a href="#扩展思路" class="headerlink" title="扩展思路"></a>扩展思路</h2><p>在加载properties的时候，也就是ReloadablePropertiesFactoryBean的locations，给前面默认加一个GlobalProp项目的索引项：global（使用disconf的新建配置项，而不是配置文件），这个索引项的值是所有global配置文件的名称，使用”,”分隔，例如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">global-dubbo.properties,global-redis.properties,global-zookeeper.properties,global-sso.properties,global-mq.properties,global-fastdfs.properties,global-elasticsearch.properties</span><br></pre></td></tr></table></figure>
+<p>让disconf下载配置文件的时候优先下载global的配置文件，在properties加载的时候优先加载global的配置，这样当发生重复项时后加载的会覆盖前面的信息，从而达到了我们上面的需求，当APP中修改了某个global配置应该以APP的配置项为主。</p>
+<p>接下来就让我们看一下具体扩展了哪些类？</p>
+<p>Disconf的扩展点做的不是那么的好，因此扩展起来有些麻烦，我使用的是比较暴力的方式，直接使用原包的类在名称后加Ext然后修改代码，使用的时候使用Ext的类替代即可，这种方式的弊端是升级<code>Disconf</code>的时候很麻烦。</p>
+<h2 id="Disconf扫描管理"><a href="#Disconf扫描管理" class="headerlink" title="Disconf扫描管理"></a>Disconf扫描管理</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">com.baidu.disconf.client.DisconfMgrBean</span><br><span class="line">扩展一个</span><br><span class="line">com.baidu.disconf.client.DisconfMgrBeanExt</span><br><span class="line"></span><br><span class="line">com.baidu.disconf.client.DisconfMgrBeanSecond</span><br><span class="line">扩展一个</span><br><span class="line">com.baidu.disconf.client.DisconfMgrBeanSecondExt</span><br></pre></td></tr></table></figure>
+<h2 id="Reloadable-Properties"><a href="#Reloadable-Properties" class="headerlink" title="Reloadable Properties"></a>Reloadable Properties</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">com.baidu.disconf.client.addons.properties.ReloadablePropertiesFactoryBean</span><br><span class="line">扩展一个</span><br><span class="line">com.baidu.disconf.client.addons.properties.ReloadablePropertiesFactoryBeanExt</span><br></pre></td></tr></table></figure>
+<p>可以增加一个开关从而支持启用global的自由度，默认是开启的。</p>
+<p>下面来看一下扩展后的具体使用方法如下</p>
+<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><p><a href="https://github.com/ningyu1/disconf-client-ext" target="_blank" rel="noopener">disconf-client-ext</a> </p>
+<p><a href="https://github.com/ningyu1/disconf-client-ext/releases" target="_blank" rel="noopener"><img src="https://img.shields.io/github/release/ningyu1/disconf-client-ext.svg?style=social&amp;label=Release"></a>&nbsp;<a href="https://github.com/ningyu1/disconf-client-ext/stargazers" target="_blank" rel="noopener"><img src="https://img.shields.io/github/stars/ningyu1/disconf-client-ext.svg?style=social&amp;label=Star"></a>&nbsp;<a href="https://github.com/ningyu1/disconf-client-ext/fork" target="_blank" rel="noopener"><img src="https://img.shields.io/github/forks/ningyu1/disconf-client-ext.svg?style=social&amp;label=Fork"></a>&nbsp;<a href="https://github.com/ningyu1/disconf-client-ext/watchers" target="_blank" rel="noopener"><img src="https://img.shields.io/github/watchers/ningyu1/disconf-client-ext.svg?style=social&amp;label=Watch"></a> <a href="http://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener"><img src="https://img.shields.io/badge/license-GPLv3-blue.svg"></a></p>
+<h2 id="disconf-client-ext的使用"><a href="#disconf-client-ext的使用" class="headerlink" title="disconf-client-ext的使用"></a>disconf-client-ext的使用</h2><ul>
+<li>依赖disconf版本：2.6.32</li>
+<li>pom中引入disconf-client-ext依赖</li>
+<li>修改disconf配置<ul>
+<li>替换<code>com.baidu.disconf.client.DisconfMgrBean</code> –&gt; <code>com.baidu.disconf.client.DisconfMgrBeanExt</code></li>
+<li>替换<code>com.baidu.disconf.client.DisconfMgrBeanSecond</code> –&gt; <code>com.baidu.disconf.client.DisconfMgrBeanSecondExt</code></li>
+<li>替换<code>com.baidu.disconf.client.addons.properties.ReloadablePropertiesFactoryBean</code> –&gt; <code>com.baidu.disconf.client.addons.properties.ReloadablePropertiesFactoryBeanExt</code></li>
+<li>修改locations中配置文件，只保留项目自己的配置文件，例如</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;bean id=&quot;disconfNotReloadablePropertiesFactoryBean&quot; class=&quot;com.baidu.disconf.client.addons.properties.ReloadablePropertiesFactoryBeanExt&quot;&gt;</span><br><span class="line">	&lt;property name=&quot;locations&quot;&gt;</span><br><span class="line">		&lt;list&gt;</span><br><span class="line">			&lt;value&gt;classpath:/jdbc.properties&lt;/value&gt;</span><br><span class="line">		&lt;/list&gt;</span><br><span class="line">	&lt;/property&gt;</span><br><span class="line">&lt;/bean&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><span style="color:red">关闭global共享配置（默认是开启的）</span></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;bean id=&quot;disconfNotReloadablePropertiesFactoryBean&quot; class=&quot;com.baidu.disconf.client.addons.properties.ReloadablePropertiesFactoryBeanExt&quot;&gt;</span><br><span class="line">	&lt;property name=&quot;locations&quot;&gt;</span><br><span class="line">		&lt;list&gt;</span><br><span class="line">			&lt;value&gt;classpath:/jdbc.properties&lt;/value&gt;</span><br><span class="line">		&lt;/list&gt;</span><br><span class="line">	&lt;/property&gt;</span><br><span class="line">	&lt;property name=&quot;globalShareEnable&quot; value=&quot;false&quot; /&gt;</span><br><span class="line">&lt;/bean&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>最后一步添加global项目到<code>Disconf</code></li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/disconf-ext/1.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>世界和平，Keep Real!</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.036Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20180211/61-disconf-ext.html" target="_blank" rel="external">https://ningyu1.github.io/20180211/61-disconf-ext.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/disconf/">disconf</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ucm/">ucm</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180211/61-disconf-ext.html&title=《扩展Disconf支持Global共享配置，简化业务应用参数配置》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180211/61-disconf-ext.html&title=《扩展Disconf支持Global共享配置，简化业务应用参数配置》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180211/61-disconf-ext.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《扩展Disconf支持Global共享配置，简化业务应用参数配置》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180211/61-disconf-ext.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180211/61-disconf-ext.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20180227/62-ant-path-matcher.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">RESTful访问权限管理实现思路，采用路径匹配神器之AntPathMatcher</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20180209/60-jmeter-plugins-dubbo-support.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Dubbo接口如何在Jmeter中测试，自研Dubbo Plugin for Apache JMeter</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180211/61-disconf-ext.html&title=《扩展Disconf支持Global共享配置，简化业务应用参数配置》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180211/61-disconf-ext.html&title=《扩展Disconf支持Global共享配置，简化业务应用参数配置》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180211/61-disconf-ext.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《扩展Disconf支持Global共享配置，简化业务应用参数配置》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180211/61-disconf-ext.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180211/61-disconf-ext.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACJklEQVR42u3awW4DIQwE0Pz/T6eX3irSGZNUKjxOUbIB3h4sbPx4xOO5GMnzs1UenxgYGBj/lvF8OVbP/Jwhn//nv/J1l1QMDIwLGKvlV8/MNvd6nmTd5fcYGBgYsyBYhnUMDAyMzzFe/yvhJcEXAwMDI0liX0+0U4Z7Q3DHwMA4mpFX3f/+80fuNzAwMP4V41mOPDi2R73Zfr5nw8DAOJqRB7hZWX+Wsg73g4GBcSijDamz5oyElKe4W90cGBgYRzB2Gix2mrraY2V0wsXAwDiI0Qbi/FpxNkPbwIGBgXE2I9lEm47O2Pnq0X0sBgbGcYz8qFe8lY3L0XYnGBgYZzNmhfjZRUKbABchGwMD42jGrEyfHA3zhoz8eBrNg4GBcRzjvVtvN7RTvPulWwQDA+Mgxk64zMdOEhs1W2BgYBzNaAv67TKzAN3OhoGBcRujbQ5rC3PttWjUZoGBgXEZ4w1dG/HRs275Wq2OgYFxNGPn0rFtpGivAdpEFwMD42xGcvhLyvQ7qWyeNi93hYGBcSVjv0y2c1XZvlYMDIx7GJ84AuYvq11rGXAxMDAOYuy3TeStGLMeiYiKgYFxNCMfbdrZHh/bM15+LYGBgXEGo225mP06a+ZIgjUGBsY9jCLrjUtjs3J/27qBgYGB0W5356X8ElJnNT8MDIyLGTvtFHmJrXhlGBgYFzDyZfLtzpLSWSKNgYFxNmN27mrT1JyUh34MDIwLGF8x87JQaz3MFQAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

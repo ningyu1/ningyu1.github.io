@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>单元测试以及代码覆盖率——Jenkins集成SonarQube、JaCoCo、Junit使用问题汇总 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="jenkins,sonar,sonarqube,jacoco,junit,testng">
+    <meta name="description" content="单元测试以及代码覆盖率——Jenkins集成SonarQube、JaCoCo、Junit使用问题汇总">
+<meta name="keywords" content="jenkins,sonar,sonarqube,jacoco,junit,testng">
+<meta property="og:type" content="article">
+<meta property="og:title" content="单元测试以及代码覆盖率——Jenkins集成SonarQube、JaCoCo、Junit使用问题汇总">
+<meta property="og:url" content="https://ningyu1.github.io/20180412/77-jenkins-sonarqube-jacoco-junit.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="单元测试以及代码覆盖率——Jenkins集成SonarQube、JaCoCo、Junit使用问题汇总">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ningyu1.github.io/img/jenkins-sonar-jacoco/8.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/jenkins-sonar-jacoco/1.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/jenkins-sonar-jacoco/2.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/jenkins-sonar-jacoco/3.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/jenkins-sonar-jacoco/4.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/jenkins-sonar-jacoco/5.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/jenkins-sonar-jacoco/6.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/jenkins-sonar-jacoco/7.png">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.037Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="单元测试以及代码覆盖率——Jenkins集成SonarQube、JaCoCo、Junit使用问题汇总">
+<meta name="twitter:description" content="单元测试以及代码覆盖率——Jenkins集成SonarQube、JaCoCo、Junit使用问题汇总">
+<meta name="twitter:image" content="https://ningyu1.github.io/img/jenkins-sonar-jacoco/8.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">单元测试以及代码覆盖率——Jenkins集成SonarQube、JaCoCo、Junit使用问题汇总</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">单元测试以及代码覆盖率——Jenkins集成SonarQube、JaCoCo、Junit使用问题汇总</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-04-12T09:03:00.000Z" itemprop="datePublished" class="page-time">
+  2018-04-12
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/test/">test</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/test/jenkins/">jenkins</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#前提"><span class="post-toc-number">1.</span> <span class="post-toc-text">前提</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#maven工程调通单元测试以及测试覆盖率报告生成"><span class="post-toc-number">2.</span> <span class="post-toc-text">maven工程调通单元测试以及测试覆盖率报告生成</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#上步操作会遇到的常规问题"><span class="post-toc-number">3.</span> <span class="post-toc-text">上步操作会遇到的常规问题</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#问题一：Tests-are-skipped"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">问题一：Tests are skipped.</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#问题二：单元测试输出乱码"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">问题二：单元测试输出乱码</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#问题三：Skipping-JaCoCo-execution-due-to-missing-execution-data-file"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">问题三：Skipping JaCoCo execution due to missing execution data file.</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Jenkins使用JaCoCo-plugin插件"><span class="post-toc-number">4.</span> <span class="post-toc-text">Jenkins使用JaCoCo plugin插件</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Jenkins使用Sonarqube-plugin插件"><span class="post-toc-number">5.</span> <span class="post-toc-text">Jenkins使用Sonarqube plugin插件</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#问题一：No-JaCoCo-analysis-of-project-coverage-can-be-done-since-there-is-no-class-files"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">问题一：No JaCoCo analysis of project coverage can be done since there is no class files.</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-77-jenkins-sonarqube-jacoco-junit"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">单元测试以及代码覆盖率——Jenkins集成SonarQube、JaCoCo、Junit使用问题汇总</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-04-12 17:03:00" datetime="2018-04-12T09:03:00.000Z"  itemprop="datePublished">2018-04-12</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/test/">test</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/test/jenkins/">jenkins</a></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>当我们使用持续集成<code>Jenkins</code>的时候经常会结合一系列的插件使用，这里就说一下<code>Jenkins</code>集成<code>Sonar</code>做代码质量管理以及<code>Junit（testng）</code>、<code>JaCoCo</code>做单元测试和覆盖率的时候遇到的问题。</p>
+<h1 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h1><p>首先我们的工程使用<code>maven</code>构建，单元测试使用<code>testng</code>编写，在使用<code>jenkins</code>之前我们应该在本地使用maven调通所有的单元测试以及<code>test coverage</code>的问题。</p>
+<p>我们使用<code>maven-surefire-plugin</code>来生成单元测试报告，使用<code>jacoco-maven-plugin</code>来生成<code>test coverage</code>报告。下面我给出以下我使用的标准配置</p>
+<h1 id="maven工程调通单元测试以及测试覆盖率报告生成"><a href="#maven工程调通单元测试以及测试覆盖率报告生成" class="headerlink" title="maven工程调通单元测试以及测试覆盖率报告生成"></a>maven工程调通单元测试以及测试覆盖率报告生成</h1><p>pom.xml的标准配置</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">	&lt;dependency&gt;</span><br><span class="line">		&lt;groupId&gt;org.slf4j&lt;/groupId&gt;</span><br><span class="line">		&lt;artifactId&gt;slf4j-api&lt;/artifactId&gt;</span><br><span class="line">	&lt;/dependency&gt;</span><br><span class="line">	&lt;dependency&gt;</span><br><span class="line">		&lt;groupId&gt;org.testng&lt;/groupId&gt;</span><br><span class="line">		&lt;artifactId&gt;testng&lt;/artifactId&gt;</span><br><span class="line">		&lt;version&gt;6.4&lt;/version&gt;</span><br><span class="line">		&lt;scope&gt;test&lt;/scope&gt;</span><br><span class="line">		&lt;optional&gt;true&lt;/optional&gt;</span><br><span class="line">	&lt;/dependency&gt;</span><br><span class="line">	&lt;dependency&gt;</span><br><span class="line">		&lt;groupId&gt;junit&lt;/groupId&gt;</span><br><span class="line">		&lt;artifactId&gt;junit&lt;/artifactId&gt;</span><br><span class="line">		&lt;scope&gt;test&lt;/scope&gt;</span><br><span class="line">		&lt;optional&gt;true&lt;/optional&gt;</span><br><span class="line">	&lt;/dependency&gt;</span><br><span class="line">	&lt;dependency&gt;</span><br><span class="line">		&lt;groupId&gt;org.jacoco&lt;/groupId&gt;</span><br><span class="line">		&lt;artifactId&gt;jacoco-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">		&lt;version&gt;0.8.1&lt;/version&gt;</span><br><span class="line">	&lt;/dependency&gt;</span><br><span class="line">&lt;/dependencies&gt;</span><br><span class="line"></span><br><span class="line">&lt;build&gt;</span><br><span class="line">	&lt;plugins&gt;</span><br><span class="line">		&lt;plugin&gt;</span><br><span class="line">			&lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;</span><br><span class="line">			&lt;version&gt;2.5&lt;/version&gt;</span><br><span class="line">			&lt;configuration&gt;</span><br><span class="line">				&lt;skipTests&gt;false&lt;/skipTests&gt;</span><br><span class="line">				&lt;argLine&gt;$&#123;argLine&#125; -Dfile.encoding=UTF-8&lt;/argLine&gt;</span><br><span class="line">			&lt;/configuration&gt;</span><br><span class="line">		&lt;/plugin&gt;</span><br><span class="line">		&lt;plugin&gt;</span><br><span class="line">			&lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;maven-deploy-plugin&lt;/artifactId&gt;</span><br><span class="line">			&lt;configuration&gt;</span><br><span class="line">				&lt;skip&gt;false&lt;/skip&gt;</span><br><span class="line">			&lt;/configuration&gt;</span><br><span class="line">		&lt;/plugin&gt;</span><br><span class="line">		&lt;plugin&gt;</span><br><span class="line">			&lt;groupId&gt;org.jacoco&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;jacoco-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">			&lt;version&gt;0.8.1&lt;/version&gt;</span><br><span class="line">			&lt;configuration&gt;</span><br><span class="line">				&lt;skip&gt;false&lt;/skip&gt;</span><br><span class="line">			&lt;/configuration&gt;</span><br><span class="line">			&lt;executions&gt;</span><br><span class="line">				&lt;execution&gt;</span><br><span class="line">					&lt;goals&gt;</span><br><span class="line">						&lt;goal&gt;prepare-agent&lt;/goal&gt;</span><br><span class="line">					&lt;/goals&gt;</span><br><span class="line">				&lt;/execution&gt;</span><br><span class="line">				&lt;execution&gt;</span><br><span class="line">					&lt;configuration&gt;</span><br><span class="line">						&lt;outputDirectory&gt;$&#123;basedir&#125;/target/coverage-reports&lt;/outputDirectory&gt;</span><br><span class="line">					&lt;/configuration&gt;</span><br><span class="line">					&lt;id&gt;report&lt;/id&gt;</span><br><span class="line">					&lt;phase&gt;test&lt;/phase&gt;</span><br><span class="line">					&lt;goals&gt;</span><br><span class="line">						&lt;goal&gt;report&lt;/goal&gt;</span><br><span class="line">					&lt;/goals&gt;</span><br><span class="line">				&lt;/execution&gt;</span><br><span class="line">			&lt;/executions&gt;</span><br><span class="line">		&lt;/plugin&gt;</span><br><span class="line">	&lt;/plugins&gt;</span><br><span class="line">&lt;/build&gt;</span><br></pre></td></tr></table></figure>
+<p>根据上面配置执行下来的报告生成的目录结构如下:</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/jenkins-sonar-jacoco/8.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li><code>classes</code>是源代码编译生成的字节码目录</li>
+<li><code>coverage-reports</code>是单元测试覆盖率报告生成目录</li>
+<li><code>surefire-reports</code>是单元测试报告生成目录</li>
+<li><code>test-classes</code>是单元测试代码编译生成的字节码目录</li>
+<li><code>jacoco.exec</code>是用于生成单元测试可执行文件</li>
+</ul>
+<p>下面我说一下我们会遇到的常规问题</p>
+<h1 id="上步操作会遇到的常规问题"><a href="#上步操作会遇到的常规问题" class="headerlink" title="上步操作会遇到的常规问题"></a>上步操作会遇到的常规问题</h1><h2 id="问题一：Tests-are-skipped"><a href="#问题一：Tests-are-skipped" class="headerlink" title="问题一：Tests are skipped."></a>问题一：Tests are skipped.</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[INFO] --- maven-surefire-plugin:2.5:test (default-test) @ tools ---</span><br><span class="line">[INFO] Tests are skipped.</span><br></pre></td></tr></table></figure>
+<p>单元测试被跳过，这个可以通过<code>maven-surefire-plugin</code>插件的<code>configuration</code>来配置不跳过，如下配置：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;plugin&gt;</span><br><span class="line">	&lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;</span><br><span class="line">	&lt;version&gt;2.5&lt;/version&gt;</span><br><span class="line">	&lt;configuration&gt;</span><br><span class="line">		&lt;skipTests&gt;false&lt;/skipTests&gt;</span><br><span class="line">	&lt;/configuration&gt;</span><br><span class="line">&lt;/plugin&gt;</span><br></pre></td></tr></table></figure>
+<p><span style="color:blue">配置<code>skipTests</code>属性而不是<code>skip</code>属性这里需要注意一下，有很多人配置的<code>skip</code>属性</span></p>
+<h2 id="问题二：单元测试输出乱码"><a href="#问题二：单元测试输出乱码" class="headerlink" title="问题二：单元测试输出乱码"></a>问题二：单元测试输出乱码</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-------------------------------------------------------</span><br><span class="line"> T E S T S</span><br><span class="line">-------------------------------------------------------</span><br><span class="line">Running TestSuite</span><br><span class="line">SLF4J: Failed to load class &quot;org.slf4j.impl.StaticLoggerBinder&quot;.</span><br><span class="line">SLF4J: Defaulting to no-operation (NOP) logger implementation</span><br><span class="line">SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.</span><br><span class="line">=====��һ��===============</span><br><span class="line"></span><br><span class="line">=====��һ��===============</span><br><span class="line"></span><br><span class="line">=====���¼���===============</span><br></pre></td></tr></table></figure>
+<p>单元测试输出信息乱码，这个可以通过<code>maven-surefire-plugin</code>插件的<code>configuration</code>来配置字符编码，如下配置：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;plugin&gt;</span><br><span class="line">	&lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;</span><br><span class="line">	&lt;version&gt;2.5&lt;/version&gt;</span><br><span class="line">	&lt;configuration&gt;</span><br><span class="line">		&lt;skipTests&gt;false&lt;/skipTests&gt;</span><br><span class="line">		&lt;argLine&gt;-Dfile.encoding=UTF-8&lt;/argLine&gt;</span><br><span class="line">	&lt;/configuration&gt;</span><br><span class="line">&lt;/plugin&gt;</span><br></pre></td></tr></table></figure>
+<p><span style="color:blue">到这里我们就可以去<code>taget/surefire-reports</code>目录下查看单元测试报告。</span></p>
+<h2 id="问题三：Skipping-JaCoCo-execution-due-to-missing-execution-data-file"><a href="#问题三：Skipping-JaCoCo-execution-due-to-missing-execution-data-file" class="headerlink" title="问题三：Skipping JaCoCo execution due to missing execution data file."></a>问题三：Skipping JaCoCo execution due to missing execution data file.</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[INFO] --- jacoco-maven-plugin:0.8.1:report (report) @ tools ---</span><br><span class="line">[INFO] Skipping JaCoCo execution due to missing execution data file.</span><br></pre></td></tr></table></figure>
+<p><code>jacoco</code>执行被跳过，原因是没有找到<code>jacoco</code>可执行文件<code>jacoco.exec</code>。</p>
+<p>这个时候我们去<code>target</code>目录下是看不到<code>jacoco.exec</code>文件的，有的版本名字叫<code>jacoco-junit.exec</code>。</p>
+<p>理论上执行的时候会自动生成exec文件，但是为什么没有生成？我们看一下执行日志</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[INFO] --- jacoco-maven-plugin:0.8.1:prepare-agent (default) @ tools ---</span><br><span class="line">[INFO] argLine set to -javaagent:D:\\javatools\\mvnrepository\\org\\jacoco\\org.jacoco.agent\\0.8.1\\org.jacoco.agent-0.8.1-runtime.jar=destfile=D:\\javatools\\workspace\\framework\\tools\\target\\jacoco.exec</span><br></pre></td></tr></table></figure>
+<p><code>jacoco.exec</code>的生成是根据<code>-javaagent</code>的方式来生成的，我们有可以看到<code>jacoco-maven-plugin</code>指定了<code>argLine</code>参数，但是为什么没有生效？</p>
+<p>原因是我们上面指定过单元测试编码，使用的就是<code>argLine</code>参数，因此这个问题应该是上面的编码参数指定后没有带入插件添加的<code>-javaagent</code>参数，那如何解决？查看下面配置：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;plugin&gt;</span><br><span class="line">	&lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;</span><br><span class="line">	&lt;version&gt;2.5&lt;/version&gt;</span><br><span class="line">	&lt;configuration&gt;</span><br><span class="line">		&lt;skipTests&gt;false&lt;/skipTests&gt;</span><br><span class="line">		&lt;argLine&gt;$&#123;argLine&#125; -Dfile.encoding=UTF-8&lt;/argLine&gt;</span><br><span class="line">	&lt;/configuration&gt;</span><br><span class="line">&lt;/plugin&gt;</span><br></pre></td></tr></table></figure>
+<p><span style="color:blue">在<code>argLine</code>中增加变量<code>${argLine}</code>后面再增加自动以的参数</span></p>
+<p>如果通过配置手动的指定<code>jacoco.exec</code>文件的生成路径也需要注意也可能会出现这个问题，生成exec的路径指定在哪里，report执行的时候就需要通过<code>dataFile</code>来指定exec的路径，让程序知道正确的exec路径，比如说：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;plugin&gt;</span><br><span class="line">	&lt;groupId&gt;org.jacoco&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;jacoco-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">	&lt;version&gt;0.8.1&lt;/version&gt;</span><br><span class="line">	&lt;configuration&gt;</span><br><span class="line">		&lt;skip&gt;false&lt;/skip&gt;</span><br><span class="line">		&lt;destFile&gt;$&#123;basedir&#125;/target/coverage-reports/jacoco.exec&lt;/destFile&gt;</span><br><span class="line">	&lt;/configuration&gt;</span><br><span class="line">	&lt;executions&gt;</span><br><span class="line">		&lt;execution&gt;</span><br><span class="line">			&lt;goals&gt;</span><br><span class="line">				&lt;goal&gt;prepare-agent&lt;/goal&gt;</span><br><span class="line">			&lt;/goals&gt;</span><br><span class="line">		&lt;/execution&gt;</span><br><span class="line">		&lt;execution&gt;</span><br><span class="line">			&lt;configuration&gt;</span><br><span class="line">				&lt;dataFile&gt;$&#123;basedir&#125;/target/coverage-reports/jacoco.exec&lt;/dataFile&gt;</span><br><span class="line">				&lt;outputDirectory&gt;$&#123;basedir&#125;/target/coverage-reports&lt;/outputDirectory&gt;</span><br><span class="line">			&lt;/configuration&gt;</span><br><span class="line">			&lt;id&gt;report&lt;/id&gt;</span><br><span class="line">			&lt;phase&gt;test&lt;/phase&gt;</span><br><span class="line">			&lt;goals&gt;</span><br><span class="line">				&lt;goal&gt;report&lt;/goal&gt;</span><br><span class="line">			&lt;/goals&gt;</span><br><span class="line">		&lt;/execution&gt;</span><br><span class="line">	&lt;/executions&gt;</span><br><span class="line">&lt;/plugin&gt;</span><br></pre></td></tr></table></figure>
+<p>上面通过<code>configuration</code>的<code>destFile</code>来自定义<code>jacoco.exec</code>的生成路径，下面在<code>report</code>的时候需要通过<code>dataFile</code>来指定对应的<code>jacoco.exec</code>的路径。</p>
+<h1 id="Jenkins使用JaCoCo-plugin插件"><a href="#Jenkins使用JaCoCo-plugin插件" class="headerlink" title="Jenkins使用JaCoCo plugin插件"></a>Jenkins使用JaCoCo plugin插件</h1><p>首先去<code>Jenkins</code>上安装<code>JaCoCo plugin</code>插件，插件的安装就跳过了，插件安装好后，在job中如何配置?</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/jenkins-sonar-jacoco/1.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/jenkins-sonar-jacoco/2.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p><span style="color:red">这里需要注意的配置</span></p>
+<ul>
+<li>Path to exec files: **/jacoco.exec 可执行文件路径</li>
+<li>Path to class directories: 这个配置的是源代码编译后的字节码目录，也就是<code>classes</code>目录不是<code>test-classes</code>目录，如果有多个可以指定多个</li>
+<li>Path to source directories: 这个配置的是源代码的目录，也就是<code>src/main/java</code>目录，如果有多个可以指定多个。</li>
+</ul>
+<p>配置好之后执行job会看到如下的日志：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">INFO: ------------------------------------------------------------------------</span><br><span class="line">Injecting SonarQube environment variables using the configuration: SonarQube</span><br><span class="line">[JaCoCo plugin] Collecting JaCoCo coverage data...</span><br><span class="line">[JaCoCo plugin] **/jacoco.exec;**/classes;src/main/java; locations are configured</span><br><span class="line">Injecting SonarQube environment variables using the configuration: SonarQube</span><br><span class="line">Injecting SonarQube environment variables using the configuration: SonarQube</span><br><span class="line">[JaCoCo plugin] Number of found exec files for pattern **/jacoco.exec: 1</span><br><span class="line">[JaCoCo plugin] Saving matched execfiles:  /var/lib/jenkins/workspace/cc-framework-tools/target/coverage-reports/jacoco.exec</span><br><span class="line">[JaCoCo plugin] Saving matched class directories for class-pattern: **/classes: </span><br><span class="line">[JaCoCo plugin]  - /var/lib/jenkins/workspace/cc-framework-tools/target/classes 5 files</span><br><span class="line">[JaCoCo plugin] Saving matched source directories for source-pattern: src/main/java: </span><br><span class="line">[JaCoCo plugin] - /var/lib/jenkins/workspace/cc-framework-tools/src/main/java 5 files</span><br><span class="line">[JaCoCo plugin] Loading inclusions files..</span><br><span class="line">[JaCoCo plugin] inclusions: []</span><br><span class="line">[JaCoCo plugin] exclusions: []</span><br><span class="line">[JaCoCo plugin] Thresholds: JacocoHealthReportThresholds [minClass=0, maxClass=0, minMethod=0, maxMethod=0, minLine=0, maxLine=0, minBranch=0, maxBranch=0, minInstruction=0, maxInstruction=0, minComplexity=0, maxComplexity=0]</span><br><span class="line">[JaCoCo plugin] Publishing the results..</span><br><span class="line">[JaCoCo plugin] Loading packages..</span><br><span class="line">[JaCoCo plugin] Done.</span><br><span class="line">[JaCoCo plugin] Overall coverage: class: 50, method: 54, line: 48, branch: 40, instruction: 55</span><br><span class="line">Finished: SUCCESS</span><br></pre></td></tr></table></figure>
+<p>出现上面日志就证明配置成功并且可以看到报告，如果出现下面的日志就证明配置的目录没有扫到classes，需要修改<code>Path to class directories</code>目录的配置</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Overall coverage: class: 0, method: 0, line: 0, branch: 0, instruction: 0</span><br></pre></td></tr></table></figure>
+<p>最终结果如下图：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/jenkins-sonar-jacoco/3.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h1 id="Jenkins使用Sonarqube-plugin插件"><a href="#Jenkins使用Sonarqube-plugin插件" class="headerlink" title="Jenkins使用Sonarqube plugin插件"></a>Jenkins使用Sonarqube plugin插件</h1><p>首先去<code>Jenkins上</code>安装<code>SonarQube plugin</code>插件，插件的安装就跳过了，插件安装好后，在<code>jenkins</code>的系统配置中配置<code>sonar</code>服务器信息，如下</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/jenkins-sonar-jacoco/4.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>配置好后在job的配置中增加<code>SonarQube</code>的支持，如下</p>
+<ul>
+<li>在构建环境下添加<code>Prepare SonarQube Scanner environment</code></li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/jenkins-sonar-jacoco/5.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>在构建下添加<code>Execute SonarQube Scanner</code></li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/jenkins-sonar-jacoco/6.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>在<code>Execute SonarQube Scanner</code>中增加<code>Analysis properties</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># required metadata</span><br><span class="line"># 项目key</span><br><span class="line">sonar.projectKey=com.domian.package:projectName</span><br><span class="line"># 项目名称</span><br><span class="line">sonar.projectName=tools</span><br><span class="line"># 项目版本，可以写死，也可以引用变量</span><br><span class="line">sonar.projectVersion=$&#123;VER&#125;</span><br><span class="line"># 源文件编码</span><br><span class="line">sonar.sourceEncoding=UTF-8</span><br><span class="line"># 源文件语言</span><br><span class="line">sonar.language=java</span><br><span class="line"># path to source directories (required)</span><br><span class="line"># 源代码目录，如果多个使用&quot;,&quot;分割 例如：mode1/src/main,mode2/src/main</span><br><span class="line">sonar.sources=src/main</span><br><span class="line"># 单元测试目录，如果多个使用&quot;,&quot;分割 例如：mode1/src/test,mode2/src/test</span><br><span class="line">sonar.tests=src/test</span><br><span class="line"># Exclude the test source</span><br><span class="line"># 忽略的目录</span><br><span class="line">#sonar.exclusions=*/src/test/**/*</span><br><span class="line"># 单元测试报告目录</span><br><span class="line">sonar.junit.reportsPath=target/surefire-reports</span><br><span class="line"># 代码覆盖率插件</span><br><span class="line">sonar.java.coveragePlugin=jacoco</span><br><span class="line"># jacoco.exec文件路径</span><br><span class="line">sonar.jacoco.reportPath=target/coverage-reports/jacoco.exec</span><br><span class="line"># 这个没搞懂，官方示例是配置成jacoco.exec文件路径</span><br><span class="line">sonar.jacoco.itReportPath=target/coverage-reports/jacoco.exec</span><br></pre></td></tr></table></figure>
+<p><span style="color:blue">具体的参数可以查看官方文档:<a href="https://docs.sonarqube.org/display/SONAR/Analysis+Parameters" target="_blank" rel="noopener">《Analysis Parameters》</a></span></p>
+<p>配置好之后执行job后去<code>Sonar</code>上只看到了单元测试的信息，没有看到单元测试覆盖率的信息，关于这个问题我们分析job执行的日志，如下:</p>
+<h2 id="问题一：No-JaCoCo-analysis-of-project-coverage-can-be-done-since-there-is-no-class-files"><a href="#问题一：No-JaCoCo-analysis-of-project-coverage-can-be-done-since-there-is-no-class-files" class="headerlink" title="问题一：No JaCoCo analysis of project coverage can be done since there is no class files."></a>问题一：No JaCoCo analysis of project coverage can be done since there is no class files.</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">16:01:17.455 INFO  - Sensor JaCoCoOverallSensor</span><br><span class="line">16:01:17.470 INFO  - Analysing /var/lib/jenkins/workspace/cc-framework-tools/target/coverage-reports/jacoco.exec</span><br><span class="line">16:01:17.481 INFO  - No JaCoCo analysis of project coverage can be done since there is no class files.</span><br><span class="line">16:01:17.481 INFO  - Sensor JaCoCoOverallSensor (done) | time=26ms</span><br><span class="line">16:01:17.482 INFO  - Sensor JaCoCoSensor</span><br><span class="line">16:01:17.482 INFO  - No JaCoCo analysis of project coverage can be done since there is no class files.</span><br><span class="line">16:01:17.482 INFO  - Sensor JaCoCoSensor (done) | time=0ms</span><br><span class="line">16:01:17.482 INFO  - Sensor Code Colorizer Sensor</span><br></pre></td></tr></table></figure>
+<p>说的是没找到class文件所以<code>jacoco</code>不能进行分析，问题很明显是没有找到class类，难道它不是去<code>maven</code>标准的<code>target/classes</code>下找文件么？</p>
+<p>但是找到了这篇文章：<a href="https://dzone.com/articles/integration-jenkins-jacoco-and-sonarqube" target="_blank" rel="noopener">《Jenkins, JaCoCo, and SonarQube Integration With Maven》</a>，看到里面在pom.xml中配置了一些参数给我了启发，发现有个参数<code>sonar.binaries</code>指定的是classes目录，可以插件的有些参数不兼容maven，在官方的配置中可以看到这样的字样: <code>Not compatible with Mave</code>和<code>Compatible with Maven</code>，能看到有写参数兼容maven默认路径有些不兼容。</p>
+<p>随后再官方文档中也找到了与jenkins继承的properties配置说明：<a href="https://docs.sonarqube.org/display/PLUG/Triggering+Analysis+on+Hudson+Job" target="_blank" rel="noopener">《Triggering Analysis on Hudson Job》</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># path to project binaries (optional), for example directory of Java bytecode</span><br><span class="line"># java字节码目录</span><br><span class="line">sonar.binaries=binDir</span><br></pre></td></tr></table></figure>
+<p>最终给出<code>Execute SonarQube Scanner</code>中的<code>Analysis properties</code>完成配置参数如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># required metadata</span><br><span class="line"># 项目key</span><br><span class="line">sonar.projectKey=com.domian.package:projectName</span><br><span class="line"># 项目名称</span><br><span class="line">sonar.projectName=tools</span><br><span class="line"># 项目版本，可以写死，也可以引用变量</span><br><span class="line">sonar.projectVersion=$&#123;VER&#125;</span><br><span class="line"># 源文件编码</span><br><span class="line">sonar.sourceEncoding=UTF-8</span><br><span class="line"># 源文件语言</span><br><span class="line">sonar.language=java</span><br><span class="line"># path to source directories (required)</span><br><span class="line"># 源代码目录，如果多个使用&quot;,&quot;分割 例如：mode1/src/main,mode2/src/main</span><br><span class="line">sonar.sources=src/main/java</span><br><span class="line"># 单元测试目录，如果多个使用&quot;,&quot;分割 例如：mode1/src/test,mode2/src/test</span><br><span class="line">sonar.tests=src/test/java</span><br><span class="line"># java字节码目录</span><br><span class="line">sonar.binaries=target/classes</span><br><span class="line"># 单元测试报告目录</span><br><span class="line">sonar.junit.reportsPath=target/surefire-reports</span><br><span class="line"># 代码覆盖率插件</span><br><span class="line">sonar.java.coveragePlugin=jacoco</span><br><span class="line"># jacoco插件版本</span><br><span class="line">jacoco.version=0.8.1</span><br><span class="line"># jacoco.exec文件路径</span><br><span class="line">sonar.jacoco.reportPath=target/coverage-reports/jacoco.exec</span><br></pre></td></tr></table></figure>
+<p>全部配置修改完后执行job后去<code>Sonar</code>上查看具体的信息如下：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/jenkins-sonar-jacoco/7.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.037Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20180412/77-jenkins-sonarqube-jacoco-junit.html" target="_blank" rel="external">https://ningyu1.github.io/20180412/77-jenkins-sonarqube-jacoco-junit.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jacoco/">jacoco</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jenkins/">jenkins</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/junit/">junit</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sonar/">sonar</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sonarqube/">sonarqube</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/testng/">testng</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180412/77-jenkins-sonarqube-jacoco-junit.html&title=《单元测试以及代码覆盖率——Jenkins集成SonarQube、JaCoCo、Junit使用问题汇总》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180412/77-jenkins-sonarqube-jacoco-junit.html&title=《单元测试以及代码覆盖率——Jenkins集成SonarQube、JaCoCo、Junit使用问题汇总》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180412/77-jenkins-sonarqube-jacoco-junit.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《单元测试以及代码覆盖率——Jenkins集成SonarQube、JaCoCo、Junit使用问题汇总》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180412/77-jenkins-sonarqube-jacoco-junit.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180412/77-jenkins-sonarqube-jacoco-junit.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20180423/78-dubbo-validation-jsr303-pit.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Dubbo使用jsr303框架hibernate-validator遇到的问题</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20180410/76-tidb-notes.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">TiDB使用笔记 —— 测试环境集群部署</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180412/77-jenkins-sonarqube-jacoco-junit.html&title=《单元测试以及代码覆盖率——Jenkins集成SonarQube、JaCoCo、Junit使用问题汇总》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180412/77-jenkins-sonarqube-jacoco-junit.html&title=《单元测试以及代码覆盖率——Jenkins集成SonarQube、JaCoCo、Junit使用问题汇总》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180412/77-jenkins-sonarqube-jacoco-junit.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《单元测试以及代码覆盖率——Jenkins集成SonarQube、JaCoCo、Junit使用问题汇总》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180412/77-jenkins-sonarqube-jacoco-junit.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180412/77-jenkins-sonarqube-jacoco-junit.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACsElEQVR42u3aQY7CMAwFUO5/aWY7EkP7bdfQkV5WiEKbF6TY2Hk84vF8M35fPf7W6ydfv/V6NXnKBQMPDw/voqlPHpZcPb7/8T2TOePh4eFt85LbHU/l3TvJhp4sZR6K8PDw8O7GS26ak3qfxMPDw/uPvF6JIQ85k/IHHh4e3md4+e2S1Dn/br71r9da8PDw8GJe3kW6z+uV/h4eHh7euKt+vOH2DhD0SrTP1sDDw8Pb4PVKrnnjP0m1twu+eHh4eNfyqn/4e0XbaskjCUjRazw8PLwv8aqve6lzfjQhT+Xx8PDwPsmrlgaq71fbYNWggoeHh7fNy9PiSbm2V4w4flahAYaHh4d3Ka+6KVe37BxWPVZ1Ui7Bw8PDW+A1N9xiiytfrHyfvyBU4OHh4bV4vT/5k0R5nmQXUnk8PDy8Nd68GTZJvnNAfhUPDw9vmzefSoLvLeKoqIGHh4e3xuslu9XjU9UScH6s4e0PgIeHh7fGy29abeRXD1rlqXa0KHh4eHhf4lVDSLWIMFm4kwCGh4eHt8brpb/H1Pw4V2/qUXqNh4eHt8DrJdb5oau8qJEHm3KTDA8PD2+Zl1ytpte90NJLzfHw8PC2edXmU7RarZZVLyA1ay14eHh4A96kiNBr+feaYUlQKRwjwMPDwxvzknS52qaahIRqAn0SovDw8PA+wus9vtyaipem9z4eHh7eNq+a7FbT8XJ1uTWiowN4eHh4A96zOCaNsaShVS2FnPwAeHh4eAu83oY7OWRwbaOrdzwLDw8Pb87rtZp6KXXeVOst0B8zxMPDw1vj5Y2xvM0/KQ3n0exkWfHw8PBuwKseIKhOrnpY4WRueHh4eDfg9TbuvPzaG9H64eHh4V3Ky9PiyTGsySd7RQo8PDy8DV7vD/+kfVUtSZSDAR4eHt4W7wdZYNpPVQU87QAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

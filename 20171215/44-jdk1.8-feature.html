@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>JDK1.8新特性详解 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="jdk">
+    <meta name="description" content="JDK1.8新特性详解">
+<meta name="keywords" content="jdk">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JDK1.8新特性详解">
+<meta property="og:url" content="https://ningyu1.github.io/20171215/44-jdk1.8-feature.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="JDK1.8新特性详解">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.034Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JDK1.8新特性详解">
+<meta name="twitter:description" content="JDK1.8新特性详解">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">JDK1.8新特性详解</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">JDK1.8新特性详解</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-12-15T10:15:36.000Z" itemprop="datePublished" class="page-time">
+  2017-12-15
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/">java</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#一、接口的默认方法"><span class="post-toc-number">1.</span> <span class="post-toc-text">一、接口的默认方法</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#二、Lambda-表达式"><span class="post-toc-number">2.</span> <span class="post-toc-text">二、Lambda 表达式</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#三、函数式接口"><span class="post-toc-number">3.</span> <span class="post-toc-text">三、函数式接口</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#四、方法与构造函数引用"><span class="post-toc-number">4.</span> <span class="post-toc-text">四、方法与构造函数引用</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#五、Lambda-作用域"><span class="post-toc-number">5.</span> <span class="post-toc-text">五、Lambda 作用域</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#六、访问局部变量"><span class="post-toc-number">6.</span> <span class="post-toc-text">六、访问局部变量</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#七、访问对象字段与静态变量"><span class="post-toc-number">7.</span> <span class="post-toc-text">七、访问对象字段与静态变量</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#八、访问接口的默认方法"><span class="post-toc-number">8.</span> <span class="post-toc-text">八、访问接口的默认方法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Predicate接口"><span class="post-toc-number">8.1.</span> <span class="post-toc-text">Predicate接口</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Function-接口"><span class="post-toc-number">8.2.</span> <span class="post-toc-text">Function 接口</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Supplier-接口"><span class="post-toc-number">8.3.</span> <span class="post-toc-text">Supplier 接口</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Consumer-接口"><span class="post-toc-number">8.4.</span> <span class="post-toc-text">Consumer 接口</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Comparator-接口"><span class="post-toc-number">8.5.</span> <span class="post-toc-text">Comparator 接口</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Optional-接口"><span class="post-toc-number">8.6.</span> <span class="post-toc-text">Optional 接口</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Stream-接口"><span class="post-toc-number">8.7.</span> <span class="post-toc-text">Stream 接口</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Filter-过滤"><span class="post-toc-number">8.8.</span> <span class="post-toc-text">Filter 过滤</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Sort-排序"><span class="post-toc-number">8.9.</span> <span class="post-toc-text">Sort 排序</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Map-映射"><span class="post-toc-number">8.10.</span> <span class="post-toc-text">Map 映射</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Match-匹配"><span class="post-toc-number">8.11.</span> <span class="post-toc-text">Match 匹配</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Count-计数"><span class="post-toc-number">8.12.</span> <span class="post-toc-text">Count 计数</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Reduce-规约"><span class="post-toc-number">8.13.</span> <span class="post-toc-text">Reduce 规约</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#并行Streams"><span class="post-toc-number">8.14.</span> <span class="post-toc-text">并行Streams</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Map"><span class="post-toc-number">8.15.</span> <span class="post-toc-text">Map</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#九、Date-API"><span class="post-toc-number">9.</span> <span class="post-toc-text">九、Date API</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Clock-时钟"><span class="post-toc-number">9.1.</span> <span class="post-toc-text">Clock 时钟</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Timezones-时区"><span class="post-toc-number">9.2.</span> <span class="post-toc-text">Timezones 时区</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#LocalTime-本地时间"><span class="post-toc-number">9.3.</span> <span class="post-toc-text">LocalTime 本地时间</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#LocalDate-本地日期"><span class="post-toc-number">9.4.</span> <span class="post-toc-text">LocalDate 本地日期</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#LocalDateTime-本地日期时间"><span class="post-toc-number">9.5.</span> <span class="post-toc-text">LocalDateTime 本地日期时间</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#十、Annotation-注解"><span class="post-toc-number">10.</span> <span class="post-toc-text">十、Annotation 注解</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-44-jdk1.8-feature"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">JDK1.8新特性详解</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-12-15 18:15:36" datetime="2017-12-15T10:15:36.000Z"  itemprop="datePublished">2017-12-15</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/java/">java</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>将Java8的新特新逐一列出，并将使用简单的代码示例来指导你如何使用默认接口方法，lambda表达式，方法引用以及多重Annotation，之后你将会学到最新的API上的改进，比如流，函数式接口，Map以及全新的日期API</p>
+<h2 id="一、接口的默认方法"><a href="#一、接口的默认方法" class="headerlink" title="一、接口的默认方法"></a>一、接口的默认方法</h2><p>Java 8允许我们给接口添加一个非抽象的方法实现，只需要使用 default关键字即可，这个特征又叫做扩展方法，示例如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">interface Formula &#123;</span><br><span class="line">    double calculate(int a);</span><br><span class="line">    default double sqrt(int a) &#123;</span><br><span class="line">        return Math.sqrt(a);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Formula接口在拥有calculate方法之外同时还定义了sqrt方法，实现了Formula接口的子类只需要实现一个calculate方法，默认方法sqrt将在子类上可以直接使用。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Formula formula = new Formula() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public double calculate(int a) &#123;</span><br><span class="line">        return sqrt(a * 100);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">formula.calculate(100);     // 100.0</span><br><span class="line">formula.sqrt(16);           // 4.0</span><br></pre></td></tr></table></figure>
+<p>文中的formula被实现为一个匿名类的实例，该代码非常容易理解，6行代码实现了计算 sqrt(a * 100)。在下一节中，我们将会看到实现单方法接口的更简单的做法。</p>
+<h2 id="二、Lambda-表达式"><a href="#二、Lambda-表达式" class="headerlink" title="二、Lambda 表达式"></a>二、Lambda 表达式</h2><p>首先看看在老版本的Java中是如何排列字符串的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; names = Arrays.asList(&quot;peter&quot;, &quot;anna&quot;, &quot;mike&quot;, &quot;xenia&quot;);</span><br><span class="line">Collections.sort(names, new Comparator&lt;String&gt;() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public int compare(String a, String b) &#123;</span><br><span class="line">        return b.compareTo(a);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>只需要给静态方法 Collections.sort 传入一个List对象以及一个比较器来按指定顺序排列。通常做法都是创建一个匿名的比较器对象然后将其传递给sort方法。</p>
+<p>在Java 8 中你就没必要使用这种传统的匿名对象的方式了，Java 8提供了更简洁的语法，lambda表达式：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Collections.sort(names, (String a, String b) -&gt; &#123;</span><br><span class="line">    return b.compareTo(a);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>看到了吧，代码变得更段且更具有可读性，但是实际上还可以写得更短：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Collections.sort(names, (String a, String b) -&gt; b.compareTo(a));</span><br></pre></td></tr></table></figure>
+<p>对于函数体只有一行代码的，你可以去掉大括号{}以及return关键字，但是你还可以写得更短点：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Collections.sort(names, (a, b) -&gt; b.compareTo(a));</span><br></pre></td></tr></table></figure>
+<p>Java编译器可以自动推导出参数类型，所以你可以不用再写一次类型。接下来我们看看lambda表达式还能作出什么更方便的东西来：</p>
+<h2 id="三、函数式接口"><a href="#三、函数式接口" class="headerlink" title="三、函数式接口"></a>三、函数式接口</h2><p>Lambda表达式是如何在java的类型系统中表示的呢？每一个lambda表达式都对应一个类型，通常是接口类型。而“函数式接口”是指仅仅只包含一个抽象方法的接口，每一个该类型的lambda表达式都会被匹配到这个抽象方法。因为 默认方法 不算抽象方法，所以你也可以给你的函数式接口添加默认方法。</p>
+<p>我们可以将lambda表达式当作任意只包含一个抽象方法的接口类型，确保你的接口一定达到这个要求，你只需要给你的接口添加 @FunctionalInterface 注解，编译器如果发现你标注了这个注解的接口有多于一个抽象方法的时候会报错的。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@FunctionalInterface</span><br><span class="line">interface Converter&lt;F, T&gt; &#123;</span><br><span class="line">    T convert(F from);</span><br><span class="line">&#125;</span><br><span class="line">Converter&lt;String, Integer&gt; converter = (from) -&gt; Integer.valueOf(from);</span><br><span class="line">Integer converted = converter.convert(&quot;123&quot;);</span><br><span class="line">System.out.println(converted);    // 123</span><br></pre></td></tr></table></figure>
+<p>需要注意如果@FunctionalInterface如果没有指定，上面的代码也是对的。</p>
+<p>将lambda表达式映射到一个单方法的接口上，这种做法在Java 8之前就有别的语言实现，比如Rhino JavaScript解释器，如果一个函数参数接收一个单方法的接口而你传递的是一个function，Rhino 解释器会自动做一个单接口的实例到function的适配器，典型的应用场景有 org.w3c.dom.events.EventTarget 的addEventListener 第二个参数 EventListener。</p>
+<h2 id="四、方法与构造函数引用"><a href="#四、方法与构造函数引用" class="headerlink" title="四、方法与构造函数引用"></a>四、方法与构造函数引用</h2><p>前一节中的代码还可以通过静态方法引用来表示：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Converter&lt;String, Integer&gt; converter = Integer::valueOf;</span><br><span class="line">Integer converted = converter.convert(&quot;123&quot;);</span><br><span class="line">System.out.println(converted);   // 123</span><br></pre></td></tr></table></figure>
+<p>Java 8 允许你使用 :: 关键字来传递方法或者构造函数引用，上面的代码展示了如何引用一个静态方法，我们也可以引用一个对象的方法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">converter = something::startsWith;</span><br><span class="line">String converted = converter.convert(&quot;Java&quot;);</span><br><span class="line">System.out.println(converted);    // &quot;J&quot;</span><br></pre></td></tr></table></figure>
+<p>接下来看看构造函数是如何使用::关键字来引用的，首先我们定义一个包含多个构造函数的简单类：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Person &#123;</span><br><span class="line">    String firstName;</span><br><span class="line">    String lastName;</span><br><span class="line">    Person() &#123;&#125;</span><br><span class="line"></span><br><span class="line">    Person(String firstName, String lastName) &#123;</span><br><span class="line">        this.firstName = firstName;</span><br><span class="line">        this.lastName = lastName;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来我们指定一个用来创建Person对象的对象工厂接口：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">interface PersonFactory&lt;P extends Person&gt; &#123;</span><br><span class="line">    P create(String firstName, String lastName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里我们使用构造函数引用来将他们关联起来，而不是实现一个完整的工厂：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">PersonFactory&lt;Person&gt; personFactory = Person::new;</span><br><span class="line">Person person = personFactory.create(&quot;Peter&quot;, &quot;Parker&quot;);</span><br></pre></td></tr></table></figure>
+<p>我们只需要使用 Person::new 来获取Person类构造函数的引用，Java编译器会自动根据PersonFactory.create方法的签名来选择合适的构造函数。</p>
+<h2 id="五、Lambda-作用域"><a href="#五、Lambda-作用域" class="headerlink" title="五、Lambda 作用域"></a>五、Lambda 作用域</h2><p>在lambda表达式中访问外层作用域和老版本的匿名对象中的方式很相似。你可以直接访问标记了final的外层局部变量，或者实例的字段以及静态变量。</p>
+<h2 id="六、访问局部变量"><a href="#六、访问局部变量" class="headerlink" title="六、访问局部变量"></a>六、访问局部变量</h2><p>我们可以直接在lambda表达式中访问外层的局部变量：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">final int num = 1;</span><br><span class="line">Converter&lt;Integer, String&gt; stringConverter =</span><br><span class="line">        (from) -&gt; String.valueOf(from + num);</span><br><span class="line">stringConverter.convert(2);     // 3</span><br></pre></td></tr></table></figure>
+<p>但是和匿名对象不同的是，这里的变量num可以不用声明为final，该代码同样正确：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int num = 1;</span><br><span class="line">Converter&lt;Integer, String&gt; stringConverter =</span><br><span class="line">        (from) -&gt; String.valueOf(from + num);</span><br><span class="line">stringConverter.convert(2);     // 3</span><br></pre></td></tr></table></figure>
+<p>不过这里的num必须不可被后面的代码修改（即隐性的具有final的语义），例如下面的就无法编译：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int num = 1;</span><br><span class="line">Converter&lt;Integer, String&gt; stringConverter =</span><br><span class="line">        (from) -&gt; String.valueOf(from + num);</span><br><span class="line">num = 3;</span><br></pre></td></tr></table></figure>
+<p>在lambda表达式中试图修改num同样是不允许的。</p>
+<h2 id="七、访问对象字段与静态变量"><a href="#七、访问对象字段与静态变量" class="headerlink" title="七、访问对象字段与静态变量"></a>七、访问对象字段与静态变量</h2><p>和本地变量不同的是，lambda内部对于实例的字段以及静态变量是即可读又可写。该行为和匿名对象是一致的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Lambda4 &#123;</span><br><span class="line">    static int outerStaticNum;</span><br><span class="line">    int outerNum;</span><br><span class="line">    void testScopes() &#123;</span><br><span class="line">        Converter&lt;Integer, String&gt; stringConverter1 = (from) -&gt; &#123;</span><br><span class="line">            outerNum = 23;</span><br><span class="line">            return String.valueOf(from);</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        Converter&lt;Integer, String&gt; stringConverter2 = (from) -&gt; &#123;</span><br><span class="line">            outerStaticNum = 72;</span><br><span class="line">            return String.valueOf(from);</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="八、访问接口的默认方法"><a href="#八、访问接口的默认方法" class="headerlink" title="八、访问接口的默认方法"></a>八、访问接口的默认方法</h2><p>还记得第一节中的formula例子么，接口Formula定义了一个默认方法sqrt可以直接被formula的实例包括匿名对象访问到，但是在lambda表达式中这个是不行的。<br>Lambda表达式中是无法访问到默认方法的，以下代码将无法编译：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Formula formula = (a) -&gt; sqrt( a * 100);</span><br><span class="line">Built-in Functional Interfaces</span><br></pre></td></tr></table></figure>
+<p>JDK 1.8 API包含了很多内建的函数式接口，在老Java中常用到的比如Comparator或者Runnable接口，这些接口都增加了@FunctionalInterface注解以便能用在lambda上。<br>Java 8 API同样还提供了很多全新的函数式接口来让工作更加方便，有一些接口是来自Google Guava库里的，即便你对这些很熟悉了，还是有必要看看这些是如何扩展到lambda上使用的。</p>
+<h3 id="Predicate接口"><a href="#Predicate接口" class="headerlink" title="Predicate接口"></a>Predicate接口</h3><p>Predicate 接口只有一个参数，返回boolean类型。该接口包含多种默认方法来将Predicate组合成其他复杂的逻辑（比如：与，或，非）：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Predicate&lt;String&gt; predicate = (s) -&gt; s.length() &gt; 0;</span><br><span class="line">predicate.test(&quot;foo&quot;);              // true</span><br><span class="line">predicate.negate().test(&quot;foo&quot;);     // false</span><br><span class="line"></span><br><span class="line">Predicate&lt;Boolean&gt; nonNull = Objects::nonNull;</span><br><span class="line">Predicate&lt;Boolean&gt; isNull = Objects::isNull;</span><br><span class="line"></span><br><span class="line">Predicate&lt;String&gt; isEmpty = String::isEmpty;</span><br><span class="line">Predicate&lt;String&gt; isNotEmpty = isEmpty.negate();</span><br></pre></td></tr></table></figure>
+<h3 id="Function-接口"><a href="#Function-接口" class="headerlink" title="Function 接口"></a>Function 接口</h3><p>Function 接口有一个参数并且返回一个结果，并附带了一些可以和其他函数组合的默认方法（compose, andThen）：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Function&lt;String, Integer&gt; toInteger = Integer::valueOf;</span><br><span class="line">Function&lt;String, String&gt; backToString = toInteger.andThen(String::valueOf);</span><br><span class="line">backToString.apply(&quot;123&quot;);     // &quot;123&quot;</span><br></pre></td></tr></table></figure>
+<h3 id="Supplier-接口"><a href="#Supplier-接口" class="headerlink" title="Supplier 接口"></a>Supplier 接口</h3><p>Supplier 接口返回一个任意范型的值，和Function接口不同的是该接口没有任何参数</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Supplier&lt;Person&gt; personSupplier = Person::new;</span><br><span class="line">personSupplier.get();   // new Person</span><br></pre></td></tr></table></figure>
+<h3 id="Consumer-接口"><a href="#Consumer-接口" class="headerlink" title="Consumer 接口"></a>Consumer 接口</h3><p>Consumer 接口表示执行在单个参数上的操作。</p>
+<p>Consumer<person> greeter = (p) -&gt; System.out.println(“Hello, “ + p.firstName);<br>greeter.accept(new Person(“Luke”, “Skywalker”));</person></p>
+<h3 id="Comparator-接口"><a href="#Comparator-接口" class="headerlink" title="Comparator 接口"></a>Comparator 接口</h3><p>Comparator 是老Java中的经典接口， Java 8在此之上添加了多种默认方法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Comparator&lt;Person&gt; comparator = (p1, p2) -&gt; p1.firstName.compareTo(p2.firstName);</span><br><span class="line">Person p1 = new Person(&quot;John&quot;, &quot;Doe&quot;);</span><br><span class="line">Person p2 = new Person(&quot;Alice&quot;, &quot;Wonderland&quot;);</span><br><span class="line"></span><br><span class="line">comparator.compare(p1, p2);             // &gt; 0</span><br><span class="line">comparator.reversed().compare(p1, p2);  // &lt; 0</span><br></pre></td></tr></table></figure>
+<h3 id="Optional-接口"><a href="#Optional-接口" class="headerlink" title="Optional 接口"></a>Optional 接口</h3><p>Optional 不是函数是接口，这是个用来防止NullPointerException异常的辅助类型，这是下一届中将要用到的重要概念，现在先简单的看看这个接口能干什么：</p>
+<p>Optional 被定义为一个简单的容器，其值可能是null或者不是null。在Java 8之前一般某个函数应该返回非空对象但是偶尔却可能返回了null，而在Java 8中，不推荐你返回null而是返回Optional。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Optional&lt;String&gt; optional = Optional.of(&quot;bam&quot;);</span><br><span class="line">optional.isPresent();           // true</span><br><span class="line">optional.get();                 // &quot;bam&quot;</span><br><span class="line">optional.orElse(&quot;fallback&quot;);    // &quot;bam&quot;</span><br><span class="line"></span><br><span class="line">optional.ifPresent((s) -&gt; System.out.println(s.charAt(0)));     // &quot;b&quot;</span><br></pre></td></tr></table></figure>
+<h3 id="Stream-接口"><a href="#Stream-接口" class="headerlink" title="Stream 接口"></a>Stream 接口</h3><p>java.util.Stream 表示能应用在一组元素上一次执行的操作序列。Stream 操作分为中间操作或者最终操作两种，最终操作返回一特定类型的计算结果，而中间操作返回Stream本身，这样你就可以将多个操作依次串起来。Stream 的创建需要指定一个数据源，比如 java.util.Collection的子类，List或者Set， Map不支持。Stream的操作可以串行执行或者并行执行。</p>
+<p>首先看看Stream是怎么用，首先创建实例代码的用到的数据List：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; stringCollection = new ArrayList&lt;&gt;();</span><br><span class="line">stringCollection.add(&quot;ddd2&quot;);</span><br><span class="line">stringCollection.add(&quot;aaa2&quot;);</span><br><span class="line">stringCollection.add(&quot;bbb1&quot;);</span><br><span class="line">stringCollection.add(&quot;aaa1&quot;);</span><br><span class="line">stringCollection.add(&quot;bbb3&quot;);</span><br><span class="line">stringCollection.add(&quot;ccc&quot;);</span><br><span class="line">stringCollection.add(&quot;bbb2&quot;);</span><br><span class="line">stringCollection.add(&quot;ddd1&quot;);</span><br></pre></td></tr></table></figure>
+<p>Java 8扩展了集合类，可以通过 Collection.stream() 或者 Collection.parallelStream() 来创建一个Stream。下面几节将详细解释常用的Stream操作：</p>
+<h3 id="Filter-过滤"><a href="#Filter-过滤" class="headerlink" title="Filter 过滤"></a>Filter 过滤</h3><p>过滤通过一个predicate接口来过滤并只保留符合条件的元素，该操作属于中间操作，所以我们可以在过滤后的结果来应用其他Stream操作（比如forEach）。forEach需要一个函数来对过滤后的元素依次执行。forEach是一个最终操作，所以我们不能在forEach之后来执行其他Stream操作。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">stringCollection</span><br><span class="line">    .stream()</span><br><span class="line">    .filter((s) -&gt; s.startsWith(&quot;a&quot;))</span><br><span class="line">    .forEach(System.out::println);</span><br><span class="line">// &quot;aaa2&quot;, &quot;aaa1&quot;</span><br></pre></td></tr></table></figure>
+<h3 id="Sort-排序"><a href="#Sort-排序" class="headerlink" title="Sort 排序"></a>Sort 排序</h3><p>排序是一个中间操作，返回的是排序好后的Stream。如果你不指定一个自定义的Comparator则会使用默认排序。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">stringCollection</span><br><span class="line">    .stream()</span><br><span class="line">    .sorted()</span><br><span class="line">    .filter((s) -&gt; s.startsWith(&quot;a&quot;))</span><br><span class="line">    .forEach(System.out::println);</span><br><span class="line">// &quot;aaa1&quot;, &quot;aaa2&quot;</span><br></pre></td></tr></table></figure>
+<p>需要注意的是，排序只创建了一个排列好后的Stream，而不会影响原有的数据源，排序之后原数据stringCollection是不会被修改的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">System.out.println(stringCollection);</span><br><span class="line">// ddd2, aaa2, bbb1, aaa1, bbb3, ccc, bbb2, ddd1</span><br></pre></td></tr></table></figure>
+<h3 id="Map-映射"><a href="#Map-映射" class="headerlink" title="Map 映射"></a>Map 映射</h3><p>中间操作map会将元素根据指定的Function接口来依次将元素转成另外的对象，下面的示例展示了将字符串转换为大写字符串。你也可以通过map来讲对象转换成其他类型，map返回的Stream类型是根据你map传递进去的函数的返回值决定的。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">stringCollection</span><br><span class="line">    .stream()</span><br><span class="line">    .map(String::toUpperCase)</span><br><span class="line">    .sorted((a, b) -&gt; b.compareTo(a))</span><br><span class="line">    .forEach(System.out::println);</span><br><span class="line">// &quot;DDD2&quot;, &quot;DDD1&quot;, &quot;CCC&quot;, &quot;BBB3&quot;, &quot;BBB2&quot;, &quot;AAA2&quot;, &quot;AAA1&quot;</span><br></pre></td></tr></table></figure>
+<h3 id="Match-匹配"><a href="#Match-匹配" class="headerlink" title="Match 匹配"></a>Match 匹配</h3><p>Stream提供了多种匹配操作，允许检测指定的Predicate是否匹配整个Stream。所有的匹配操作都是最终操作，并返回一个boolean类型的值。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">boolean anyStartsWithA = </span><br><span class="line">    stringCollection</span><br><span class="line">        .stream()</span><br><span class="line">        .anyMatch((s) -&gt; s.startsWith(&quot;a&quot;));</span><br><span class="line">System.out.println(anyStartsWithA);      // true</span><br><span class="line"></span><br><span class="line">boolean allStartsWithA = </span><br><span class="line">    stringCollection</span><br><span class="line">        .stream()</span><br><span class="line">        .allMatch((s) -&gt; s.startsWith(&quot;a&quot;));</span><br><span class="line"></span><br><span class="line">System.out.println(allStartsWithA);      // false</span><br><span class="line"></span><br><span class="line">boolean noneStartsWithZ = </span><br><span class="line">    stringCollection</span><br><span class="line">        .stream()</span><br><span class="line">        .noneMatch((s) -&gt; s.startsWith(&quot;z&quot;));</span><br><span class="line"></span><br><span class="line">System.out.println(noneStartsWithZ);      // true</span><br></pre></td></tr></table></figure>
+<h3 id="Count-计数"><a href="#Count-计数" class="headerlink" title="Count 计数"></a>Count 计数</h3><p>计数是一个最终操作，返回Stream中元素的个数，返回值类型是long。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">long startsWithB = </span><br><span class="line">    stringCollection</span><br><span class="line">        .stream()</span><br><span class="line">        .filter((s) -&gt; s.startsWith(&quot;b&quot;))</span><br><span class="line">        .count();</span><br><span class="line">System.out.println(startsWithB);    // 3</span><br></pre></td></tr></table></figure>
+<h3 id="Reduce-规约"><a href="#Reduce-规约" class="headerlink" title="Reduce 规约"></a>Reduce 规约</h3><p>这是一个最终操作，允许通过指定的函数来讲stream中的多个元素规约为一个元素，规越后的结果是通过Optional接口表示的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Optional&lt;String&gt; reduced =</span><br><span class="line">    stringCollection</span><br><span class="line">        .stream()</span><br><span class="line">        .sorted()</span><br><span class="line">        .reduce((s1, s2) -&gt; s1 + &quot;#&quot; + s2);</span><br><span class="line">reduced.ifPresent(System.out::println);</span><br><span class="line">// &quot;aaa1#aaa2#bbb1#bbb2#bbb3#ccc#ddd1#ddd2&quot;</span><br></pre></td></tr></table></figure>
+<h3 id="并行Streams"><a href="#并行Streams" class="headerlink" title="并行Streams"></a>并行Streams</h3><p>前面提到过Stream有串行和并行两种，串行Stream上的操作是在一个线程中依次完成，而并行Stream则是在多个线程上同时执行。</p>
+<p>下面的例子展示了是如何通过并行Stream来提升性能：</p>
+<p>首先我们创建一个没有重复元素的大表：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">int max = 1000000;</span><br><span class="line">List&lt;String&gt; values = new ArrayList&lt;&gt;(max);</span><br><span class="line">for (int i = 0; i &lt; max; i++) &#123;</span><br><span class="line">    UUID uuid = UUID.randomUUID();</span><br><span class="line">    values.add(uuid.toString());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后我们计算一下排序这个Stream要耗时多久，<br>串行排序：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">long t0 = System.nanoTime();</span><br><span class="line">long count = values.stream().sorted().count();</span><br><span class="line">System.out.println(count);</span><br><span class="line"></span><br><span class="line">long t1 = System.nanoTime();</span><br><span class="line"></span><br><span class="line">long millis = TimeUnit.NANOSECONDS.toMillis(t1 - t0);</span><br><span class="line">System.out.println(String.format(&quot;sequential sort took: %d ms&quot;, millis));</span><br></pre></td></tr></table></figure>
+<p>// 串行耗时: 899 ms<br>并行排序：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">long t0 = System.nanoTime();</span><br><span class="line">long count = values.parallelStream().sorted().count();</span><br><span class="line">System.out.println(count);</span><br><span class="line"></span><br><span class="line">long t1 = System.nanoTime();</span><br><span class="line"></span><br><span class="line">long millis = TimeUnit.NANOSECONDS.toMillis(t1 - t0);</span><br><span class="line">System.out.println(String.format(&quot;parallel sort took: %d ms&quot;, millis));</span><br></pre></td></tr></table></figure>
+<p>// 并行排序耗时: 472 ms<br>上面两个代码几乎是一样的，但是并行版的快了50%之多，唯一需要做的改动就是将stream()改为parallelStream()。</p>
+<h3 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h3><p>前面提到过，Map类型不支持stream，不过Map提供了一些新的有用的方法来处理一些日常任务。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Map&lt;Integer, String&gt; map = new HashMap&lt;&gt;();</span><br><span class="line">for (int i = 0; i &lt; 10; i++) &#123;</span><br><span class="line">    map.putIfAbsent(i, &quot;val&quot; + i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>map.forEach((id, val) -&gt; System.out.println(val));<br>以上代码很容易理解， putIfAbsent 不需要我们做额外的存在性检查，而forEach则接收一个Consumer接口来对map里的每一个键值对进行操作。</p>
+<p>下面的例子展示了map上的其他有用的函数：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">map.computeIfPresent(3, (num, val) -&gt; val + num);</span><br><span class="line">map.get(3);             // val33</span><br><span class="line">map.computeIfPresent(9, (num, val) -&gt; null);</span><br><span class="line">map.containsKey(9);     // false</span><br><span class="line"></span><br><span class="line">map.computeIfAbsent(23, num -&gt; &quot;val&quot; + num);</span><br><span class="line">map.containsKey(23);    // true</span><br><span class="line"></span><br><span class="line">map.computeIfAbsent(3, num -&gt; &quot;bam&quot;);</span><br><span class="line">map.get(3);             // val33</span><br></pre></td></tr></table></figure>
+<p>接下来展示如何在Map里删除一个键值全都匹配的项：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">map.remove(3, &quot;val3&quot;);</span><br><span class="line">map.get(3);             // val33</span><br><span class="line">map.remove(3, &quot;val33&quot;);</span><br><span class="line">map.get(3);             // null</span><br></pre></td></tr></table></figure>
+<p>另外一个有用的方法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">map.getOrDefault(42, &quot;not found&quot;);  // not found</span><br></pre></td></tr></table></figure>
+<p>对Map的元素做合并也变得很容易了：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">map.merge(9, &quot;val9&quot;, (value, newValue) -&gt; value.concat(newValue));</span><br><span class="line">map.get(9);             // val9</span><br><span class="line">map.merge(9, &quot;concat&quot;, (value, newValue) -&gt; value.concat(newValue));</span><br><span class="line">map.get(9);             // val9concat</span><br></pre></td></tr></table></figure>
+<p>Merge做的事情是如果键名不存在则插入，否则则对原键对应的值做合并操作并重新插入到map中。</p>
+<h2 id="九、Date-API"><a href="#九、Date-API" class="headerlink" title="九、Date API"></a>九、Date API</h2><p>Java 8 在包java.time下包含了一组全新的时间日期API。新的日期API和开源的Joda-Time库差不多，但又不完全一样，下面的例子展示了这组新API里最重要的一些部分：</p>
+<h3 id="Clock-时钟"><a href="#Clock-时钟" class="headerlink" title="Clock 时钟"></a>Clock 时钟</h3><p>Clock类提供了访问当前日期和时间的方法，Clock是时区敏感的，可以用来取代 System.currentTimeMillis() 来获取当前的微秒数。某一个特定的时间点也可以使用Instant类来表示，Instant类也可以用来创建老的java.util.Date对象。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Clock clock = Clock.systemDefaultZone();</span><br><span class="line">long millis = clock.millis();</span><br><span class="line">Instant instant = clock.instant();</span><br><span class="line">Date legacyDate = Date.from(instant);   // legacy java.util.Date</span><br></pre></td></tr></table></figure>
+<h3 id="Timezones-时区"><a href="#Timezones-时区" class="headerlink" title="Timezones 时区"></a>Timezones 时区</h3><p>在新API中时区使用ZoneId来表示。时区可以很方便的使用静态方法of来获取到。 时区定义了到UTS时间的时间差，在Instant时间点对象到本地日期对象之间转换的时候是极其重要的。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">System.out.println(ZoneId.getAvailableZoneIds());</span><br><span class="line">// prints all available timezone ids</span><br><span class="line">ZoneId zone1 = ZoneId.of(&quot;Europe/Berlin&quot;);</span><br><span class="line">ZoneId zone2 = ZoneId.of(&quot;Brazil/East&quot;);</span><br><span class="line">System.out.println(zone1.getRules());</span><br><span class="line">System.out.println(zone2.getRules());</span><br><span class="line"></span><br><span class="line">// ZoneRules[currentStandardOffset=+01:00]</span><br><span class="line">// ZoneRules[currentStandardOffset=-03:00]</span><br></pre></td></tr></table></figure>
+<h3 id="LocalTime-本地时间"><a href="#LocalTime-本地时间" class="headerlink" title="LocalTime 本地时间"></a>LocalTime 本地时间</h3><p>LocalTime 定义了一个没有时区信息的时间，例如 晚上10点，或者 17:30:15。下面的例子使用前面代码创建的时区创建了两个本地时间。之后比较时间并以小时和分钟为单位计算两个时间的时间差：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LocalTime now1 = LocalTime.now(zone1);</span><br><span class="line">LocalTime now2 = LocalTime.now(zone2);</span><br><span class="line">System.out.println(now1.isBefore(now2));  // false</span><br><span class="line"></span><br><span class="line">long hoursBetween = ChronoUnit.HOURS.between(now1, now2);</span><br><span class="line">long minutesBetween = ChronoUnit.MINUTES.between(now1, now2);</span><br><span class="line"></span><br><span class="line">System.out.println(hoursBetween);       // -3</span><br><span class="line">System.out.println(minutesBetween);     // -239</span><br></pre></td></tr></table></figure>
+<p>LocalTime 提供了多种工厂方法来简化对象的创建，包括解析时间字符串。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LocalTime late = LocalTime.of(23, 59, 59);</span><br><span class="line">System.out.println(late);       // 23:59:59</span><br><span class="line">DateTimeFormatter germanFormatter =</span><br><span class="line">    DateTimeFormatter</span><br><span class="line">        .ofLocalizedTime(FormatStyle.SHORT)</span><br><span class="line">        .withLocale(Locale.GERMAN);</span><br><span class="line"></span><br><span class="line">LocalTime leetTime = LocalTime.parse(&quot;13:37&quot;, germanFormatter);</span><br><span class="line">System.out.println(leetTime);   // 13:37</span><br></pre></td></tr></table></figure>
+<h3 id="LocalDate-本地日期"><a href="#LocalDate-本地日期" class="headerlink" title="LocalDate 本地日期"></a>LocalDate 本地日期</h3><p>LocalDate 表示了一个确切的日期，比如 2014-03-11。该对象值是不可变的，用起来和LocalTime基本一致。下面的例子展示了如何给Date对象加减天/月/年。另外要注意的是这些对象是不可变的，操作返回的总是一个新实例。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LocalDate today = LocalDate.now();</span><br><span class="line">LocalDate tomorrow = today.plus(1, ChronoUnit.DAYS);</span><br><span class="line">LocalDate yesterday = tomorrow.minusDays(2);</span><br><span class="line">LocalDate independenceDay = LocalDate.of(2014, Month.JULY, 4);</span><br><span class="line">DayOfWeek dayOfWeek = independenceDay.getDayOfWeek();</span><br></pre></td></tr></table></figure>
+<p>System.out.println(dayOfWeek);    // FRIDAY<br>从字符串解析一个LocalDate类型和解析LocalTime一样简单：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">DateTimeFormatter germanFormatter =</span><br><span class="line">    DateTimeFormatter</span><br><span class="line">        .ofLocalizedDate(FormatStyle.MEDIUM)</span><br><span class="line">        .withLocale(Locale.GERMAN);</span><br><span class="line">LocalDate xmas = LocalDate.parse(&quot;24.12.2014&quot;, germanFormatter);</span><br><span class="line">System.out.println(xmas);   // 2014-12-24</span><br></pre></td></tr></table></figure>
+<h3 id="LocalDateTime-本地日期时间"><a href="#LocalDateTime-本地日期时间" class="headerlink" title="LocalDateTime 本地日期时间"></a>LocalDateTime 本地日期时间</h3><p>LocalDateTime 同时表示了时间和日期，相当于前两节内容合并到一个对象上了。LocalDateTime和LocalTime还有LocalDate一样，都是不可变的。LocalDateTime提供了一些能访问具体字段的方法。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">LocalDateTime sylvester = LocalDateTime.of(2014, Month.DECEMBER, 31, 23, 59, 59);</span><br><span class="line">DayOfWeek dayOfWeek = sylvester.getDayOfWeek();</span><br><span class="line">System.out.println(dayOfWeek);      // WEDNESDAY</span><br><span class="line"></span><br><span class="line">Month month = sylvester.getMonth();</span><br><span class="line">System.out.println(month);          // DECEMBER</span><br><span class="line"></span><br><span class="line">long minuteOfDay = sylvester.getLong(ChronoField.MINUTE_OF_DAY);</span><br><span class="line">System.out.println(minuteOfDay);    // 1439</span><br></pre></td></tr></table></figure>
+<p>只要附加上时区信息，就可以将其转换为一个时间点Instant对象，Instant时间点对象可以很容易的转换为老式的java.util.Date。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Instant instant = sylvester</span><br><span class="line">        .atZone(ZoneId.systemDefault())</span><br><span class="line">        .toInstant();</span><br><span class="line">Date legacyDate = Date.from(instant);</span><br><span class="line">System.out.println(legacyDate);     // Wed Dec 31 23:59:59 CET 2014</span><br></pre></td></tr></table></figure>
+<p>格式化LocalDateTime和格式化时间和日期一样的，除了使用预定义好的格式外，我们也可以自己定义格式：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">DateTimeFormatter formatter =</span><br><span class="line">    DateTimeFormatter</span><br><span class="line">        .ofPattern(&quot;MMM dd, yyyy - HH:mm&quot;);</span><br><span class="line">LocalDateTime parsed = LocalDateTime.parse(&quot;Nov 03, 2014 - 07:13&quot;, formatter);</span><br><span class="line">String string = formatter.format(parsed);</span><br><span class="line">System.out.println(string);     // Nov 03, 2014 - 07:13</span><br></pre></td></tr></table></figure>
+<p>和java.text.NumberFormat不一样的是新版的DateTimeFormatter是不可变的，所以它是线程安全的。<br>关于时间日期格式的详细信息：<a href="http://download.java.net/jdk8/docs/api/java/time/format/DateTimeFormatter.html" target="_blank" rel="noopener">http://download.java.net/jdk8/docs/api/java/time/format/DateTimeFormatter.html</a></p>
+<h2 id="十、Annotation-注解"><a href="#十、Annotation-注解" class="headerlink" title="十、Annotation 注解"></a>十、Annotation 注解</h2><p>在Java 8中支持多重注解了，先看个例子来理解一下是什么意思。<br>首先定义一个包装类Hints注解用来放置一组具体的Hint注解：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@interface Hints &#123;</span><br><span class="line">    Hint[] value();</span><br><span class="line">&#125;</span><br><span class="line">@Repeatable(Hints.class)</span><br><span class="line">@interface Hint &#123;</span><br><span class="line">    String value();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Java 8允许我们把同一个类型的注解使用多次，只需要给该注解标注一下@Repeatable即可。<br>例 1: 使用包装类当容器来存多个注解（老方法）</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@Hints(&#123;@Hint(&quot;hint1&quot;), @Hint(&quot;hint2&quot;)&#125;)</span><br><span class="line">class Person &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>例 2：使用多重注解（新方法）</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@Hint(&quot;hint1&quot;)</span><br><span class="line">@Hint(&quot;hint2&quot;)</span><br><span class="line">class Person &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>第二个例子里java编译器会隐性的帮你定义好@Hints注解，了解这一点有助于你用反射来获取这些信息：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Hint hint = Person.class.getAnnotation(Hint.class);</span><br><span class="line">System.out.println(hint);                   // null</span><br><span class="line">Hints hints1 = Person.class.getAnnotation(Hints.class);</span><br><span class="line">System.out.println(hints1.value().length);  // 2</span><br><span class="line"></span><br><span class="line">Hint[] hints2 = Person.class.getAnnotationsByType(Hint.class);</span><br><span class="line">System.out.println(hints2.length);          // 2</span><br></pre></td></tr></table></figure>
+<p>即便我们没有在Person类上定义@Hints注解，我们还是可以通过 getAnnotation(Hints.class) 来获取 @Hints注解，更加方便的方法是使用 getAnnotationsByType 可以直接获取到所有的@Hint注解。<br>另外Java 8的注解还增加到两种新的target上了：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@Target(&#123;ElementType.TYPE_PARAMETER, ElementType.TYPE_USE&#125;)</span><br><span class="line">@interface MyAnnotation &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>关于Java 8的新特性就写到这了，肯定还有更多的特性等待发掘。JDK 1.8里还有很多很有用的东西，比如Arrays.parallelSort, StampedLock和CompletableFuture等等。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.034Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20171215/44-jdk1.8-feature.html" target="_blank" rel="external">https://ningyu1.github.io/20171215/44-jdk1.8-feature.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jdk/">jdk</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20171215/44-jdk1.8-feature.html&title=《JDK1.8新特性详解》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20171215/44-jdk1.8-feature.html&title=《JDK1.8新特性详解》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20171215/44-jdk1.8-feature.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《JDK1.8新特性详解》 — 凝雨 - Yun&url=https://ningyu1.github.io/20171215/44-jdk1.8-feature.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20171215/44-jdk1.8-feature.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20171225/45-spring-cloud-netflix.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Spring Cloud Netflix架构浅析</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20171215/43-jdk1.7-feature.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">JDK1.7新特性详解</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20171215/44-jdk1.8-feature.html&title=《JDK1.8新特性详解》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20171215/44-jdk1.8-feature.html&title=《JDK1.8新特性详解》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20171215/44-jdk1.8-feature.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《JDK1.8新特性详解》 — 凝雨 - Yun&url=https://ningyu1.github.io/20171215/44-jdk1.8-feature.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20171215/44-jdk1.8-feature.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACKUlEQVR42u3awU7FMAxE0f7/TxeJFQglzHhSRO2bVdVX0pwujB3nuuRxf46v1z/v7K9Xf6v/emDAgAHjtYx7O1bPrBa6B+w/hHJ/SYUBA8YARhJk9/Psg6n7luV9GDBgwBCSPHeheqCHAQMGDJehJ5H6PPrngwEDxmSGHvj0zbLak4/X4jBgwHgho9YY+Jvrx/sbMGDA+PeM2xz6VtrTJe632WDAgNGakbQnlSUm4dttMMCAAaM3oxb4ah9CmUd/8pe9QxgwYLRj5MVtUmnmB8hgwIDRleFuwStfQkko9bal1K6AAQPGGIYeRt2tNyWZc5NL+7QIDBgwWjCeCKDJsQm9GIYBA8YEhtuAdA+Q6S2EWkELAwaMCYwkUEqpm1ymuu1SGDBgzGGcStTcO3qQtf9vwIABox0jbzrqiWAtrTRqcRgwYLRj6Jv7tZflM0dvhAEDRguGGxDPtgpOhWkYMGD0ZuhpltsY0ANrXjDDgAFjAqN2nEvaCDNTQ/egmBF2YcCA8VpG3pjUF+cevDBaCDBgwBjGSFqMeimbfw4YMGDMYdihTV7u4dIUBgwYgxm3OWp7XO4BDvcoBgwYMHoz9KHv29UCqzs/DBgwpjHcIKiEvLNHK6QSFwYMGAMYbhBMkrlTReyVx3IYMGC0Y7gvq+Wn+uZdMeDCgAFjAKOWJirzuG1OGDBgTGO4m/V2kSlsnyVpKAwYMHozaqVjbdF646EW3GHAgNGO8QHR/4SaR4O7RgAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

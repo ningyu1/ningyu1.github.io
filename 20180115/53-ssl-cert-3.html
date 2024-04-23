@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>Java访问SSL地址，使用证书方式和免验证证书方式 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="ssl,openssl">
+    <meta name="description" content="Java访问SSL地址，使用证书方式和免验证证书方式">
+<meta name="keywords" content="ssl,openssl">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java访问SSL地址，使用证书方式和免验证证书方式">
+<meta property="og:url" content="https://ningyu1.github.io/20180115/53-ssl-cert-3.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="Java访问SSL地址，使用证书方式和免验证证书方式">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.035Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java访问SSL地址，使用证书方式和免验证证书方式">
+<meta name="twitter:description" content="Java访问SSL地址，使用证书方式和免验证证书方式">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Java访问SSL地址，使用证书方式和免验证证书方式</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Java访问SSL地址，使用证书方式和免验证证书方式</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-01-15T06:08:36.000Z" itemprop="datePublished" class="page-time">
+  2018-01-15
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/ssl/">ssl</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#前文回顾"><span class="post-toc-number">1.</span> <span class="post-toc-text">前文回顾</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Java安装证书访问SSL地址"><span class="post-toc-number">2.</span> <span class="post-toc-text">Java安装证书访问SSL地址</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#使用InstallCert安装证书"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">使用InstallCert安装证书</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#使用keytool工具导入证书"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">使用keytool工具导入证书</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#自定义javax-net-ssl-X509TrustManager实现类"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">自定义javax.net.ssl.X509TrustManager实现类</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#包装HttpsDemo类"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">包装HttpsDemo类</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Java绕过证书验证访问SSL地址，达到免验证证书效果"><span class="post-toc-number">3.</span> <span class="post-toc-text">Java绕过证书验证访问SSL地址，达到免验证证书效果</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#常见错误"><span class="post-toc-number">4.</span> <span class="post-toc-text">常见错误</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#错误一"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">错误一</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#错误二"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">错误二</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-53-ssl-cert-3"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Java访问SSL地址，使用证书方式和免验证证书方式</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-01-15 14:08:36" datetime="2018-01-15T06:08:36.000Z"  itemprop="datePublished">2018-01-15</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/ssl/">ssl</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="前文回顾"><a href="#前文回顾" class="headerlink" title="前文回顾"></a>前文回顾</h1><p><a href="https://ningyu1.github.io/site/post/51-ssl-cert/">《Openssl生成自签名证书，简单步骤》</a>中讲述了如何生成自签名证书。</p>
+<p><a href="https://ningyu1.github.io/site/post/52-ssl-cert-2/">《使用自签名证书，简单步骤》</a>中讲述了如何使用自签名证书。</p>
+<p>下面讲述在Java中如何访问SSL地址，使用证书访问和免验证证书访问。</p>
+<h1 id="Java安装证书访问SSL地址"><a href="#Java安装证书访问SSL地址" class="headerlink" title="Java安装证书访问SSL地址"></a>Java安装证书访问SSL地址</h1><h2 id="使用InstallCert安装证书"><a href="#使用InstallCert安装证书" class="headerlink" title="使用InstallCert安装证书"></a>使用InstallCert安装证书</h2><p><a href="https://ningyu1.github.io/site/post/52-ssl-cert-2/">《使用自签名证书，简单步骤》</a>这篇文章中介绍的InstallCert生成jssecacerts文件。<br>将ssecacerts文件放入%JAVA_HOME%\jre\lib\security 下即可。</p>
+<h2 id="使用keytool工具导入证书"><a href="#使用keytool工具导入证书" class="headerlink" title="使用keytool工具导入证书"></a>使用keytool工具导入证书</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">keytool -import -alias xstore -keystore &quot;cacerts_path&quot; -file a.cer</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>cacerts_path</code>: 你的cacerts文件路径，一般在%JAVA_HOME%jre\lib\security\cacerts</li>
+<li><code>a.cer</code>: 你需要导入的cer文件路径，可以是InstallCert生成的文件</li>
+<li>密码使用jdk默认密码：<code>changeit</code>，或者在上面命令后增加<code>-storepass changeit</code>设置密码参数</li>
+</ul>
+<p>通过上面两种方式可以将证书安装到jdk下，接下来就是java中如何访问ssl地址，不多说直接上代码。</p>
+<h2 id="自定义javax-net-ssl-X509TrustManager实现类"><a href="#自定义javax-net-ssl-X509TrustManager实现类" class="headerlink" title="自定义javax.net.ssl.X509TrustManager实现类"></a>自定义javax.net.ssl.X509TrustManager实现类</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import java.security.cert.CertificateException;</span><br><span class="line">import java.security.cert.X509Certificate;</span><br><span class="line">import javax.net.ssl.X509TrustManager;</span><br><span class="line"></span><br><span class="line">public class MyX509TrustManager implements X509TrustManager &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public X509Certificate[] getAcceptedIssuers() &#123;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="包装HttpsDemo类"><a href="#包装HttpsDemo类" class="headerlink" title="包装HttpsDemo类"></a>包装HttpsDemo类</h2><p><code>HttpsDemo</code>类中包装两个方法，<code>sendHttps</code>发起ssl地址请求，<code>sendHttp</code>发起普通地址请求</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import java.io.BufferedReader;</span><br><span class="line">import java.io.ByteArrayOutputStream;</span><br><span class="line">import java.io.InputStream;</span><br><span class="line">import java.io.InputStreamReader;</span><br><span class="line">import java.io.OutputStream;</span><br><span class="line">import java.net.HttpURLConnection;</span><br><span class="line">import java.net.URL;</span><br><span class="line">import javax.net.ssl.HttpsURLConnection;</span><br><span class="line">import javax.net.ssl.SSLContext;</span><br><span class="line">import javax.net.ssl.SSLSocketFactory;</span><br><span class="line">import javax.net.ssl.TrustManager;</span><br><span class="line">import org.apache.commons.io.IOUtils;</span><br><span class="line">import org.slf4j.Logger;</span><br><span class="line">import org.slf4j.LoggerFactory;</span><br><span class="line"></span><br><span class="line">public class HttpsDemo &#123;</span><br><span class="line"></span><br><span class="line">    private static final Logger logger = LoggerFactory.getLogger(HttpsDemo.class.getName());</span><br><span class="line"></span><br><span class="line">    public static void sendHttps(String path, String outputStr) &#123;</span><br><span class="line">        InputStream inputStream = null;</span><br><span class="line">        OutputStream outputStream = null;</span><br><span class="line">        HttpsURLConnection httpUrlConn = null;</span><br><span class="line">        BufferedReader bufferedReader = null;</span><br><span class="line">        InputStreamReader inputStreamReader = null;</span><br><span class="line">        StringBuffer buffer = new StringBuffer();</span><br><span class="line">        try &#123;</span><br><span class="line">            // 创建SSLContext对象，并使用我们指定的信任管理器初始化</span><br><span class="line">            TrustManager[] tm = &#123; new MyX509TrustManager() &#125;;</span><br><span class="line">            SSLContext sslContext = SSLContext.getInstance(&quot;SSL&quot;, &quot;SunJSSE&quot;);</span><br><span class="line">            sslContext.init(null, tm, new java.security.SecureRandom());</span><br><span class="line">            // 从上述SSLContext对象中得到SSLSocketFactory对象</span><br><span class="line">            SSLSocketFactory ssf = sslContext.getSocketFactory();</span><br><span class="line"></span><br><span class="line">            URL url = new URL(path);</span><br><span class="line">            httpUrlConn = (HttpsURLConnection) url.openConnection();</span><br><span class="line">            httpUrlConn.setSSLSocketFactory(ssf);</span><br><span class="line">            httpUrlConn.setDoOutput(true);</span><br><span class="line">            httpUrlConn.setDoInput(true);</span><br><span class="line">            httpUrlConn.setUseCaches(false);</span><br><span class="line">            httpUrlConn.setRequestMethod(&quot;GET&quot;);</span><br><span class="line">            httpUrlConn.connect();</span><br><span class="line"></span><br><span class="line">            // 当有数据需要提交时</span><br><span class="line">            if (null != outputStr) &#123;</span><br><span class="line">                outputStream = httpUrlConn.getOutputStream();</span><br><span class="line">                // 注意编码格式，防止中文乱码</span><br><span class="line">                outputStream.write(outputStr.getBytes(&quot;UTF-8&quot;));</span><br><span class="line">                outputStream.close();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            // 将返回的输入流转换成字符串</span><br><span class="line">            inputStream = httpUrlConn.getInputStream();</span><br><span class="line">            inputStreamReader = new InputStreamReader(inputStream, &quot;utf-8&quot;);</span><br><span class="line">            bufferedReader = new BufferedReader(inputStreamReader);</span><br><span class="line"></span><br><span class="line">            String str = null;</span><br><span class="line">            while ((str = bufferedReader.readLine()) != null) &#123;</span><br><span class="line">                buffer.append(str);</span><br><span class="line">            &#125;</span><br><span class="line">            logger.info(&quot;地址:&#123;&#125;, success, result:&#123;&#125;&quot;, path, buffer.toString());</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            logger.error(&quot;地址:&#123;&#125;, error, exception:&#123;&#125;&quot;, path, e);</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            if (bufferedReader != null) &#123;</span><br><span class="line">                IOUtils.closeQuietly(bufferedReader);</span><br><span class="line">            &#125;</span><br><span class="line">            if (inputStreamReader != null) &#123;</span><br><span class="line">                IOUtils.closeQuietly(inputStreamReader);</span><br><span class="line">            &#125;</span><br><span class="line">            if (inputStream != null) &#123;</span><br><span class="line">                IOUtils.closeQuietly(inputStream);</span><br><span class="line">            &#125;</span><br><span class="line">            if (httpUrlConn != null) &#123;</span><br><span class="line">                httpUrlConn.disconnect();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void sendHttp(String path) &#123;</span><br><span class="line">        InputStream inputStream = null;</span><br><span class="line">        ByteArrayOutputStream outputStream = null;</span><br><span class="line">        HttpURLConnection urlConnection = null;</span><br><span class="line">        try &#123;</span><br><span class="line">            URL url = new URL(path);</span><br><span class="line">            urlConnection = (HttpURLConnection) url.openConnection();</span><br><span class="line">            urlConnection.setRequestMethod(&quot;GET&quot;);</span><br><span class="line">            urlConnection.setUseCaches(false);</span><br><span class="line">            inputStream = urlConnection.getInputStream();</span><br><span class="line">            outputStream = new ByteArrayOutputStream();</span><br><span class="line">            byte[] buffer = new byte[1024];</span><br><span class="line">            int n = 0;</span><br><span class="line">            while (-1 != (n = inputStream.read(buffer))) &#123;</span><br><span class="line">                outputStream.write(buffer, 0, n);</span><br><span class="line">            &#125;</span><br><span class="line">            logger.info(&quot;地址:&#123;&#125;, success, result:&#123;&#125;&quot;, path, outputStream.toString());</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            logger.error(&quot;地址:&#123;&#125;, error, exception:&#123;&#125;&quot;, path, e);</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            if (outputStream != null) &#123;</span><br><span class="line">                IOUtils.closeQuietly(inputStream);</span><br><span class="line">            &#125;</span><br><span class="line">            if (outputStream != null) &#123;</span><br><span class="line">                IOUtils.closeQuietly(outputStream);</span><br><span class="line">            &#125;</span><br><span class="line">            if (urlConnection != null) &#123;</span><br><span class="line">                urlConnection.disconnect();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">        sendHttps(&quot;https://xxx.com&quot;, null);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面访问ssl地址如果报错<code>java.security.cert.CertificateException: No name matching localhost found</code>那就是证书没有安装好，检查前面证书安装过程。</p>
+<p>Java访问ssl其实是可以绕过证书验证的，可以不需要证书直接发起ssl地址请求，下面介绍一下。</p>
+<h1 id="Java绕过证书验证访问SSL地址，达到免验证证书效果"><a href="#Java绕过证书验证访问SSL地址，达到免验证证书效果" class="headerlink" title="Java绕过证书验证访问SSL地址，达到免验证证书效果"></a>Java绕过证书验证访问SSL地址，达到免验证证书效果</h1><p>这种方式是采用重写HostnameVerifier的verify方法配合X509TrustManager来处理授信所有host，下面直接上代码</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import java.net.HttpURLConnection;</span><br><span class="line">import java.net.URL;</span><br><span class="line">import java.security.cert.X509Certificate;</span><br><span class="line">import javax.net.ssl.HostnameVerifier;</span><br><span class="line">import javax.net.ssl.HttpsURLConnection;</span><br><span class="line">import javax.net.ssl.SSLContext;</span><br><span class="line">import javax.net.ssl.SSLSession;</span><br><span class="line">import javax.net.ssl.TrustManager;</span><br><span class="line">import javax.net.ssl.X509TrustManager;</span><br><span class="line">import org.slf4j.Logger;</span><br><span class="line">import org.slf4j.LoggerFactory;</span><br><span class="line"></span><br><span class="line">public class HttpDemo &#123;</span><br><span class="line"></span><br><span class="line">    private static final Logger logger = LoggerFactory.getLogger(HttpDemo.class.getName());</span><br><span class="line"></span><br><span class="line">    final static HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() &#123;</span><br><span class="line"></span><br><span class="line">        public boolean verify(String hostname, SSLSession session) &#123;</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    public static void httpGet(String path) &#123;</span><br><span class="line">        StringBuffer tempStr = new StringBuffer();</span><br><span class="line">        String responseContent = &quot;&quot;;</span><br><span class="line">        HttpURLConnection conn = null;</span><br><span class="line">        try &#123;</span><br><span class="line">            // Create a trust manager that does not validate certificate chains</span><br><span class="line">            trustAllHosts();</span><br><span class="line">            URL url = new URL(path);</span><br><span class="line">            HttpsURLConnection https = (HttpsURLConnection) url.openConnection();</span><br><span class="line">            if (url.getProtocol().toLowerCase().equals(&quot;https&quot;)) &#123;</span><br><span class="line">                https.setHostnameVerifier(DO_NOT_VERIFY);</span><br><span class="line">                conn = https;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                conn = (HttpURLConnection) url.openConnection();</span><br><span class="line">            &#125;</span><br><span class="line">            conn.connect();</span><br><span class="line">            logger.info(&quot;地址:&#123;&#125;, success, result:&#123;&#125;&quot;, path, conn.getResponseCode() + &quot; &quot; + conn.getResponseMessage());</span><br><span class="line">            // HttpURLConnection conn = (HttpURLConnection)</span><br><span class="line">            // url.openConnection();</span><br><span class="line"></span><br><span class="line">            // conn.setConnectTimeout(5000);</span><br><span class="line">            // conn.setReadTimeout(5000);</span><br><span class="line">            // conn.setDoOutput(true);</span><br><span class="line">            //</span><br><span class="line">            // InputStream in = conn.getInputStream();</span><br><span class="line">            // conn.setReadTimeout(10*1000);</span><br><span class="line">            // BufferedReader rd = new BufferedReader(new InputStreamReader(in,</span><br><span class="line">            // &quot;UTF-8&quot;));</span><br><span class="line">            // String tempLine;</span><br><span class="line">            // while ((tempLine = rd.readLine()) != null) &#123;</span><br><span class="line">            // tempStr.append(tempLine);</span><br><span class="line">            // &#125;</span><br><span class="line">            // responseContent = tempStr.toString();</span><br><span class="line">            // System.out.println(responseContent);</span><br><span class="line">            // rd.close();</span><br><span class="line">            // in.close();</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            logger.error(&quot;地址:&#123;&#125;, is error&quot;, e);</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            if (conn != null) &#123;</span><br><span class="line">                conn.disconnect();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * Trust every server - dont check for any certificate</span><br><span class="line">     */</span><br><span class="line">    private static void trustAllHosts() &#123;</span><br><span class="line"></span><br><span class="line">        // Create a trust manager that does not validate certificate chains</span><br><span class="line">        TrustManager[] trustAllCerts = new TrustManager[] &#123; new X509TrustManager() &#123;</span><br><span class="line"></span><br><span class="line">            public java.security.cert.X509Certificate[] getAcceptedIssuers() &#123;</span><br><span class="line">                return new java.security.cert.X509Certificate[] &#123;&#125;;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            public void checkClientTrusted(X509Certificate[] chain, String authType) &#123;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            public void checkServerTrusted(X509Certificate[] chain, String authType) &#123;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125; &#125;;</span><br><span class="line"></span><br><span class="line">        // Install the all-trusting trust manager</span><br><span class="line">        // 忽略HTTPS请求的SSL证书，必须在openConnection之前调用</span><br><span class="line">        try &#123;</span><br><span class="line">            SSLContext sc = SSLContext.getInstance(&quot;TLS&quot;);</span><br><span class="line">            sc.init(null, trustAllCerts, new java.security.SecureRandom());</span><br><span class="line">            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            logger.error(&quot;trustAllHosts is error&quot;, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">        httpGet(&quot;https://xxx.com&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上代码需要注意一点：<span style="color:red"><strong>忽略HTTPS请求的SSL证书，必须在openConnection之前调用。</strong></span></p>
+<h1 id="常见错误"><a href="#常见错误" class="headerlink" title="常见错误"></a>常见错误</h1><h2 id="错误一"><a href="#错误一" class="headerlink" title="错误一"></a>错误一</h2><p>如果发生如下错误，请添加vm参数：<code>-Dhttps.protocols=TLSv1.1,TLSv1.2 -Djava.net.preferIPv4Stack=true</code>，一般是jdk1.7会发生这个错误，具体原因在<a href="https://ningyu1.github.io/site/post/52-ssl-cert-2/">《使用自签名证书，简单步骤》</a>这篇文章中已经解释。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">javax.net.ssl.SSLHandshakeException: Remote host closed connection during handshake</span><br><span class="line">	at sun.security.ssl.SSLSocketImpl.readRecord(SSLSocketImpl.java:946) ~[na:1.7.0_45]</span><br><span class="line">	at sun.security.ssl.SSLSocketImpl.performInitialHandshake(SSLSocketImpl.java:1312) ~[na:1.7.0_45]</span><br><span class="line">	at sun.security.ssl.SSLSocketImpl.startHandshake(SSLSocketImpl.java:1339) ~[na:1.7.0_45]</span><br><span class="line">	at sun.security.ssl.SSLSocketImpl.startHandshake(SSLSocketImpl.java:1323) ~[na:1.7.0_45]</span><br><span class="line">	at sun.net.www.protocol.https.HttpsClient.afterConnect(HttpsClient.java:563) ~[na:1.7.0_45]</span><br><span class="line">	at sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.connect(AbstractDelegateHttpsURLConnection.java:185) ~[na:1.7.0_45]</span><br><span class="line">	at sun.net.www.protocol.https.HttpsURLConnectionImpl.connect(HttpsURLConnectionImpl.java:153) ~[na:1.7.0_45]</span><br><span class="line">	at HttpDemo.httpGet(HttpDemo.java:59) [classes/:na]</span><br><span class="line">	at HttpDemo.main(HttpDemo.java:122) [classes/:na]</span><br><span class="line">Caused by: java.io.EOFException: SSL peer shut down incorrectly</span><br><span class="line">	at sun.security.ssl.InputRecord.read(InputRecord.java:482) ~[na:1.7.0_45]</span><br><span class="line">	at sun.security.ssl.SSLSocketImpl.readRecord(SSLSocketImpl.java:927) ~[na:1.7.0_45]</span><br><span class="line">	... 8 common frames omitted</span><br></pre></td></tr></table></figure>
+<h2 id="错误二"><a href="#错误二" class="headerlink" title="错误二"></a>错误二</h2><p>如果发生如下错误，是因为没有找到匹配的证书。<br>如果使用证书的方式访问，请检查证书安装是否错误。<br>如果是免验证证书访问，请检查代码没有跳过证书验证。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No name matching xxxxxxx.com found</span><br><span class="line">	at sun.security.ssl.Alerts.getSSLException(Alerts.java:192) ~[na:1.7.0_45]</span><br><span class="line">	at sun.security.ssl.SSLSocketImpl.fatal(SSLSocketImpl.java:1884) ~[na:1.7.0_45]</span><br><span class="line">	at sun.security.ssl.Handshaker.fatalSE(Handshaker.java:276) ~[na:1.7.0_45]</span><br><span class="line">	at sun.security.ssl.Handshaker.fatalSE(Handshaker.java:270) ~[na:1.7.0_45]</span><br><span class="line">	at sun.security.ssl.ClientHandshaker.serverCertificate(ClientHandshaker.java:1341) ~[na:1.7.0_45]</span><br><span class="line">	at sun.security.ssl.ClientHandshaker.processMessage(ClientHandshaker.java:153) ~[na:1.7.0_45]</span><br><span class="line">	at sun.security.ssl.Handshaker.processLoop(Handshaker.java:868) ~[na:1.7.0_45]</span><br><span class="line">	at sun.security.ssl.Handshaker.process_record(Handshaker.java:804) ~[na:1.7.0_45]</span><br><span class="line">	at sun.security.ssl.SSLSocketImpl.readRecord(SSLSocketImpl.java:1016) ~[na:1.7.0_45]</span><br><span class="line">	at sun.security.ssl.SSLSocketImpl.performInitialHandshake(SSLSocketImpl.java:1312) ~[na:1.7.0_45]</span><br><span class="line">	at sun.security.ssl.SSLSocketImpl.startHandshake(SSLSocketImpl.java:1339) ~[na:1.7.0_45]</span><br><span class="line">	at sun.security.ssl.SSLSocketImpl.startHandshake(SSLSocketImpl.java:1323) ~[na:1.7.0_45]</span><br><span class="line">	at sun.net.www.protocol.https.HttpsClient.afterConnect(HttpsClient.java:563) ~[na:1.7.0_45]</span><br><span class="line">	at sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.connect(AbstractDelegateHttpsURLConnection.java:185) ~[na:1.7.0_45]</span><br><span class="line">	at sun.net.www.protocol.https.HttpsURLConnectionImpl.connect(HttpsURLConnectionImpl.java:153) ~[na:1.7.0_45]</span><br><span class="line">	at HttpsDemo.sendHttps(HttpsDemo.java:62) [classes/:na]</span><br><span class="line">	at HttpsDemo.main(HttpsDemo.java:133) [classes/:na]</span><br><span class="line">Caused by: java.security.cert.CertificateException: No name matching xxxxxxx.com found</span><br><span class="line">	at sun.security.util.HostnameChecker.matchDNS(HostnameChecker.java:208) ~[na:1.7.0_45]</span><br><span class="line">	at sun.security.util.HostnameChecker.match(HostnameChecker.java:93) ~[na:1.7.0_45]</span><br><span class="line">	at sun.security.ssl.X509TrustManagerImpl.checkIdentity(X509TrustManagerImpl.java:347) ~[na:1.7.0_45]</span><br><span class="line">	at sun.security.ssl.AbstractTrustManagerWrapper.checkAdditionalTrust(SSLContextImpl.java:847) ~[na:1.7.0_45]</span><br><span class="line">	at sun.security.ssl.AbstractTrustManagerWrapper.checkServerTrusted(SSLContextImpl.java:814) ~[na:1.7.0_45]</span><br><span class="line">	at sun.security.ssl.ClientHandshaker.serverCertificate(ClientHandshaker.java:1323) ~[na:1.7.0_45]</span><br><span class="line">	... 12 common frames omitted</span><br></pre></td></tr></table></figure>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.035Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20180115/53-ssl-cert-3.html" target="_blank" rel="external">https://ningyu1.github.io/20180115/53-ssl-cert-3.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/openssl/">openssl</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ssl/">ssl</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180115/53-ssl-cert-3.html&title=《Java访问SSL地址，使用证书方式和免验证证书方式》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180115/53-ssl-cert-3.html&title=《Java访问SSL地址，使用证书方式和免验证证书方式》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180115/53-ssl-cert-3.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Java访问SSL地址，使用证书方式和免验证证书方式》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180115/53-ssl-cert-3.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180115/53-ssl-cert-3.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20180119/54-cas-server.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">CAS使用经验总结，纯干货</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20180112/52-ssl-cert-2.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">使用自签名证书，简单步骤</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180115/53-ssl-cert-3.html&title=《Java访问SSL地址，使用证书方式和免验证证书方式》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180115/53-ssl-cert-3.html&title=《Java访问SSL地址，使用证书方式和免验证证书方式》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180115/53-ssl-cert-3.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Java访问SSL地址，使用证书方式和免验证证书方式》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180115/53-ssl-cert-3.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180115/53-ssl-cert-3.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACKElEQVR42u3aS3LbMBAFQN3/0so6lYh+b0C5ikBjpZIpko3FGPN5veL1/md9+uunb9qnvL6xMDAwHst4X67rF22R17+aXYOBgXEO41ME+3RNcutrfL5B1++GgYGBkXxuw/QKGwMDA2OFcZ1dzpJYDAwMjDaZnCWl+Zb9Ui6OgYHxQEYeCn//81f6GxgYGI9ivMvV/qotn80WBgbG3ow8wM0OjuvTEcVYBgYGxjGMpLj/vQGvNvX94fSKgYGxEePmAn2wQfnoxlJYx8DA2JSxMtqVpKxtijtsjmJgYGzHmB3F2qA8a3YmoRkDA+NMRnKYa5uds+uLp2NgYGzKyA95bXsg35RZ2P3riRgYGFszVoLg7CVmrYKlqiEGBsZGjDaxbPemGPCKw33xGAwMjMcy8qL/N8a88u24oeOKgYGxKSMfF8sDcfKi9TUYGBgHMJJjXxvf2uC7lOJiYGBszcjDYltia+9zQ2MVAwNja8ZSlW4WHMuEuSjtYWBgbMqoO5xl4az9Psf/5/8GBgbGkYxZQpuktbPW6Q9JLAYGxjGMFpAX6VaKa3XAxcDA2ILxLld7aGtHNNoWRTTlgYGB8XDGepqaF+ZWBi/uSrYxMDCey8gHvPKkN8fUTUoMDIyDGUXWW5bsZyW2GomBgYERtwTagtpKaC5uhIGBcSRj/cA3G4q9+WiIgYHxKEb+mBycH/5mpTcMDIxzGEuTGuVhsW0ztCMgGBgY2zH+ALM1S6kLpDvtAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>Trouble Shooting —— MyBatis的PropertyTokenizer抛NPE异常 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="mybatis">
+    <meta name="description" content="Trouble Shooting —— MyBatis的PropertyTokenizer抛NPE异常">
+<meta name="keywords" content="mybatis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Trouble Shooting —— MyBatis的PropertyTokenizer抛NPE异常">
+<meta property="og:url" content="https://ningyu1.github.io/20180820/97-mybatis-npe.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="Trouble Shooting —— MyBatis的PropertyTokenizer抛NPE异常">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ningyu1.github.io/img/mybatis-npe/1.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/mybatis-npe/2.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/mybatis-npe/3.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/mybatis-npe/4.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/mybatis-npe/5.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/mybatis-npe/6.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/mybatis-npe/7.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/mybatis-npe/8.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/mybatis-npe/9.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/mybatis-npe/10.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/mybatis-npe/11.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/mybatis-npe/12.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/mybatis-npe/13.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/mybatis-npe/14.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/mybatis-npe/15.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/mybatis-npe/16.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/mybatis-npe/17.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/mybatis-npe/18.png">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.039Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Trouble Shooting —— MyBatis的PropertyTokenizer抛NPE异常">
+<meta name="twitter:description" content="Trouble Shooting —— MyBatis的PropertyTokenizer抛NPE异常">
+<meta name="twitter:image" content="https://ningyu1.github.io/img/mybatis-npe/1.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Trouble Shooting —— MyBatis的PropertyTokenizer抛NPE异常</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Trouble Shooting —— MyBatis的PropertyTokenizer抛NPE异常</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-08-20T09:48:00.000Z" itemprop="datePublished" class="page-time">
+  2018-08-20
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/mybatis/">mybatis</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/mybatis/trouble-shooting/">trouble shooting</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#问题描述"><span class="post-toc-number">1.</span> <span class="post-toc-text">问题描述</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#分析过程"><span class="post-toc-number">2.</span> <span class="post-toc-text">分析过程</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#深入并发测试"><span class="post-toc-number">3.</span> <span class="post-toc-text">深入并发测试</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#测试环境"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">测试环境</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#测试过程"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">测试过程</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#升级版处理逻辑"><span class="post-toc-number">4.</span> <span class="post-toc-text">升级版处理逻辑</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#结论"><span class="post-toc-number">5.</span> <span class="post-toc-text">结论</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-97-mybatis-npe"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Trouble Shooting —— MyBatis的PropertyTokenizer抛NPE异常</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-08-20 17:48:00" datetime="2018-08-20T09:48:00.000Z"  itemprop="datePublished">2018-08-20</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/mybatis/">mybatis</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/mybatis/trouble-shooting/">trouble shooting</a></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>这个文章转自公司内网WIKI，同事调试的问题以及问题分析过程，我觉得挺好的所以转载出来。</p>
+<h1 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h1><p>多任务同时处理时会报出如下NPE异常，堆栈信息如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">2018-08-10 18:16:10.938 [xxxExecutor-2] ERROR c.j.bmc.mq.listener.xxxResultListener </span><br><span class="line">org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.exceptions.PersistenceException:</span><br><span class="line">### Error querying database.  Cause: java.lang.NullPointerException</span><br><span class="line">### Cause: java.lang.NullPointerException</span><br><span class="line">    at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:75) ~[mybatis-spring-1.2.2.jar:1.2.2]</span><br><span class="line">    at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:371) ~[mybatis-spring-1.2.2.jar:1.2.2]</span><br><span class="line">    at com.sun.proxy.$Proxy21.selectList(Unknown Source) ~[na:na]</span><br><span class="line">    at org.mybatis.spring.SqlSessionTemplate.selectList(SqlSessionTemplate.java:198) ~[mybatis-spring-1.2.2.jar:1.2.2]</span><br><span class="line">    at org.apache.ibatis.binding.MapperMethod.executeForMany(MapperMethod.java:119) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.binding.MapperMethod.execute(MapperMethod.java:63) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.binding.MapperProxy.invoke(MapperProxy.java:52) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at com.sun.proxy.$Proxy49.findBillBillingTask(Unknown Source) ~[na:na]</span><br><span class="line">    at com.xxx.service.impl.XXXServiceImpl.findBillBillingTask(XXXServiceImpl.java:118) ~[bmc-service-0.0.1-SNAPSHOT.jar:na]</span><br><span class="line">    at com.xxx.service.impl.XXXServiceImpl$$FastClassByCGLIB$$7d4463f0.invoke(&lt;generated&gt;) ~[spring-core-4.0.0.RELEASE.jar:na]</span><br><span class="line">    at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:204) ~[spring-core-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:713) ~[spring-aop-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:157) ~[spring-aop-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:98) ~[spring-tx-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:262) ~[spring-tx-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:95) ~[spring-tx-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:646) ~[spring-aop-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at com.xxx.service.impl.XXXServiceImpl$$EnhancerByCGLIB$$32d6287d.findBillBillingTask(&lt;generated&gt;) ~[spring-core-4.0.0.RELEASE.jar:na]</span><br><span class="line">    at com.xxx.service.impl.XXXResultServiceImpl.saveBillBillingTask(XXXResultServiceImpl.java:213) ~[bmc-service-0.0.1-SNAPSHOT.jar:na]</span><br><span class="line">    at com.xxx.service.impl.XXXResultServiceImpl.disposeBillBillingResult(XXXResultServiceImpl.java:193) ~[bmc-service-0.0.1-SNAPSHOT.jar:na]</span><br><span class="line">    at com.xxx.service.impl.XXXResultServiceImpl$$FastClassByCGLIB$$5e8db258.invoke(&lt;generated&gt;) ~[spring-core-4.0.0.RELEASE.jar:na]</span><br><span class="line">    at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:204) ~[spring-core-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:713) ~[spring-aop-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:157) ~[spring-aop-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:98) ~[spring-tx-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:262) ~[spring-tx-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:95) ~[spring-tx-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:646) ~[spring-aop-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at com.xxx.service.impl.XXXResultServiceImpl$$EnhancerByCGLIB$$8d251e5.disposeBillBillingResult(&lt;generated&gt;) ~[spring-core-4.0.0.RELEASE.jar:na]</span><br><span class="line">    at com.xxx.XXXListener.receiveMessage(BillBillingResultListener.java:92) ~[bmc-main-0.0.1-SNAPSHOT.jar:na]</span><br><span class="line">    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.7.0_79]</span><br><span class="line">    at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57) ~[na:1.7.0_79]</span><br><span class="line">    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.7.0_79]</span><br><span class="line">    at java.lang.reflect.Method.invoke(Method.java:606) ~[na:1.7.0_79]</span><br><span class="line">    at org.springframework.util.MethodInvoker.invoke(MethodInvoker.java:273) [spring-core-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.jms.listener.adapter.MessageListenerAdapter.invokeListenerMethod(MessageListenerAdapter.java:466) [spring-jms-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.jms.listener.adapter.MessageListenerAdapter.onMessage(MessageListenerAdapter.java:357) [spring-jms-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.jms.listener.adapter.MessageListenerAdapter.onMessage(MessageListenerAdapter.java:332) [spring-jms-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.jms.listener.AbstractMessageListenerContainer.doInvokeListener(AbstractMessageListenerContainer.java:537) [spring-jms-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.jms.listener.AbstractMessageListenerContainer.invokeListener(AbstractMessageListenerContainer.java:497) [spring-jms-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.jms.listener.AbstractMessageListenerContainer.doExecuteListener(AbstractMessageListenerContainer.java:468) [spring-jms-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.jms.listener.AbstractPollingMessageListenerContainer.doReceiveAndExecute(AbstractPollingMessageListenerContainer.java:325) [spring-jms-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.jms.listener.AbstractPollingMessageListenerContainer.receiveAndExecute(AbstractPollingMessageListenerContainer.java:263) [spring-jms-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.invokeListener(DefaultMessageListenerContainer.java:1104) [spring-jms-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.run(DefaultMessageListenerContainer.java:998) [spring-jms-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145) [na:1.7.0_79]</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615) [na:1.7.0_79]</span><br><span class="line">    at java.lang.Thread.run(Thread.java:745) [na:1.7.0_79]</span><br><span class="line">Caused by: org.apache.ibatis.exceptions.PersistenceException:</span><br><span class="line">### Error querying database.  Cause: java.lang.NullPointerException</span><br><span class="line">### Cause: java.lang.NullPointerException</span><br><span class="line">    at org.apache.ibatis.exceptions.ExceptionFactory.wrapException(ExceptionFactory.java:26) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:111) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:102) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at sun.reflect.GeneratedMethodAccessor203.invoke(Unknown Source) ~[na:na]</span><br><span class="line">    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.7.0_79]</span><br><span class="line">    at java.lang.reflect.Method.invoke(Method.java:606) ~[na:1.7.0_79]</span><br><span class="line">    at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:358) ~[mybatis-spring-1.2.2.jar:1.2.2]</span><br><span class="line">    ... 48 common frames omitted</span><br><span class="line">Caused by: java.lang.NullPointerException: null</span><br><span class="line">    at org.apache.ibatis.reflection.property.PropertyTokenizer.&lt;init&gt;(PropertyTokenizer.java:30) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.reflection.MetaObject.getValue(MetaObject.java:107) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.scripting.xmltags.DynamicContext$ContextMap.get(DynamicContext.java:97) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.scripting.xmltags.DynamicContext$ContextAccessor.getProperty(DynamicContext.java:116) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.ognl.OgnlRuntime.getProperty(OgnlRuntime.java:1657) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.ognl.ASTProperty.getValueBody(ASTProperty.java:92) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.ognl.SimpleNode.evaluateGetValueBody(SimpleNode.java:170) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.ognl.SimpleNode.getValue(SimpleNode.java:210) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.ognl.ASTNotEq.getValueBody(ASTNotEq.java:49) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.ognl.SimpleNode.evaluateGetValueBody(SimpleNode.java:170) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.ognl.SimpleNode.getValue(SimpleNode.java:210) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.ognl.Ognl.getValue(Ognl.java:333) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.ognl.Ognl.getValue(Ognl.java:413) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.ognl.Ognl.getValue(Ognl.java:395) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.scripting.xmltags.OgnlCache.getValue(OgnlCache.java:48) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.scripting.xmltags.ExpressionEvaluator.evaluateBoolean(ExpressionEvaluator.java:32) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.scripting.xmltags.IfSqlNode.apply(IfSqlNode.java:33) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.scripting.xmltags.MixedSqlNode.apply(MixedSqlNode.java:32) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.scripting.xmltags.DynamicSqlSource.getBoundSql(DynamicSqlSource.java:40) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.mapping.MappedStatement.getBoundSql(MappedStatement.java:278) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at org.apache.ibatis.executor.CachingExecutor.query(CachingExecutor.java:75) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at sun.reflect.GeneratedMethodAccessor205.invoke(Unknown Source) ~[na:na]</span><br><span class="line">    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.7.0_79]</span><br><span class="line">    at java.lang.reflect.Method.invoke(Method.java:606) ~[na:1.7.0_79]</span><br><span class="line">    at org.apache.ibatis.plugin.Invocation.proceed(Invocation.java:49) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at com.github.pagehelper.util.SqlUtil.doIntercept(SqlUtil.java:175) ~[pagehelper-4.2.1.jar:na]</span><br><span class="line">    at com.github.pagehelper.util.SqlUtil.intercept(SqlUtil.java:84) ~[pagehelper-4.2.1.jar:na]</span><br><span class="line">    at com.github.pagehelper.PageHelper.intercept(PageHelper.java:50) ~[pagehelper-4.2.1.jar:na]</span><br><span class="line">    at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:60) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    at com.sun.proxy.$Proxy53.query(Unknown Source) ~[na:na]</span><br><span class="line">    at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:108) ~[mybatis-3.2.7.jar:3.2.7]</span><br><span class="line">    ... 53 common frames omitted</span><br></pre></td></tr></table></figure>
+<h1 id="分析过程"><a href="#分析过程" class="headerlink" title="分析过程"></a>分析过程</h1><p>通常，有堆栈数据的时候就很容分析出问题的原因。但是经过查看相关代码后发现触发点操作逻辑非常简单，不太会出现该异常。</p>
+<p>于是就考虑从日志的细节分析问题。</p>
+<p>先查看业务代码。该代码使用一个非空的VO对象作为查询条件，提交给Mapper。</p>
+<p>Mapper中，判断各个参数是否为null或者空，然后拼接到SQL中。整个过程非常简单，而且大部分是成功执行的。</p>
+<p>通过以上判断，可以认为不是业务代码的问题，极有可能是mybatis的问题。于是上网进行搜索，得到一些关于偶发NPE问题的描述。</p>
+<p><a href="https://github.com/mybatis/mybatis-3/issues/313" target="_blank" rel="noopener">mybatis-3/issues/313</a></p>
+<p><a href="https://github.com/mybatis/mybatis-3/issues/199" target="_blank" rel="noopener">mybatis-3/issues/199</a></p>
+<p>以下问题提及了偶发返回null的情况。</p>
+<p><a href="https://issues.apache.org/jira/browse/OGNL-121" target="_blank" rel="noopener">issues-OGNL-121</a></p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/mybatis-npe/1.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>于是我们又观察反编译代码和日志执行情况，可以看到在SimpleNode.java中的确有非安全的逻辑操作。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/mybatis-npe/2.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/mybatis-npe/3.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>日志也有相关的执行过程。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/mybatis-npe/4.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>由于没有源代码，所以无法有效的进行Debug，模拟并发操作。因此该问题只能怀疑是这个原因导致的，具体可以在后续</p>
+<p>有条件的情况下进行模拟测试。</p>
+<h1 id="深入并发测试"><a href="#深入并发测试" class="headerlink" title="深入并发测试"></a>深入并发测试</h1><p>在Idea中可以反编译代码，且还原度较高，因此我们做了一次测试。</p>
+<h2 id="测试环境"><a href="#测试环境" class="headerlink" title="测试环境"></a>测试环境</h2><p>两个Consumer调用Provider，Provider只做数据库查询，且查询中带条件判断。</p>
+<p>这里使用Spring test进行测试，以下是Consumer端调用</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/mybatis-npe/5.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>Provider端定义</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/mybatis-npe/6.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>查询条件判断</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/mybatis-npe/7.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>准备好测试环境后，就可以进行测试了。此处还需要注意如何在IntellJ Idea中Debug多线程，具体设置方法请找度娘。</p>
+<h2 id="测试过程"><a href="#测试过程" class="headerlink" title="测试过程"></a>测试过程</h2><p>同时启动两个Consumer，然后在Provider中的SimpleNode.java中设置断点。</p>
+<p>根据之前分析，如果要出现null，则说明getProperty会返回null。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/mybatis-npe/8.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>而getValue方法实际调用的逻辑是以下代码：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/mybatis-npe/9.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>说明以下的代码返回了null</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/mybatis-npe/10.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>从代码上及Debug分析，如果要返回null，则很有可能在hasConstantValue=true且constantValue为null。</p>
+<p>当然此处的数据已经是我们模拟出并发问题后的结果，也验证了是有可能的。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/mybatis-npe/11.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>如果没有出问题的情况时，正常的结果应该是constantValue=id，hasConstantValue=true。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/mybatis-npe/12.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>测试过程中，我们发现多个线程调用的对象实际是同一个，如下图中的ASTConst@6075。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/mybatis-npe/13.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>根据多线程常见问题处理经验来看，如果多线程操作同一个对象，则要注意其是否存在成员变量。如果有，那还要注意是否做了并发可见性处理。</p>
+<p>于是我们看下代码</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/mybatis-npe/14.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/mybatis-npe/15.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>那我们指导了这里有并发问题，那就好容易模拟了。我们只要在第一个线程中保持一种状态，然后暂停操作。再在另外一个线程中去特定的操作</p>
+<p>步骤中正常变更数据。最后再放开第一个线程继续往下执行。由于第一个线程的成员变量已经发生了变化，所以后续的结果就不再是预想的那样</p>
+<p>了。</p>
+<p>于是就有了如下结果</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/mybatis-npe/16.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>模拟的关键在于：</p>
+<ol>
+<li>多线程操作同一个服务</li>
+<li>第一个线程在判断语句处等待第二个线程变更条件值，this.constantValueCalculated变量初始化为false，等第二个线程变更后变为true</li>
+<li>第一个线程继续往下执行</li>
+<li>第二个线程变更了成员变量的值，this.hasConstantValue变量初始化为false，但是被变更为true，然后等待第一个线程执行</li>
+<li>第一个线程用刚更新的值去判断，返回了null值，也就导致了后续的NPE异常</li>
+</ol>
+<p><span style="color:blue"><em>注意：以上说的“等待”只是模拟说法，实际情况会由CPU控制，执行顺序不定。恰巧出现了以上执行流程，则会出现NPE问题。</em><span></span></span></p>
+<h1 id="升级版处理逻辑"><a href="#升级版处理逻辑" class="headerlink" title="升级版处理逻辑"></a>升级版处理逻辑</h1><p>在Mybatis的3.4.5版本中，程序采用了volatile修饰符来定义变量，并且在使用上面也注意了赋值的先后顺序。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/mybatis-npe/17.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/mybatis-npe/18.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>建议升级mybatis，版本是3.3.0+，提及到新的ognl处理逻辑修复此问题，但是我们要考虑在经过充分测试的前提下进行升级。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.039Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20180820/97-mybatis-npe.html" target="_blank" rel="external">https://ningyu1.github.io/20180820/97-mybatis-npe.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mybatis/">mybatis</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180820/97-mybatis-npe.html&title=《Trouble Shooting —— MyBatis的PropertyTokenizer抛NPE异常》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180820/97-mybatis-npe.html&title=《Trouble Shooting —— MyBatis的PropertyTokenizer抛NPE异常》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180820/97-mybatis-npe.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Trouble Shooting —— MyBatis的PropertyTokenizer抛NPE异常》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180820/97-mybatis-npe.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180820/97-mybatis-npe.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20180918/98-rpc-benchmark.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">怎样对RPC进行有效的性能测试</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20180809/96-word-xml.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">为什么手机浏览器打开word、excel文件部分文件能预览，部分文件不能预览？</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180820/97-mybatis-npe.html&title=《Trouble Shooting —— MyBatis的PropertyTokenizer抛NPE异常》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180820/97-mybatis-npe.html&title=《Trouble Shooting —— MyBatis的PropertyTokenizer抛NPE异常》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180820/97-mybatis-npe.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Trouble Shooting —— MyBatis的PropertyTokenizer抛NPE异常》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180820/97-mybatis-npe.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180820/97-mybatis-npe.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACMElEQVR42u3aS07DQBAFwNz/0mYbCTl+rycgeVxeIRh5XCxa/Xu94ud4e95/k5+f3fLlBwMD47aM4+Nzdub3G/L3r9x7SsXAwHgA4+z65MzZyej6j3cl5zEwMDDOzuSfOAuvGBgYGCuMJMjmRSkGBgZGzkhC4ecXtWH3W4UuBgbGExh51/3/f/6T+QYGBsatGEf5zFpvbapXfxUGBsbWjDzAzdr6s5J1+D0YGBibMpKQmo8EVhptSYlbpIYYGBgbMWYrEfnSWN4sSwAX/yYMDIxNGXkS1iaIs+RveBcGBsbWjJUBZBtw29K3DfoYGBhPY7QrXyuz07ZgrktZDAyMmzPa8nVlkLASlC9KXAwMjK0Z7dLDyocmbbWlriEGBsamjPWPzkvQZGCQN+9Ou4YYGBibMpK1iZydF7d5mljvjGBgYGzHyMvU2RJGEmTb2y9SQwwMjK0Z7SgxD6Z5yli/HwMD4wGM2Rhypfhsm2sX92JgYGzNKNKvMtS2J9vxAAYGxtMY7QJEMipox6LrqSQGBsYTGLM4nQwy88Wvlv1qxRgYGDdn5AG0bb3VoTN+T1SRY2Bg3JxxlM8syK6sXERUDAyMrRmzMUCSxrXpYzvUnA0zMDAw7suYBdn2r3kYnZW+GBgYT2DkVW8bEJNRZVvEYmBgYOTtsNlqxWz96yKrxcDAwFgOiLNRZZI+YmBgPIeRlJqzBa+2KB229jAwMLZmzNYp8pbZrJW2klZiYGBsxPgBxFWTYRJmg+UAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

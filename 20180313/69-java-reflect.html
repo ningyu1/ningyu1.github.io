@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>Json序列化、反序列化支持泛型，Dubbo对泛型参数方法进行反射调用 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="dubbo,gson,json,GenericService">
+    <meta name="description" content="Json序列化、反序列化支持泛型，Dubbo对泛型参数方法进行反射调用">
+<meta name="keywords" content="dubbo,gson,json,GenericService">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Json序列化、反序列化支持泛型，Dubbo对泛型参数方法进行反射调用">
+<meta property="og:url" content="https://ningyu1.github.io/20180313/69-java-reflect.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="Json序列化、反序列化支持泛型，Dubbo对泛型参数方法进行反射调用">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.036Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Json序列化、反序列化支持泛型，Dubbo对泛型参数方法进行反射调用">
+<meta name="twitter:description" content="Json序列化、反序列化支持泛型，Dubbo对泛型参数方法进行反射调用">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Json序列化、反序列化支持泛型，Dubbo对泛型参数方法进行反射调用</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Json序列化、反序列化支持泛型，Dubbo对泛型参数方法进行反射调用</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-03-13T07:31:53.000Z" itemprop="datePublished" class="page-time">
+  2018-03-13
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/dubbo/">dubbo</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/dubbo/json/">json</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Gson反序列化复杂类型"><span class="post-toc-number">1.</span> <span class="post-toc-text">Gson反序列化复杂类型</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Dubbo泛化调用"><span class="post-toc-number">2.</span> <span class="post-toc-text">Dubbo泛化调用</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-69-java-reflect"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Json序列化、反序列化支持泛型，Dubbo对泛型参数方法进行反射调用</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-03-13 15:31:53" datetime="2018-03-13T07:31:53.000Z"  itemprop="datePublished">2018-03-13</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/dubbo/">dubbo</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/dubbo/json/">json</a></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>最近在对Dubbo接口进行反射调用时，遇到了参数类型较为复杂的情况下，使用反射方式无法调用的问题。</p>
+<p>由于Dubbo使用了proxy代理对象，因此在反射上调用是存在一定的问题，从反射对象上获取的方法和参数类型可能会导致无法正常的调用。</p>
+<p>首先先让我们看一个复杂参数的接口定义</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public String testMethod(Map&lt;String,ResourceVo&gt; map, List&lt;Map&lt;String,ResourceVo&gt;&gt; list) throws BizException;</span><br></pre></td></tr></table></figure>
+<h2 id="Gson反序列化复杂类型"><a href="#Gson反序列化复杂类型" class="headerlink" title="Gson反序列化复杂类型"></a>Gson反序列化复杂类型</h2><p>在对参数进行反序列化时，内部的类型容易丢失，我们可以使用gson的Type进行反序列化得到正确的参数值，让我们看一下gson反序列化的两个方法</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"> /**</span><br><span class="line">  * This method deserializes the specified Json into an object of the specified class. It is not</span><br><span class="line">  * suitable to use if the specified class is a generic type since it will not have the generic</span><br><span class="line">  * type information because of the Type Erasure feature of Java. Therefore, this method should not</span><br><span class="line">  * be used if the desired type is a generic type. Note that this method works fine if the any of</span><br><span class="line">  * the fields of the specified object are generics, just the object itself should not be a</span><br><span class="line">  * generic type. For the cases when the object is of generic type, invoke</span><br><span class="line">  * &#123;@link #fromJson(String, Type)&#125;. If you have the Json in a &#123;@link Reader&#125; instead of</span><br><span class="line">  * a String, use &#123;@link #fromJson(Reader, Class)&#125; instead.</span><br><span class="line">  *</span><br><span class="line">  * @param &lt;T&gt; the type of the desired object</span><br><span class="line">  * @param json the string from which the object is to be deserialized</span><br><span class="line">  * @param classOfT the class of T</span><br><span class="line">  * @return an object of type T from the string. Returns &#123;@code null&#125; if &#123;@code json&#125; is &#123;@code null&#125;.</span><br><span class="line">  * @throws JsonSyntaxException if json is not a valid representation for an object of type</span><br><span class="line">  * classOfT</span><br><span class="line">  */</span><br><span class="line"> public &lt;T&gt; T fromJson(String json, Class&lt;T&gt; classOfT) throws JsonSyntaxException &#123;</span><br><span class="line">   Object object = fromJson(json, (Type) classOfT);</span><br><span class="line">   return Primitives.wrap(classOfT).cast(object);</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">  * This method deserializes the specified Json into an object of the specified type. This method</span><br><span class="line">  * is useful if the specified object is a generic type. For non-generic objects, use</span><br><span class="line">  * &#123;@link #fromJson(String, Class)&#125; instead. If you have the Json in a &#123;@link Reader&#125; instead of</span><br><span class="line">  * a String, use &#123;@link #fromJson(Reader, Type)&#125; instead.</span><br><span class="line">  *</span><br><span class="line">  * @param &lt;T&gt; the type of the desired object</span><br><span class="line">  * @param json the string from which the object is to be deserialized</span><br><span class="line">  * @param typeOfT The specific genericized type of src. You can obtain this type by using the</span><br><span class="line">  * &#123;@link com.google.gson.reflect.TypeToken&#125; class. For example, to get the type for</span><br><span class="line">  * &#123;@code Collection&lt;Foo&gt;&#125;, you should use:</span><br><span class="line">  * &lt;pre&gt;</span><br><span class="line">  * Type typeOfT = new TypeToken&amp;lt;Collection&amp;lt;Foo&amp;gt;&amp;gt;()&#123;&#125;.getType();</span><br><span class="line">  * &lt;/pre&gt;</span><br><span class="line">  * @return an object of type T from the string. Returns &#123;@code null&#125; if &#123;@code json&#125; is &#123;@code null&#125;.</span><br><span class="line">  * @throws JsonParseException if json is not a valid representation for an object of type typeOfT</span><br><span class="line">  * @throws JsonSyntaxException if json is not a valid representation for an object of type</span><br><span class="line">  */</span><br><span class="line"> @SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line"> public &lt;T&gt; T fromJson(String json, Type typeOfT) throws JsonSyntaxException &#123;</span><br><span class="line">   if (json == null) &#123;</span><br><span class="line">     return null;</span><br><span class="line">   &#125;</span><br><span class="line">   StringReader reader = new StringReader(json);</span><br><span class="line">   T target = (T) fromJson(reader, typeOfT);</span><br><span class="line">   return target;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>让我们测试一下复杂接口参数在使用这两个方法反序列化会有什么不同</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">String json = &quot;&#123;\&quot;name\&quot;:\&quot;name\&quot;,\&quot;value\&quot;:&#123;\&quot;service\&quot;:\&quot;test1\&quot;,\&quot;url\&quot;:\&quot;test\&quot;,\&quot;action\&quot;:\&quot;GET\&quot;,\&quot;enabled\&quot;:true,\&quot;isPublic\&quot;:false,\&quot;appId\&quot;:8,\&quot;menuId\&quot;:30001&#125;&#125;&quot;;</span><br><span class="line">Class clazz = Map.class;</span><br><span class="line">Map map = gson.fromJson(json, clazz);</span><br></pre></td></tr></table></figure>
+<p>上面代码反序列化后的map对象实际是<code>com.google.gson.internal.LinkedTreeMap&lt;K, V&gt;</code>，这个是gson中自定义的Map实现类，而且内部的对象也都是<code>LinkedTreeMap</code>，当我们换成HashMap时，返回的结果都是<code>HashMap</code>，但是我们的方法上使用的是<code>Map&lt;String,ResourceVo&gt;</code>，如何才能反序列化得到这个类型的对象呢？让我们看一下使用Type后的情况。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">String json = &quot;&#123;\&quot;name\&quot;:\&quot;name\&quot;,\&quot;value\&quot;:&#123;\&quot;service\&quot;:\&quot;test1\&quot;,\&quot;url\&quot;:\&quot;test\&quot;,\&quot;action\&quot;:\&quot;GET\&quot;,\&quot;enabled\&quot;:true,\&quot;isPublic\&quot;:false,\&quot;appId\&quot;:8,\&quot;menuId\&quot;:30001&#125;&#125;&quot;;</span><br><span class="line">Type type = new TypeToken&lt;ResourceVo&gt;()&#123;&#125;.getType();</span><br><span class="line">Map&lt;ResourceVo&gt; map = gson.fromJson(json, type);</span><br></pre></td></tr></table></figure>
+<p>通过使用TypeToken生成的Type对象可以得到<code>Map&lt;String,ResourceVo&gt;</code>这个类型的实例，但是当我们在反射调用方法时，由于不知道参数是什么类型，也不能够import自定义的对象来使用<code>TypeToken</code>来获取type对象，那我们应该怎么做呢？接着往下看</p>
+<p><span style="color:blue">ps.类型：List&#60;ResourceVo&gt;和List&#60;Map&#60;Object,ResourceVo&gt;&gt;这样的类型一样使用Type来进行反序列化</span></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">String json = &quot;&#123;\&quot;name\&quot;:\&quot;name\&quot;,\&quot;value\&quot;:&#123;\&quot;service\&quot;:\&quot;test1\&quot;,\&quot;url\&quot;:\&quot;test\&quot;,\&quot;action\&quot;:\&quot;GET\&quot;,\&quot;enabled\&quot;:true,\&quot;isPublic\&quot;:false,\&quot;appId\&quot;:8,\&quot;menuId\&quot;:30001&#125;&#125;&quot;;</span><br><span class="line">Class clazz = Class.forName(&quot;com.package.JavaBean&quot;);</span><br><span class="line">String methodName = &quot;testMethod&quot;;</span><br><span class="line">Method[] methods = clazz.getMethods();</span><br><span class="line">for (Method m : methods) &#123;</span><br><span class="line">	if (m.getName().equals(methodName)) &#123;</span><br><span class="line">		Type[] paramTypes = m.getGenericParameterTypes();</span><br><span class="line">		for (int j = 0; j &lt; paramTypes.length; j++) &#123;</span><br><span class="line">			gson.fromJson(json, paramTypes[j]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以通过<code>method.getGenericParameterTypes()</code>获取参数的<code>Type</code>对象。</p>
+<p><span style="color:blue">但是需要注意的是，当使用<code>Proxy</code>代理对象通过上面的方式获取的<code>Type</code>对象全都是<code>java.lang.Class</code></span></p>
+<p>那如何解决代理对象获取的<code>Type</code>不正确的问题呢？</p>
+<p>正确的做法就是放弃通过<code>Proxy</code>对象来进行反射，使用<code>Class.forName</code>获取<code>Class</code>对象进行反射。</p>
+<p>可以通过<code>Class.forName</code>的方式获取<code>Class</code>对象，再获取<code>Method</code>对象，最后通过<code>Method.getGenericParameterTypes()</code>获取正确的<code>Type</code>对象，这个步骤是构造方法的参数类型和参数值。但是通过这个方式构造出来的参数类型和参数值，无法通过<code>proxy</code>对象来进行<code>method.invoke</code>，其原因就是原始接口的方法参数定义和代理对象的方法参数定义不同导致。这让我们如何是好。</p>
+<p>继续往下看。</p>
+<h2 id="Dubbo泛化调用"><a href="#Dubbo泛化调用" class="headerlink" title="Dubbo泛化调用"></a>Dubbo泛化调用</h2><p>通过<code>Dubbo</code>的官网文档找到<code>Dubbo</code>支持<code>GenericService</code>泛化调用，什么是泛化调用？</p>
+<p>泛化接口调用方式主要用于客户端没有 <code>API</code> 接口及模型类元的情况，参数及返回值中的所有 <code>POJO</code> 均用 <code>Map</code> 表示，通常用于框架集成，比如：实现一个通用的服务测试框架，可通过 <code>GenericService</code> 调用所有服务实现。</p>
+<p><span style="color:blue">ps. <code>GenericService</code>实际上是<code>Dubbo</code>提供的通用接口，解决使用通用接口调用任何服务方法</span></p>
+<p>这样我们就可以使用前面说到的参数反序列化方式来获取方法的参数类型和参数值，传入<code>GenericService</code>通用接口来对目标方法进行调用。</p>
+<p>首先先让我们看一下<code>Dubbo</code>的泛化调用如何使用。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import com.alibaba.dubbo.rpc.config.ApplicationConfig;</span><br><span class="line">import com.alibaba.dubbo.rpc.config.RegistryConfig;</span><br><span class="line">import com.alibaba.dubbo.rpc.config.ConsumerConfig;</span><br><span class="line">import com.alibaba.dubbo.rpc.config.ReferenceConfig;</span><br><span class="line"></span><br><span class="line">Class clazz = Class.forName(&quot;com.package.JavaBean&quot;);</span><br><span class="line">String method = &quot;testMethod&quot;</span><br><span class="line">// 当前应用配置</span><br><span class="line">ApplicationConfig application = new ApplicationConfig();</span><br><span class="line">application.setName(&quot;yyy&quot;);</span><br><span class="line">// 连接注册中心配置</span><br><span class="line">RegistryConfig registry = new RegistryConfig();</span><br><span class="line">registry.setAddress(&quot;10.20.130.230:9090&quot;);</span><br><span class="line">// 注意：ReferenceConfig为重对象，内部封装了与注册中心的连接，以及与服务提供方的连接</span><br><span class="line">// 引用远程服务</span><br><span class="line">ReferenceConfig reference = new ReferenceConfig(); // 此实例很重，封装了与注册中心的连接以及与提供者的连接，请自行缓存，否则可能造成内存和连接泄漏</span><br><span class="line">reference.setApplication(application);</span><br><span class="line">reference.setRegistry(registry); // 多个注册中心可以用setRegistries()</span><br><span class="line">reference.setInterface(clazz);</span><br><span class="line">reference.setVersion(&quot;1.0.0&quot;);</span><br><span class="line">reference.setRetries(0);</span><br><span class="line">reference.setCluster(&quot;failfast&quot;);</span><br><span class="line">reference.setTimeout(12001);</span><br><span class="line">reference.setGeneric(true);</span><br><span class="line">GenericService genericService = (GenericService) reference.get();</span><br><span class="line">Object result = genericService.$invoke(method, parameterTypes, parameterValues);</span><br></pre></td></tr></table></figure>
+<p>只要给<code>reference</code>设置<code>generic</code>为<code>true</code>就可以使用<code>GenericService</code>通用接口来进行方法调用。</p>
+<p>这样我们就可以顺利的完成任何参数类型方法的反射调用。</p>
+<p><span style="color:blue">从而避免了通过<code>Proxy</code>代理类获取到不正确的参数<code>Type</code>导致反序列化参数失败，这个原因前面也说了是因为原始接口的方法参数定义和代理对象的方法参数定义不同导致。</span></p>
+<p>接下来让我们看一下具体的实现</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@SuppressWarnings(&#123;&quot;unchecked&quot;, &quot;rawtypes&quot;, &quot;static-access&quot;&#125;)</span><br><span class="line">private Object callDubbo(SampleResult res) &#123;</span><br><span class="line">    ApplicationConfig application = new ApplicationConfig();</span><br><span class="line">    application.setName(&quot;DubboSample&quot;);</span><br><span class="line">    </span><br><span class="line">    // 此实例很重，封装了与注册中心的连接以及与提供者的连接，请自行缓存，否则可能造成内存和连接泄漏</span><br><span class="line">    ReferenceConfig reference = new ReferenceConfig();</span><br><span class="line">    // 引用远程服务</span><br><span class="line">    reference.setApplication(application);</span><br><span class="line">    RegistryConfig registry = null;</span><br><span class="line">    </span><br><span class="line">    String protocol = getProtocol();</span><br><span class="line">    if (&quot;zookeeper&quot;.equals(protocol)) &#123;</span><br><span class="line">        // 连接注册中心配置</span><br><span class="line">        registry = new RegistryConfig();</span><br><span class="line">        registry.setProtocol(&quot;zookeeper&quot;);</span><br><span class="line">        registry.setAddress(getAddress());</span><br><span class="line">        reference.setRegistry(registry); // 多个注册中心可以用setRegistries()</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        StringBuffer sb = new StringBuffer();</span><br><span class="line">        sb.append(protocol).append(&quot;://&quot;).append(getAddress()).append(&quot;/&quot;).append(getInterface());</span><br><span class="line">        log.info(&quot;rpc invoker url : &quot; + sb.toString());</span><br><span class="line">        reference.setUrl(sb.toString());</span><br><span class="line">    &#125;</span><br><span class="line">    try &#123;</span><br><span class="line">        Class clazz = Class.forName(getInterface());</span><br><span class="line">        reference.setInterface(clazz);</span><br><span class="line">        reference.setRetries(Integer.valueOf(getRetries()));</span><br><span class="line">        reference.setCluster(getCluster());</span><br><span class="line">        reference.setVersion(getVersion());</span><br><span class="line">        reference.setTimeout(Integer.valueOf(getTimeout()));</span><br><span class="line">        reference.setGeneric(true);</span><br><span class="line">        GenericService genericService = (GenericService) reference.get();</span><br><span class="line">        Method method = null;</span><br><span class="line">        String[] parameterTypes = null;</span><br><span class="line">        Object[] parameterValues = null;</span><br><span class="line">        List&lt;MethodArgument&gt; args = getMethodArgs();</span><br><span class="line">        List&lt;String&gt; paramterTypeList = null;</span><br><span class="line">        List&lt;Object&gt; parameterValuesList = null;</span><br><span class="line">        Method[] methods = clazz.getMethods();</span><br><span class="line">		for (int i = 0; i &lt; methods.length; i++) &#123;</span><br><span class="line">			Method m = methods[i];</span><br><span class="line">			Type[] paramTypes = m.getGenericParameterTypes();</span><br><span class="line">			paramterTypeList = new ArrayList&lt;String&gt;();</span><br><span class="line">			parameterValuesList = new ArrayList&lt;Object&gt;();</span><br><span class="line">			log.info(&quot;paramTypes.length=&quot;+paramTypes.length+&quot;|args.size()=&quot;+args.size());</span><br><span class="line">			if (m.getName().equals(getMethod()) &amp;&amp; paramTypes.length == args.size()) &#123;</span><br><span class="line">				//名称与参数数量匹配，进行参数类型转换</span><br><span class="line">				for (int j = 0; j &lt; paramTypes.length; j++) &#123;</span><br><span class="line">					paramterTypeList.add(args.get(j).getParamType());</span><br><span class="line">					ClassUtils.parseParameter(paramTypes[j], parameterValuesList, args.get(j));</span><br><span class="line">				&#125;</span><br><span class="line">				if (parameterValuesList.size() == paramTypes.length) &#123;</span><br><span class="line">					//没有转换错误，数量应该一致</span><br><span class="line">					method = m;</span><br><span class="line">					break;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">        if (method == null) &#123;</span><br><span class="line">            res.setSuccessful(false);</span><br><span class="line">            return &quot;Method[&quot;+getMethod()+&quot;] Not found!&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">        //发起调用</span><br><span class="line">        parameterTypes = paramterTypeList.toArray(new String[paramterTypeList.size()]);</span><br><span class="line">        parameterValues = parameterValuesList.toArray(new Object[parameterValuesList.size()]);</span><br><span class="line">        Object result = null;</span><br><span class="line">		try &#123;</span><br><span class="line">			result = genericService.$invoke(getMethod(), parameterTypes, parameterValues);</span><br><span class="line">			res.setSuccessful(true);</span><br><span class="line">		&#125; catch (Throwable e) &#123;</span><br><span class="line">			log.error(&quot;接口返回异常：&quot;, e);</span><br><span class="line">			res.setSuccessful(false);</span><br><span class="line">			result = e;</span><br><span class="line">		&#125;</span><br><span class="line">        return result;</span><br><span class="line">    &#125; catch (Exception e) &#123;</span><br><span class="line">        log.error(&quot;调用dubbo接口出错：&quot;, e);</span><br><span class="line">        res.setSuccessful(false);</span><br><span class="line">        return e;</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        if (registry != null) &#123;</span><br><span class="line">            registry.destroyAll();</span><br><span class="line">        &#125;</span><br><span class="line">        reference.destroy();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">## ClassUtils.parseParameter方法代码</span><br><span class="line"></span><br><span class="line">public static void parseParameter(Type type,</span><br><span class="line">		List&lt;Object&gt; parameterValuesList, MethodArgument arg)</span><br><span class="line">		throws ClassNotFoundException &#123;</span><br><span class="line">	String className = getClassName(type);</span><br><span class="line">	if (className.equals(&quot;int&quot;)) &#123;</span><br><span class="line">		parameterValuesList.add(Integer.parseInt(arg.getParamValue()));</span><br><span class="line">	&#125; else if (className.equals(&quot;double&quot;)) &#123;</span><br><span class="line">		parameterValuesList.add(Double.parseDouble(arg.getParamValue()));</span><br><span class="line">	&#125; else if (className.equals(&quot;short&quot;)) &#123;</span><br><span class="line">		parameterValuesList.add(Short.parseShort(arg.getParamValue()));</span><br><span class="line">	&#125; else if (className.equals(&quot;float&quot;)) &#123;</span><br><span class="line">		parameterValuesList.add(Float.parseFloat(arg.getParamValue()));</span><br><span class="line">	&#125; else if (className.equals(&quot;long&quot;)) &#123;</span><br><span class="line">		parameterValuesList.add(Long.parseLong(arg.getParamValue()));</span><br><span class="line">	&#125; else if (className.equals(&quot;byte&quot;)) &#123;</span><br><span class="line">		parameterValuesList.add(Byte.parseByte(arg.getParamValue()));</span><br><span class="line">	&#125; else if (className.equals(&quot;boolean&quot;)) &#123;</span><br><span class="line">		parameterValuesList.add(Boolean.parseBoolean(arg.getParamValue()));</span><br><span class="line">	&#125; else if (className.equals(&quot;char&quot;)) &#123;</span><br><span class="line">		parameterValuesList.add(arg.getParamValue().charAt(0));</span><br><span class="line">	&#125; else if (className.equals(&quot;java.lang.String&quot;)</span><br><span class="line">			|| className.equals(&quot;String&quot;) || className.equals(&quot;string&quot;)) &#123;</span><br><span class="line">		parameterValuesList.add(String.valueOf(arg.getParamValue()));</span><br><span class="line">	&#125; else if (className.equals(&quot;java.lang.Integer&quot;)</span><br><span class="line">			|| className.equals(&quot;Integer&quot;) || className.equals(&quot;integer&quot;)) &#123;</span><br><span class="line">		parameterValuesList.add(Integer.valueOf(arg.getParamValue()));</span><br><span class="line">	&#125; else if (className.equals(&quot;java.lang.Double&quot;)</span><br><span class="line">			|| className.equals(&quot;Double&quot;)) &#123;</span><br><span class="line">		parameterValuesList.add(Double.valueOf(arg.getParamValue()));</span><br><span class="line">	&#125; else if (className.equals(&quot;java.lang.Short&quot;)</span><br><span class="line">			|| className.equals(&quot;Short&quot;)) &#123;</span><br><span class="line">		parameterValuesList.add(Short.valueOf(arg.getParamValue()));</span><br><span class="line">	&#125; else if (className.equals(&quot;java.lang.Long&quot;)</span><br><span class="line">			|| className.equals(&quot;Long&quot;)) &#123;</span><br><span class="line">		parameterValuesList.add(Long.valueOf(arg.getParamValue()));</span><br><span class="line">	&#125; else if (className.equals(&quot;java.lang.Float&quot;)</span><br><span class="line">			|| className.equals(&quot;Float&quot;)) &#123;</span><br><span class="line">		parameterValuesList.add(Float.valueOf(arg.getParamValue()));</span><br><span class="line">	&#125; else if (className.equals(&quot;java.lang.Byte&quot;)</span><br><span class="line">			|| className.equals(&quot;Byte&quot;)) &#123;</span><br><span class="line">		parameterValuesList.add(Byte.valueOf(arg.getParamValue()));</span><br><span class="line">	&#125; else if (className.equals(&quot;java.lang.Boolean&quot;)</span><br><span class="line">			|| className.equals(&quot;Boolean&quot;)) &#123;</span><br><span class="line">		parameterValuesList.add(Boolean.valueOf(arg.getParamValue()));</span><br><span class="line">	&#125; else &#123;</span><br><span class="line">		parameterValuesList.add(JsonUtils.formJson(arg.getParamValue(),</span><br><span class="line">				type));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">## JsonUtils.formJson方法代码</span><br><span class="line"></span><br><span class="line">public static &lt;T&gt; T formJson(String json, Type type) &#123;</span><br><span class="line">	try &#123;</span><br><span class="line">		return gson.fromJson(json, type);</span><br><span class="line">	&#125; catch (JsonSyntaxException e) &#123;</span><br><span class="line">		logger.error(&quot;json to class[&quot; + type.getClass().getName()</span><br><span class="line">				+ &quot;] is error!&quot;, e);</span><br><span class="line">	&#125;</span><br><span class="line">	return null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li>复杂参数类型：<code>Map&lt;Object, ResourceVo&gt;</code>、<code>List&lt;ResourceVo&gt;</code>、<code>List&lt;Map&lt;Object,ResourceVo&gt;&gt;</code>使用<code>gson.fromJson(json, classOfT)</code>反序列化会丢失内部的类型。通过使用<code>gson.fromJson(json, type)</code>方式可以得到正确的类型。</li>
+<li>通过<code>Proxy</code>对象的<code>method.getGenericParameterTypes()</code>获取的<code>Type</code>值全部为<code>java.lang.Class</code>，我们需要的是<code>java.util.Map&lt;com.package.ResourceVo&gt;</code>。</li>
+<li>使用<code>Class.forName</code>得到<code>Class</code>，再获取Method，再通过<code>method.getGenericParameterTypes()</code>获取我们想要的参数<code>Type</code>是：<code>java.util.Map&lt;com.package.ResourceVo&gt;</code></li>
+<li>通过<code>Class.forName</code>得到<code>Class</code>，再获取Method，再通过<code>method.getGenericParameterTypes()</code>构造出来的参数类型和参数值，无法通过<code>Proxy</code>代理对象来进行<code>method.invoke</code>，其原因是：原始接口的方法参数定义和代理对象的方法参数定义不同导致。</li>
+<li>放弃通过<code>Proxy</code>对象的<code>method.invoke</code>方式调用接口，通过<code>Dubbo</code>的通用服务接口（<code>GenericService</code>）来调用任何服务接口方法：<code>GenericService.$invoke(method, parameterTypes, args)</code></li>
+</ol>
+<p>参数对照参考表如下</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Java类型</th>
+<th style="text-align:left">paramType</th>
+<th style="text-align:left">paramValue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">int</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">1</td>
+</tr>
+<tr>
+<td style="text-align:left">double</td>
+<td style="text-align:left">double</td>
+<td style="text-align:left">1.2</td>
+</tr>
+<tr>
+<td style="text-align:left">short</td>
+<td style="text-align:left">short</td>
+<td style="text-align:left">1</td>
+</tr>
+<tr>
+<td style="text-align:left">float</td>
+<td style="text-align:left">float</td>
+<td style="text-align:left">1.2</td>
+</tr>
+<tr>
+<td style="text-align:left">long</td>
+<td style="text-align:left">long</td>
+<td style="text-align:left">1</td>
+</tr>
+<tr>
+<td style="text-align:left">byte</td>
+<td style="text-align:left">byte</td>
+<td style="text-align:left">字节</td>
+</tr>
+<tr>
+<td style="text-align:left">boolean</td>
+<td style="text-align:left">boolean</td>
+<td style="text-align:left">true或false</td>
+</tr>
+<tr>
+<td style="text-align:left">char</td>
+<td style="text-align:left">char</td>
+<td style="text-align:left">A，如果字符过长取值为：”STR”.charAt(0)</td>
+</tr>
+<tr>
+<td style="text-align:left">java.lang.String</td>
+<td style="text-align:left">java.lang.String或String或string</td>
+<td style="text-align:left">字符串</td>
+</tr>
+<tr>
+<td style="text-align:left">java.lang.Integer</td>
+<td style="text-align:left">java.lang.Integer或Integer或integer</td>
+<td style="text-align:left">1</td>
+</tr>
+<tr>
+<td style="text-align:left">java.lang.Double</td>
+<td style="text-align:left">java.lang.Double或Double</td>
+<td style="text-align:left">1.2</td>
+</tr>
+<tr>
+<td style="text-align:left">java.lang.Short</td>
+<td style="text-align:left">java.lang.Short或Short</td>
+<td style="text-align:left">1</td>
+</tr>
+<tr>
+<td style="text-align:left">java.lang.Long</td>
+<td style="text-align:left">java.lang.Long或Long</td>
+<td style="text-align:left">1</td>
+</tr>
+<tr>
+<td style="text-align:left">java.lang.Float</td>
+<td style="text-align:left">java.lang.Float或Float</td>
+<td style="text-align:left">1.2</td>
+</tr>
+<tr>
+<td style="text-align:left">java.lang.Byte</td>
+<td style="text-align:left">java.lang.Byte或Byte</td>
+<td style="text-align:left">字节</td>
+</tr>
+<tr>
+<td style="text-align:left">java.lang.Boolean</td>
+<td style="text-align:left">java.lang.Boolean或Boolean</td>
+<td style="text-align:left">true或false</td>
+</tr>
+<tr>
+<td style="text-align:left">JavaBean</td>
+<td style="text-align:left">com.package.Bean</td>
+<td style="text-align:left">{“service”:”test1”,”url”:”test”,”action”:”GET”,”enabled”:true,”isPublic”:false,”appId”:8,”menuId”:30001}</td>
+</tr>
+<tr>
+<td style="text-align:left">java.util.Map以及子类</td>
+<td style="text-align:left">java.util.Map以及子类</td>
+<td style="text-align:left">{“service”:”test1”,”url”:”test”,”action”:”GET”,”enabled”:true,”isPublic”:false,”appId”:8,”menuId”:30001}</td>
+</tr>
+<tr>
+<td style="text-align:left">java.util.Map&#60;String,JavaBean&gt;</td>
+<td style="text-align:left">java.util.Map</td>
+<td style="text-align:left">{“name”:{“service”:”test1”,”url”:”test”,”action”:”GET”,”enabled”:true,”isPublic”:false,”appId”:8,”menuId”:30001},”value”:{“service”:”test1”,”url”:”test”,”action”:”GET”,”enabled”:true,”isPublic”:false,”appId”:8,”menuId”:30001}}</td>
+</tr>
+<tr>
+<td style="text-align:left">java.util.HashMap&#60;Object,Object&gt;</td>
+<td style="text-align:left">java.util.HashMap</td>
+<td style="text-align:left">{“name”:{“service”:”test1”,”url”:”test”,”action”:”GET”,”enabled”:true,”isPublic”:false,”appId”:8,”menuId”:30001},”value”:{“service”:”test1”,”url”:”test”,”action”:”GET”,”enabled”:true,”isPublic”:false,”appId”:8,”menuId”:30001}}</td>
+</tr>
+<tr>
+<td style="text-align:left">java.util.Collection以及子类</td>
+<td style="text-align:left">java.util.Collection以及子类</td>
+<td style="text-align:left">[“a”,”b”]</td>
+</tr>
+<tr>
+<td style="text-align:left">java.util.List&#60;String&gt;</td>
+<td style="text-align:left">java.util.List</td>
+<td style="text-align:left">[“a”,”b”]</td>
+</tr>
+<tr>
+<td style="text-align:left">java.util.List&#60;JavaBean&gt;</td>
+<td style="text-align:left">java.util.List</td>
+<td style="text-align:left">[{“service”:”test1”,”url”:”test”,”action”:”GET”,”enabled”:true,”isPublic”:false,”appId”:8,”menuId”:30001},{“service”:”test1”,”url”:”test”,”action”:”GET”,”enabled”:true,”isPublic”:false,”appId”:8,”menuId”:30001}]</td>
+</tr>
+<tr>
+<td style="text-align:left">java.util.List&#60;Map&#60;Object, JavaBean&gt;&gt;</td>
+<td style="text-align:left">java.util.List</td>
+<td style="text-align:left">[{“name”:{“service”:”test1”,”url”:”test”,”action”:”GET”,”enabled”:true,”isPublic”:false,”appId”:8,”menuId”:30001},”value”:{“service”:”test1”,”url”:”test”,”action”:”GET”,”enabled”:true,”isPublic”:false,”appId”:8,”menuId”:30001}},{“name”:{“service”:”test1”,”url”:”test”,”action”:”GET”,”enabled”:true,”isPublic”:false,”appId”:8,”menuId”:30001},”value”:{“service”:”test1”,”url”:”test”,”action”:”GET”,”enabled”:true,”isPublic”:false,”appId”:8,”menuId”:30001}}]</td>
+</tr>
+<tr>
+<td style="text-align:left">java.util.List&#60;Long&gt;</td>
+<td style="text-align:left">java.util.List</td>
+<td style="text-align:left">[1,2,3]</td>
+</tr>
+<tr>
+<td style="text-align:left">java.util.ArrayList&#60;Object&gt;</td>
+<td style="text-align:left">java.util.ArrayList</td>
+<td style="text-align:left">[“ny”,1,true]</td>
+</tr>
+</tbody>
+</table>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.036Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20180313/69-java-reflect.html" target="_blank" rel="external">https://ningyu1.github.io/20180313/69-java-reflect.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GenericService/">GenericService</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dubbo/">dubbo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/gson/">gson</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/json/">json</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180313/69-java-reflect.html&title=《Json序列化、反序列化支持泛型，Dubbo对泛型参数方法进行反射调用》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180313/69-java-reflect.html&title=《Json序列化、反序列化支持泛型，Dubbo对泛型参数方法进行反射调用》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180313/69-java-reflect.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Json序列化、反序列化支持泛型，Dubbo对泛型参数方法进行反射调用》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180313/69-java-reflect.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180313/69-java-reflect.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20180316/70-cas-server-pit.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Trouble Shooting —— CAS Server集群环境下TGC验证问题排查，需要开启会话保持</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20180313/68-jmeter-plugin-dubbo-1.2.0.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">New Version V1.2.0, Dubbo Plugin for Apache JMeter</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180313/69-java-reflect.html&title=《Json序列化、反序列化支持泛型，Dubbo对泛型参数方法进行反射调用》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180313/69-java-reflect.html&title=《Json序列化、反序列化支持泛型，Dubbo对泛型参数方法进行反射调用》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180313/69-java-reflect.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Json序列化、反序列化支持泛型，Dubbo对泛型参数方法进行反射调用》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180313/69-java-reflect.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180313/69-java-reflect.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACK0lEQVR42u3awY6rMAwF0P7/T/dt52lUuDemIxFOVlULIYeFG9t5veLx/jV+fv/p8+/r86e8vjEwMDBuy3gfjuQBx4tOSMlzT+bBwMB4AOPT1JPAehyg22edrBkDAwMjDpQJ+KrnYmBgYCxOV14zp2JgYDyH0YbONvgeJ8P51vOCXBwDA+OGjLzq/vefv9LfwMDAuBXjXY610lveYFhcFQYGxtaMNhG9aqHzbR8GBgbGWqhNktV6cflmEQMD4zGMSTlsbZM3eXEfAy4GBsZGjKRl2H7TlvXXWpj//YqBgbE1I9kOJr9edahirVGKgYHxTMZaob8Nly2vSGUxMDC2Y8yDXR6O23uLA2oYGBibMtriWh6gJ+3MusyHgYGxNSNZaHs8IpltLSWO0lcMDIytGXlB/6pQm991WRaOgYFxQ0Z7uGFeLMu3gMU1GBgYD2PkR7vmRyvWXlyRAWNgYGzNaAtkbVk/f31RgwEDA2NrxiRozg9YtG2Dkz8JDAyMBzDalDVvMbbf/9GZEQwMjJsz2kR30rCcvMRioRgYGFswrko+2znb4tpJwMXAwNiO8S7HWqI7P+pxQsXAwNia0W71JtvHSXGtKLphYGBsylg7JFEX7gfHO6J5MDAwHsBYC3x5wyBvKiy2PzEwMDAOlzUpol3WkMDAwMCIj4W1ZbW2zfmVgIuBgXETRtsMyJPb5K6ktXBZuQ0DA+OGjLV911qRLi+lraXTGBgY2zH+AYcPapiuA42iAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

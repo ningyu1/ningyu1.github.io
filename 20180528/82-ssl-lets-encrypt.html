@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>如何免费的让你的网站变得更加安全 - HTTPS | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="https,lets-encrypt">
+    <meta name="description" content="如何免费的让你的网站变得更加安全 - HTTPS">
+<meta name="keywords" content="https,lets-encrypt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何免费的让你的网站变得更加安全 - HTTPS">
+<meta property="og:url" content="https://ningyu1.github.io/20180528/82-ssl-lets-encrypt.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="如何免费的让你的网站变得更加安全 - HTTPS">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ningyu1.github.io/img/certbot/1.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/certbot/2.png">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.038Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何免费的让你的网站变得更加安全 - HTTPS">
+<meta name="twitter:description" content="如何免费的让你的网站变得更加安全 - HTTPS">
+<meta name="twitter:image" content="https://ningyu1.github.io/img/certbot/1.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">如何免费的让你的网站变得更加安全 - HTTPS</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">如何免费的让你的网站变得更加安全 - HTTPS</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-05-28T07:57:00.000Z" itemprop="datePublished" class="page-time">
+  2018-05-28
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/https/">https</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#使用步骤"><span class="post-toc-number">1.</span> <span class="post-toc-text">使用步骤</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#安装基础环境"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">安装基础环境</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#安装证书"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">安装证书</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#证书自动更新"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">证书自动更新</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-82-ssl-lets-encrypt"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">如何免费的让你的网站变得更加安全 - HTTPS</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-05-28 15:57:00" datetime="2018-05-28T07:57:00.000Z"  itemprop="datePublished">2018-05-28</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/https/">https</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>在这个数据不安全的世界里，很有可能你早上买了个东西下午就会有类似的推销电话打过来骚扰你，这些数据信息从哪里来的呢？当然很多时候是人为的贩卖信息造成的，但是数据来源很大一部分是来自于互联网。因此站点使用https已经是最基本的防护，当我去访问一个站点它如果不是https的我可能都不想访问它更别提输入一些个人信息了。那怎么才能让我们提供的网站安全的服务你的用户呢？当然是使用证书来保护网站来往的数据。</p>
+<p>如果不差钱的话还是使用收费的证书去给你的网站开启https。当然国内也有很多免费的证书，去谷哥或者度娘能检索到一大把的免费证书信息，各大云服务商上面也有免费的证书可以申请使用，我下面就介绍一个免费的使用方式。</p>
+<p><a href="https://letsencrypt.org/" target="_blank" rel="noopener">Let’s Encrypt</a></p>
+<p><code>Let&#39;s Encrypt</code>是一个于2015年三季度推出的<a href="https://zh.wikipedia.org/wiki/%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6%E8%AE%A4%E8%AF%81%E6%9C%BA%E6%9E%84" target="_blank" rel="noopener">数字证书认证机构</a>，旨在以自动化流程消除手动创建和安装证书的复杂流程，并推广使<a href="https://zh.wikipedia.org/wiki/%E8%90%AC%E7%B6%AD%E7%B6%B2" target="_blank" rel="noopener">万维网</a>服务器的加密连接无所不在，为安全网站提供免费的<a href="https://zh.wikipedia.org/wiki/SSL" target="_blank" rel="noopener">SSL</a>/<a href="https://zh.wikipedia.org/wiki/TLS" target="_blank" rel="noopener">TLS</a>证书。</p>
+<p><code>Let&#39;s Encrypt由</code><a href="https://zh.wikipedia.org/w/index.php?title=%E4%BA%92%E8%81%94%E7%BD%91%E5%AE%89%E5%85%A8%E7%A0%94%E7%A9%B6%E5%B0%8F%E7%BB%84&amp;action=edit&amp;redlink=1" target="_blank" rel="noopener">互联网安全研究小组</a>（缩写ISRG）提供服务。主要赞助商包括<a href="https://zh.wikipedia.org/wiki/%E7%94%B5%E5%AD%90%E5%89%8D%E5%93%A8%E5%9F%BA%E9%87%91%E4%BC%9A" target="_blank" rel="noopener">电子前哨基金会</a>、<a href="https://zh.wikipedia.org/wiki/Mozilla%E5%9F%BA%E9%87%91%E4%BC%9A" target="_blank" rel="noopener">Mozilla基金会</a>、<a href="https://zh.wikipedia.org/wiki/Akamai" target="_blank" rel="noopener">Akamai</a>以及思科。2015年4月9日，ISRG与Linux基金会宣布合作。</p>
+<p>通过官网我们能看到赞助商还是蛮多的，<a href="https://letsencrypt.org/sponsors/" target="_blank" rel="noopener">赞助商列表</a></p>
+<p>上述来自于维基百科，<a href="https://zh.wikipedia.org/wiki/Let%27s_Encrypt" target="_blank" rel="noopener">查看原文</a></p>
+<p>从介绍中能了解到它是为了解决，<span style="color:blue"><strong><em>以自动化流程消除手动创建和安装证书的复杂流程</em></strong></span>，让证书使用更加简单。</p>
+<p>我们通过<code>Let&#39;s Encrypt</code>官网的<a href="https://letsencrypt.org/getting-started/" target="_blank" rel="noopener">Getting Started</a>中可以查看具体的使用说明</p>
+<p>下面我们简单介绍一下使用步骤：</p>
+<h1 id="使用步骤"><a href="#使用步骤" class="headerlink" title="使用步骤"></a>使用步骤</h1><p>安装证书非常简单，只需要使用<a href="https://certbot.eff.org/" target="_blank" rel="noopener">Certbot</a>，就可以完成。</p>
+<ul>
+<li>打开<a href="https://certbot.eff.org/" target="_blank" rel="noopener">Certbot</a>，选择你的网站使用的应用服务器和操作系统。如下图：</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/certbot/1.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>选择完后会生成安装教程，不用想太多Step by step就好了，如下图：</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/certbot/2.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h2 id="安装基础环境"><a href="#安装基础环境" class="headerlink" title="安装基础环境"></a>安装基础环境</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install software-properties-common</span><br><span class="line">$ sudo add-apt-repository ppa:certbot/certbot</span><br><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt-get install python-certbot-nginx</span><br></pre></td></tr></table></figure>
+<h2 id="安装证书"><a href="#安装证书" class="headerlink" title="安装证书"></a>安装证书</h2><p>安装完之后直接运行<code>sudo certbot --nginx</code>即可</p>
+<p><span style="color:blue"><code>certbot</code> 会自动修改nginx配置文件(<code>nginx.conf</code>)并且列出你的虚拟站点让你选择是否开启HTTPS，当然你只用选择是否开启即可，选择完后它会自动下载证书并且修改nginx配置文件</span></p>
+<p>修改后的nginx.conf是什么样的？让我们看一下</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">listen 443 ssl; # managed by Certbot</span><br><span class="line">ssl_certificate /etc/letsencrypt/live/your.domain/fullchain.pem; # managed by Certbot</span><br><span class="line">ssl_certificate_key /etc/letsencrypt/live/your.domain/privkey.pem; # managed by Certbot</span><br><span class="line">include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot</span><br></pre></td></tr></table></figure>
+<p>还会很贴心的帮你生成http跳转到https的配置，如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Redirect non-https traffic to https</span><br><span class="line">if ($scheme != &quot;https&quot;) &#123;</span><br><span class="line">  return 301 https://$host$request_uri;</span><br><span class="line">&#125; # managed by Certbot</span><br></pre></td></tr></table></figure>
+<p>到这里就完成了证书安装，是不是很简单。当然我们之前也说过证书是有有效期的，那过期了之后我们如何操作？再根据上面的操作执行一次？</p>
+<p>当然不是了，我们可以使用自动检测的方式来进行自动的更新证书与nginx配置。具体看下面操作：</p>
+<h2 id="证书自动更新"><a href="#证书自动更新" class="headerlink" title="证书自动更新"></a>证书自动更新</h2><p>下面是官方对于证书续订的说明：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Automating renewal</span><br><span class="line">The Certbot packages on your system come with a cron job that will renew your certificates automatically before they expire. </span><br><span class="line">Since Let&apos;s Encrypt certificates last for 90 days, it&apos;s highly advisable to take advantage of this feature. </span><br><span class="line">You can test automatic renewal for your certificates by running this command:</span><br><span class="line"></span><br><span class="line">$ sudo certbot renew --dry-run</span><br></pre></td></tr></table></figure>
+<p>首先<code>Let’s Encrypt</code> 的证书只有90天的有效期，所以我们可以使用<code>crontab</code>来进行定时自动更新。</p>
+<p><code>crontab</code>如何使用这里就不多做介绍了，可以查看<a href="https://ningyu1.github.io/linux-command/c/crontab.html">crontab使用说明</a></p>
+<p>使用下面的表达式让其在每个月的一号强制更新证书，但是证书的强制更新不能太频繁，太频繁会提前进入证书授权限制。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0 0 1 * * /usr/bin/certbot renew --force-renewal</span><br><span class="line">10 0 1 * * /usr/sbin/service nginx restart</span><br></pre></td></tr></table></figure>
+<p><a href="https://certbot.eff.org/docs/using.html#renewal" target="_blank" rel="noopener">renew的使用说明</a></p>
+<p>到这里证书安装以及自动更新就介绍完毕了，当然我们的站点中有很多静态资源或超链接的地方，在启用https后可能也要进行一轮的检查由http修改为https，主要就是那些hard code的地方需要找出来进行修改掉。</p>
+<p>为了保护你服务的用户信息安全，我强烈建议开启HTTPS，只要是个站点服务就应该开启HTTPS这才是负责任的的体现，Keep Real。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.038Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20180528/82-ssl-lets-encrypt.html" target="_blank" rel="external">https://ningyu1.github.io/20180528/82-ssl-lets-encrypt.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/https/">https</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/lets-encrypt/">lets-encrypt</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180528/82-ssl-lets-encrypt.html&title=《如何免费的让你的网站变得更加安全 - HTTPS》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180528/82-ssl-lets-encrypt.html&title=《如何免费的让你的网站变得更加安全 - HTTPS》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180528/82-ssl-lets-encrypt.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《如何免费的让你的网站变得更加安全 - HTTPS》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180528/82-ssl-lets-encrypt.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180528/82-ssl-lets-encrypt.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20180529/83-docker-pull-error.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Trouble Shooting —— Docker Pull Image : error pulling image configuration: unexpected EOF错误</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20180514/81-mysql-utf8mb4.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Mysql数据库字符集utf8mb4使用问题</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180528/82-ssl-lets-encrypt.html&title=《如何免费的让你的网站变得更加安全 - HTTPS》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180528/82-ssl-lets-encrypt.html&title=《如何免费的让你的网站变得更加安全 - HTTPS》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180528/82-ssl-lets-encrypt.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《如何免费的让你的网站变得更加安全 - HTTPS》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180528/82-ssl-lets-encrypt.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180528/82-ssl-lets-encrypt.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACK0lEQVR42u3a0W7DIAxG4b7/S2e3lSaS82OyCXO4iroI+FbJtTGfDx7X1xh9/v3X0edzqywbMmTI2JZx3Q6+wD319/Pcv2O4ExkyZBzAGE09eodMPdoWf4fsTYYMGTJSxv2GKiQZMmTI4Ay+WFqaypAhQ8Y9oxI602Txn2txGTJkbMjgp+5///xKf0OGDBlbMa5w3IfON4I12pUMGTJaM3iAI1uslKxp2idDhozTGPyqBN/u2mthQbIoQ4aMpgx+nasSFuvJ30OKKUOGjKaMNGgSAGl28sYkelOGDBkHMCqHYnOb4LOhPciQIaM1gy82h+HpI19rOKcMGTIOY/CUjmyCtBbmju0eAq4MGTJaMOrlK29qprExqE9lyJDRmlFJB9PWZnp4l6akMmTIOIFBpqtfm6gnoPE3IEOGjM0Zc81F8syL2LQt8ZDhypAhox2DH4TVr4LNNSGCHwkZMmS0ZtQbijwc10loBhkyZDRlpO3GtBmwqogNjttkyJDRiME3QRZO25BBS/I+4MqQIeMAxqoWI8fzUjm4WiFDhozWDH5Vgl+J4Jj0iC0oX2XIkLE54woHPxqbaySkpbIMGTJOYFTC3FzKWClT54peGTJk9GCkjclVJSsvqhckiDJkyGjBqFy8SK9WVNK+IVKGDBkywiIzDdCVqxgyZMiQUamJeasybWEuC7gyZMjYisGXqR/983deOW6TIUPGhgxeOqZty1VHcjwBlSFDRjvGD/B/LLoPTD6qAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

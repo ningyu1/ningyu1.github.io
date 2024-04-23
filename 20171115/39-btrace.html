@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>BTrace使用笔记 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="btrace">
+    <meta name="description" content="BTrace使用笔记">
+<meta name="keywords" content="btrace">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BTrace使用笔记">
+<meta property="og:url" content="https://ningyu1.github.io/20171115/39-btrace.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="BTrace使用笔记">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.034Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="BTrace使用笔记">
+<meta name="twitter:description" content="BTrace使用笔记">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">BTrace使用笔记</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">BTrace使用笔记</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-11-15T03:00:36.000Z" itemprop="datePublished" class="page-time">
+  2017-11-15
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/trace/">trace</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/trace/java/">java</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#BTrace是什么？"><span class="post-toc-number">1.</span> <span class="post-toc-text">BTrace是什么？</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#BTrace能做什么？"><span class="post-toc-number">2.</span> <span class="post-toc-text">BTrace能做什么？</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#特别注意"><span class="post-toc-number">3.</span> <span class="post-toc-text">特别注意</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Btrace术语"><span class="post-toc-number">4.</span> <span class="post-toc-text">Btrace术语</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#BTrace程序结构"><span class="post-toc-number">5.</span> <span class="post-toc-text">BTrace程序结构</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#BTrace约束"><span class="post-toc-number">6.</span> <span class="post-toc-text">BTrace约束</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#BTrace安装"><span class="post-toc-number">7.</span> <span class="post-toc-text">BTrace安装</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#基本语法"><span class="post-toc-number">8.</span> <span class="post-toc-text">基本语法</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#BTrace的注解"><span class="post-toc-number">9.</span> <span class="post-toc-text">BTrace的注解</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#方法注解"><span class="post-toc-number">9.1.</span> <span class="post-toc-text">方法注解</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#参数相关的注解"><span class="post-toc-number">9.2.</span> <span class="post-toc-text">参数相关的注解</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#无注解的参数"><span class="post-toc-number">9.3.</span> <span class="post-toc-text">无注解的参数</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#字段相关的注解"><span class="post-toc-number">9.4.</span> <span class="post-toc-text">字段相关的注解</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#类相关的注解"><span class="post-toc-number">9.5.</span> <span class="post-toc-text">类相关的注解</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#脚本编写"><span class="post-toc-number">10.</span> <span class="post-toc-text">脚本编写</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#注意事项"><span class="post-toc-number">11.</span> <span class="post-toc-text">注意事项</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-39-btrace"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">BTrace使用笔记</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-11-15 11:00:36" datetime="2017-11-15T03:00:36.000Z"  itemprop="datePublished">2017-11-15</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/trace/">trace</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/trace/java/">java</a></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="BTrace是什么？"><a href="#BTrace是什么？" class="headerlink" title="BTrace是什么？"></a>BTrace是什么？</h2><p>Btrace是由sundararajan在2009年6月开发的一个开源项目，是一种动态跟踪分析一个运行中的Java应用程序的工具。<br>BTrace是一个为Java平台开发的安全、动态的追踪工具。BTrace动态地向目标应用程序的字节码注入追踪代码（字节码追踪），这些追踪字节码追踪代码使用Java语言表达，也就是BTrace的脚本。</p>
+<h2 id="BTrace能做什么？"><a href="#BTrace能做什么？" class="headerlink" title="BTrace能做什么？"></a>BTrace能做什么？</h2><p>BTrace可以用来帮我们做运行时的JAVA程序分析，监控等等操作，BTrace也有一些使用上的限制，如：不能在脚本中新建类等。<br>Btrace是通过Attach API中提供的VirtualMachine.attach(PID)方法来获得要监控的JVM，然后使用VirtualMachine.loadAgent(“*.jar”)方法来加载jar文件。</p>
+<h2 id="特别注意"><a href="#特别注意" class="headerlink" title="特别注意"></a>特别注意</h2><p><span style="color:red"><strong>BTrace植入过的代码，会一直在，直到应用重启为止。所以即使Btrace退出了，业务函数每次执行时都会执行Btrace植入的代码</strong></span></p>
+<h2 id="Btrace术语"><a href="#Btrace术语" class="headerlink" title="Btrace术语"></a>Btrace术语</h2><p><strong>Probe Point(探测点)</strong><br>追踪语句（或者一组追踪语句）被触发执行的“位置”或“事件”。也就是我们想要执行一些追踪语句的“位置”或“事件”。<br><strong>Trace Actions or Actions（追踪动作）</strong><br>probe被触发时，执行的追踪语句。<br><strong>Action Methods（动作方法）</strong><br>我的理解是定义追踪动作的方法，当然根据官方的说明这个方法应该是静态的。<br>在静态方法中定义probe触发所调用的trace语句，那么这种定义了trace脚本的静态方法就是”动作方法”</p>
+<h2 id="BTrace程序结构"><a href="#BTrace程序结构" class="headerlink" title="BTrace程序结构"></a>BTrace程序结构</h2><p>一个BTrace程序是其实就是一个普通的java类，特别之处就是由一个或者多个被(public static void)组合修饰的方法并且这些方法被BTrace对应的annotations注解。注解用来指出被追踪程序的位置（probe point）。追踪动作须书写在静态方法体中，也就是action方法（可以有多个action方法）。</p>
+<h2 id="BTrace约束"><a href="#BTrace约束" class="headerlink" title="BTrace约束"></a>BTrace约束</h2><p>为了保证追踪动作是“只读”的（也就是这些动作不可以修改被追踪程序的状态）和有限度的（比如在固定时间里结束）。一个BTrace程序只允许完成一些指定的动作。下面是BTrace一些不可以完成的事情：</p>
+<ul>
+<li>不能创建新的对象</li>
+<li>不能创建新的数组</li>
+<li>不能抛出异常</li>
+<li>不能捕获异常</li>
+<li>不能进行任何的实例函数或者静态函数 – 只有com.sun.btrace.BTraceUtils类中的静态函数或者BTrace程序自己声明的函数才可以被BTrace调用</li>
+<li>不可以在目标程序的类，或者对象的静态或者实例级别的field进行赋值。但是，BTrace自身的类是可以给它的静态field进行赋值的</li>
+<li>不能有outer，inner,嵌套的或者本地类。</li>
+<li>不能有同步代码块或者同步的函数</li>
+<li>不能有循环语句（for,while, do..while）</li>
+<li>不能继承其它类（父类只能是java.lang.Object）</li>
+<li>不能实现接口</li>
+<li>不能包含断言(assert)语句</li>
+<li>不能使用类字面值</li>
+</ul>
+<p>这上面的种种限制可以通过一个配置改变：unsafe=true，在使用BTrace注解时修改该属性的默认值（false）为true，即@BTrace（unsafe=true）；也可以启动选项中显式声明-Dcom.sun.btrace.unsafe=true（响应也有-u参数）；现在你可以为所欲为了。<span style="color:red"><strong>BUT，这样做之前最好考虑好风险并再三检查脚本，请斟酌使用！</strong></span></p>
+<h2 id="BTrace安装"><a href="#BTrace安装" class="headerlink" title="BTrace安装"></a>BTrace安装</h2><p><a href="https://github.com/btraceio/btrace" title="btrace-gitbub" target="_blank" rel="noopener">btrace</a> git下载地址<br>下载下来直接解压就可以使用</p>
+<h2 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">btrace &lt;pid&gt; &lt;btrace-script&gt;脚本</span><br></pre></td></tr></table></figure>
+<p>btrace命令行工具运行命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">btrace &lt;options&gt; &lt;pid&gt; &lt;btrace source or .class file&gt; &lt;btrace arguments&gt;</span><br><span class="line">常用选项：</span><br><span class="line">[-I &lt;include-path&gt;] [-p &lt;port&gt;] [-cp &lt;classpath&gt;]</span><br></pre></td></tr></table></figure>
+<p>参数说明：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">where possible options include:</span><br><span class="line">  --version             Show the version</span><br><span class="line">  -v                    Run in verbose mode</span><br><span class="line">  -o &lt;file&gt;             The path to store the probe output (will disable showing the output in console)</span><br><span class="line">  -u                    Run in trusted mode</span><br><span class="line">  -d &lt;path&gt;             Dump the instrumented classes to the specified path</span><br><span class="line">  -pd &lt;path&gt;            The search path for the probe XML descriptors</span><br><span class="line">  -classpath &lt;path&gt;     Specify where to find user class files and annotation processors</span><br><span class="line">  -cp &lt;path&gt;            Specify where to find user class files and annotation processors</span><br><span class="line">  -I &lt;path&gt;             Specify where to find include files</span><br><span class="line">  -p &lt;port&gt;             Specify port to which the btrace agent listens for clients</span><br><span class="line">  -statsd &lt;host[:port]&gt; Specify the statsd server, if any</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>include-path</strong> : 是一些用来查找头文件的目录。BTrace包含一个简单的预处理,支持# define,# + include和条件编译。它不像一个完整的C / c++预处理器–而是一个有用的子集。详见demo代码“ThreadBean.java”，如果没有显式的声明选项-I，Btrace跳过预处理程序调用步骤。</li>
+<li><strong>port</strong>： BTrace代理程序所侦听的端口，这是可选的选项。默认是2020</li>
+<li><strong>classpath</strong>: 是一些用来查找jar文件的目录。默认是当前目录”.”</li>
+<li><strong>pid</strong>：是要追踪目标程序id</li>
+<li><strong>btrace-script</strong>: 就是追踪程序本身。如果这是个java文件，那么提交前会进行编译。否则,它被认为已预编译(即它必须是一个类)并提交</li>
+<li><strong>arguments</strong>: 这是传递给BTrace程序的参数。BTrace程序可以通过内置的符号来引用这些参数，length是这些参数的个数。</li>
+</ul>
+<p>在samples目录下有很多示例，并且有的跟踪很有用可直接使用，下来让我们编写一个脚本来看一下具体是怎么使用的</p>
+<h2 id="BTrace的注解"><a href="#BTrace的注解" class="headerlink" title="BTrace的注解"></a>BTrace的注解</h2><h3 id="方法注解"><a href="#方法注解" class="headerlink" title="方法注解"></a>方法注解</h3><ul>
+<li><a href="mailto:**@com.sun.btrace.annotations.OnMethod" target="_blank" rel="noopener">**@com.sun.btrace.annotations.OnMethod</a>** 该注解可用来指定目标类，目标方法，以及目标方法里的“位置”。加了该注解后的操作方法会在对应的方法运行到指定的“位置”时被执行。这该注解中，目标类用“clazz”属性来指定，而目标方法用“method”属性来指定。”clazz”可以是类的全路径(比如java.awt.Component或者用两个反斜杠中间的正则表达式，参考例子NewComponent.java和Classload.java来看它们的用法，正则表达式可以匹配0个或多个目标类，这个时候多个类都会被进行动态指令更换。如/java.awt.+/匹配java.awt包下的所有类)。方法名也可以用这样的正则表达式 来匹配零个或者多个多个方法。参考例子MultiClass.java来查看用法。 还有一种方法来指定追踪类和函数。被追踪的类和函数可以用注解来指定。比如，如果”clazz”属性是@javax.jws.Webservice.那么BTrace会会把所有注解是这个的函数都进行动态指令更换。类似地，方法级别的注解也可以用来执行方法。参看例子WebServiceTracker.java来了解如何使用。可以把正则表达式和注解放在一起用，比如@/com.acme..+/可以匹配任何类，只要这个类的注解能跟那段正则表达式匹配即可。可以通过指定父类来匹配多个类名，比如+java.lang.Runnable就可以匹配所有实现了java.lang.Runnable这个接口的类。参考例子SubtypeTracer.java来看它的用法。</li>
+<li><a href="mailto:**@com.sun.btrace.annotations.OnTimer" target="_blank" rel="noopener">**@com.sun.btrace.annotations.OnTimer</a>** 该注解可以用来执行那些需要周期性（间隔是毫秒）的追踪操作。参考Histogram.java来看它的用法。</li>
+<li><a href="mailto:**@com.sun.btrace.annotations.OnError" target="_blank" rel="noopener">**@com.sun.btrace.annotations.OnError</a>** 该注解可以用来指定当任何异常抛出时需要执行的操作。被该注解修饰后的BTrace函数会在同一个BTrace类的其他操作方法抛出异常时执行。</li>
+<li><a href="mailto:**@com.sun.btrace.annotations.OnExit" target="_blank" rel="noopener">**@com.sun.btrace.annotations.OnExit</a>** 该注解用来执行党BTrace代码调用了exit(int)结束追踪会话后需要执行的操作。参考例子ProbeExit.java来了解如何使用。</li>
+<li><a href="mailto:**@com.sun.btrace.annotations.OnEvent" target="_blank" rel="noopener">**@com.sun.btrace.annotations.OnEvent</a>** 该注解用来追踪函数与”外部”的事件关联起来。当BTrace客户端发送了一个“事件”后，该注解里的操作就会被执行。客户端发送的事件可能是由用户触发的（比如按下Ctrl-C）。事件的名字是个字符串，这样追踪操作就只会在对应的事件触发后被执行。到目标为止，BTrace命令行客户端会在用户按下Ctrl-C后发送事件，参考例子HistoOnEvent.java来了解用法。</li>
+<li><a href="mailto:**@com.sun.btrace.annotations.OnLowMemory" target="_blank" rel="noopener">**@com.sun.btrace.annotations.OnLowMemory</a>** 该注解可以用来追踪特定内存阈值被用光的事件。参看例子MemAlerter.java了解用法。</li>
+<li><a href="mailto:**@com.sun.btrace.annotations.OnProbe" target="_blank" rel="noopener">**@com.sun.btrace.annotations.OnProbe</a>** 该注解可以用来避免使用BTrace脚本的内部类。@OnProbe探测点被映射到一个或多个@OnMethod上。目前这个映射是通过一个XML探测描述文件类指定的（这个文件会被BTrace代理所使用）。参考例子SocketTracker1.java和对应的描述文件java.net.socket.xml.当运行这个例子时，xml文件需要放在目标JVM所有运行的目录下(或者修改btracer.bat中的probeDescPath选项来指向任意的xml文件)。</li>
+<li><a href="mailto:**@com.sun.btrace.annotations.Location" target="_blank" rel="noopener">**@com.sun.btrace.annotations.Location</a>**：该注解在一个traced/probed方法中指定一个特定的“位置”</li>
+<li><a href="mailto:**@com.sun.btrace.annotations.Simpled" target="_blank" rel="noopener">**@com.sun.btrace.annotations.Simpled</a>**：标记@OnMethod注解处理器采样。采样处理程序时并不是所有的事件将被追踪,只有一个统计样品与给定的意思。在默认情况下使用一种自适应采样。BTrace将增加或减少样品之间的调用数量保持平均时间窗口,因此减少整体的开销。</li>
+</ul>
+<h3 id="参数相关的注解"><a href="#参数相关的注解" class="headerlink" title="参数相关的注解"></a>参数相关的注解</h3><ul>
+<li><a href="mailto:**@com.sun.btrace.annotations.Self" target="_blank" rel="noopener">**@com.sun.btrace.annotations.Self</a>**：该注解把一个参数标识为保留了目标函数所指向的this的值。参考例子AWTEventTracer.java和AllCalls1.java.</li>
+<li><a href="mailto:**@com.sun.btrace.annotations.Return" target="_blank" rel="noopener">**@com.sun.btrace.annotations.Return</a>**：该注解说明这个参数保存目标函数的返回值。参考例子Classload.java</li>
+<li><a href="mailto:**@com.sun.btrace.annotations.ProbeClassName" target="_blank" rel="noopener">**@com.sun.btrace.annotations.ProbeClassName</a>**：所修饰的参数保留了探测类的类名 。参看AllMethods.java（有多个探测类）</li>
+<li><a href="mailto:**@com.sun.btrace.annotations.ProbeMethodName" target="_blank" rel="noopener">**@com.sun.btrace.annotations.ProbeMethodName</a>**：所修饰的参数保留了探测函数的函数名。参考WebServiceTracker.java（多个探测函数）</li>
+<li><a href="mailto:**@com.sun.btrace.annotations.TargetInstance" target="_blank" rel="noopener">**@com.sun.btrace.annotations.TargetInstance</a>**：修饰的参数保留了被调用的实例。参考例子AllCall2.java.</li>
+<li><a href="mailto:**@com.sun.btrace.annotations.TargetMethodOrField" target="_blank" rel="noopener">**@com.sun.btrace.annotations.TargetMethodOrField</a>**：该注解修饰的参数保存了调用的函数名。参考AllCalls1.java 和AllCall2.java</li>
+<li><a href="mailto:**@com.sun.btrace.annotations.Duration" target="_blank" rel="noopener">**@com.sun.btrace.annotations.Duration</a>**：探测方法参数标记为持续时间值的接收者，即目标方法执行的时间，单位纳秒。只是用带Location属性的@OnMethod，并且需要配合Kind.ERROR或者Kind.RETURN使用</li>
+</ul>
+<h3 id="无注解的参数"><a href="#无注解的参数" class="headerlink" title="无注解的参数"></a>无注解的参数</h3><p>没有注解的<code>BTrace</code>探测函数参数是用来作签名匹配的，因为他们必须必须在固定的位置上出现。然而，它们可以和其他的注解的参数进行交换。如果一个参数的类型是<em>AnyType[]</em>，它就会“吃”掉所所有剩下的参数。没有注解的参数的具体含义与他们所在的位置有关：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">名称</th>
+<th style="text-align:left">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Kind.ARRAY_GET</td>
+<td style="text-align:left">数组元素加载</td>
+</tr>
+<tr>
+<td style="text-align:left">Kind.ARRAY_SET</td>
+<td style="text-align:left">数组元素存储</td>
+</tr>
+<tr>
+<td style="text-align:left">Kind.CALL</td>
+<td style="text-align:left">方法调用</td>
+</tr>
+<tr>
+<td style="text-align:left">Kind.CATCH</td>
+<td style="text-align:left">异常捕获</td>
+</tr>
+<tr>
+<td style="text-align:left">Kind.CHECKCAST</td>
+<td style="text-align:left">checkcast</td>
+</tr>
+<tr>
+<td style="text-align:left">Kind.ENTRY</td>
+<td style="text-align:left">方法进入。意指进入匹配probe点，跟你@Location设置的clazz和method没有任何关系</td>
+</tr>
+<tr>
+<td style="text-align:left">Kind.ERROR</td>
+<td style="text-align:left">错误，异常没有捕获，返回</td>
+</tr>
+<tr>
+<td style="text-align:left">Kind.FIELD_GET</td>
+<td style="text-align:left">field获取</td>
+</tr>
+<tr>
+<td style="text-align:left">Kind.FIELD_SET</td>
+<td style="text-align:left">field设置</td>
+</tr>
+<tr>
+<td style="text-align:left">Kind.INSTANCEOF</td>
+<td style="text-align:left">实例检测</td>
+</tr>
+<tr>
+<td style="text-align:left">Kind.LINE</td>
+<td style="text-align:left">源代码行号</td>
+</tr>
+<tr>
+<td style="text-align:left">Kind.NEW</td>
+<td style="text-align:left">创建新实例</td>
+</tr>
+<tr>
+<td style="text-align:left">Kind.NEWARRAY</td>
+<td style="text-align:left">新的数组对象被创建</td>
+</tr>
+<tr>
+<td style="text-align:left">Kind.RETURN</td>
+<td style="text-align:left">意指从某个匹配probe的方法中调用了匹配A class method的点，一定要和clazz,method配合使用。clazz和method的默认值为”“，所以不能被匹配</td>
+</tr>
+<tr>
+<td style="text-align:left">Kind.SYNC_ENTRY</td>
+<td style="text-align:left">进入一个同步方法锁</td>
+</tr>
+<tr>
+<td style="text-align:left">Kind.SYNC_EXIT</td>
+<td style="text-align:left">离开一个同步方法锁</td>
+</tr>
+<tr>
+<td style="text-align:left">Kind.THROW</td>
+<td style="text-align:left">抛出异常</td>
+</tr>
+</tbody>
+</table>
+<h3 id="字段相关的注解"><a href="#字段相关的注解" class="headerlink" title="字段相关的注解"></a>字段相关的注解</h3><ul>
+<li><a href="mailto:**@com.sun.btrace.annotations.Export" target="_blank" rel="noopener">**@com.sun.btrace.annotations.Export</a>** BTrace字段使用该注解来说明它已经被映射到一个jvmstat计数器上。使用该注解，BTrace程序可以把追踪计数器暴露给外部的jvmstat客户端（比如jstat）。参考例子ThreadCounter.java</li>
+<li><a href="mailto:**@com.sun.btrace.annotations.Property" target="_blank" rel="noopener">**@com.sun.btrace.annotations.Property</a>**该注解可以把一个字段标识为一个MBean属性。如果一个BTrace类至少有一个静态的字段使用了该注解。那么一个MBean就会被创建并且注册到平台MBean服务器上。JMX客户端比如VisualVM，jconsole可以访问这个字段来查看BTrace的MBean。在把BTrace附加到目标程序上后，你可以把VisualVM或者jconsole也附加到同一个目标程序上来查看刚创建好的MBean属性。通过VisualVM或者jconsole,你可以通过MBeans tab页来查看BTrace相关的域，然后查看它们的值。参考例子ThreadCounterBean.java 和HistogramBean.java来了解用法</li>
+<li><a href="mailto:**@com.sun.btrace.annotations.TLS" target="_blank" rel="noopener">**@com.sun.btrace.annotations.TLS</a>** BTrace字段使用该注解来说明它自己是一个线程本地字段（thread local field）.注意你只能在@OnMethod注解后的函数里访问这样的字段。每个Java线程都有一个这个字段的拷贝。为了让这样的方式能够工作，这个字段的类型只能是immutable（比如原始类型） 或者是cloneable （实现了Cloneable接口并且覆盖了clone()函数）的。这些线程本地字段可以被BTrace程序用来识别它是否在同一个线程里执行了多个探测操作。参考例子OnThrow.java和WebServiceTracker.java</li>
+</ul>
+<h3 id="类相关的注解"><a href="#类相关的注解" class="headerlink" title="类相关的注解"></a>类相关的注解</h3><ul>
+<li><a href="mailto:**@com.sun.btrace.annotations.DTrace" target="_blank" rel="noopener">**@com.sun.btrace.annotations.DTrace</a>**该注解用来把一小段D脚本（嵌在BTrace 的java类中）和BTrace程序关联起来。参考例子DTraceInline.java</li>
+<li><a href="mailto:**@com.sun.btrace.annotations.DTraceRef" target="_blank" rel="noopener">**@com.sun.btrace.annotations.DTraceRef</a>** 和上个注解一样，不同的是D脚本是在独立的文件中，不是嵌在java类中。</li>
+<li><a href="mailto:**@com.sun.btrace.annotations.BTrace" target="_blank" rel="noopener">**@com.sun.btrace.annotations.BTrace</a>**必须使用该注解来指定一个Java类是BTrace程序。BTrace编译器会强制查找该注解，BTrace代理也会检查这个是否有该注解。如果没有，则提示错误，并且不会执行。</li>
+</ul>
+<h2 id="脚本编写"><a href="#脚本编写" class="headerlink" title="脚本编写"></a>脚本编写</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">package btrace;</span><br><span class="line"></span><br><span class="line">import com.sun.btrace.BTraceUtils;</span><br><span class="line">import com.sun.btrace.annotations.*;</span><br><span class="line"></span><br><span class="line">@BTrace</span><br><span class="line">public class UniqueIdMgrBtrace &#123;</span><br><span class="line">    @OnMethod(clazz = &quot;com.atomikos.util.UniqueIdMgr&quot;, method = &quot;get&quot;, location = @Location(Kind.RETURN))</span><br><span class="line">    public static void onGet(@Return String result) &#123;</span><br><span class="line">        long millis = BTraceUtils.timeMillis();</span><br><span class="line">        String threadName = BTraceUtils.Threads.name(BTraceUtils.currentThread());</span><br><span class="line">        String str = BTraceUtils.strcat(BTraceUtils.str(millis), &quot; - [&quot;);</span><br><span class="line">        str = BTraceUtils.strcat(str, BTraceUtils.str(threadName));</span><br><span class="line">        str = BTraceUtils.strcat(str, &quot;] - com.atomikos.util.UniqueIdMgr.get()--&gt;&quot;);</span><br><span class="line">        str = BTraceUtils.strcat(str, BTraceUtils.str(result));</span><br><span class="line">        BTraceUtils.println(BTraceUtils.str(str));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @OnMethod(clazz = &quot;com.atomikos.icatch.imp.TransactionServiceImp&quot;, method = &quot;setTidToTx&quot;)</span><br><span class="line">    public static void onSetTidToTx(String tid) &#123;</span><br><span class="line">        long millis = BTraceUtils.timeMillis();</span><br><span class="line">        String threadName = BTraceUtils.Threads.name(BTraceUtils.currentThread());</span><br><span class="line">        String str = BTraceUtils.strcat(BTraceUtils.str(millis), &quot; - [&quot;);</span><br><span class="line">        str = BTraceUtils.strcat(str, BTraceUtils.str(threadName));</span><br><span class="line">        str = BTraceUtils.strcat(str, &quot;] - com.atomikos.icatch.imp.TransactionServiceImp.setTidToTx(&quot;);</span><br><span class="line">        str = BTraceUtils.strcat(str, BTraceUtils.str(tid));</span><br><span class="line">        str = BTraceUtils.strcat(str, &quot;)&quot;);</span><br><span class="line">        BTraceUtils.println(BTraceUtils.str(str));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面代码意思是在<code>com.atomikos.util.UniqueIdMgr.get()</code>方法上面进行跟踪返回值，要跟踪赶回值必须要加<code>@Location(Kind.RETURN))</code>,才能使用参数的<code>@Return</code></p>
+<p>如果要使用方法参数，可以在脚本方法上直接写跟踪的原始方法参数并且类型保持一样，例如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">package com.btrace;</span><br><span class="line">//需要跟踪的类</span><br><span class="line">public class RemoteClass &#123;</span><br><span class="line"></span><br><span class="line">    public String f1(String a, int b) &#123;</span><br><span class="line">        System.out.println(a + &quot; &quot; + b);</span><br><span class="line">        return a;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//btrace脚本</span><br><span class="line">@BTrace public class HelloBtrace &#123;</span><br><span class="line"></span><br><span class="line">  @OnMethod(</span><br><span class="line">    clazz=&quot;com.btrace.RemoteClass&quot;,</span><br><span class="line">    method=&quot;f1&quot;</span><br><span class="line">  ) </span><br><span class="line">  public static void onF1() &#123;</span><br><span class="line">    println(&quot;Hello BTrace&quot;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @OnMethod(</span><br><span class="line">    clazz=&quot;com.btrace.RemoteClass&quot;,</span><br><span class="line">    method=&quot;f1&quot;</span><br><span class="line">  ) </span><br><span class="line">  public static void onF2(String a,int b) &#123;</span><br><span class="line">    println(str(a));</span><br><span class="line">    println(str(b));</span><br><span class="line">    println(&quot;&quot;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ol>
+<li>脚本中方法参数需要跟原方法参数类型保持一致</li>
+<li>脚本中不允许使用除btrace之外的类，拼接字符串使用<code>BTraceUtils.strcat()</code>,打印使用<code>BTraceUtils.println()</code>,获取线程使用<code>BTraceUtils.Threads</code></li>
+<li><span style="color:red"><strong>BTrace植入过的代码，会一直在，直到应用重启为止。所以即使Btrace退出了，业务函数每次执行时都会执行Btrace植入的代码</strong></span></li>
+</ol>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.034Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20171115/39-btrace.html" target="_blank" rel="external">https://ningyu1.github.io/20171115/39-btrace.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/btrace/">btrace</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20171115/39-btrace.html&title=《BTrace使用笔记》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20171115/39-btrace.html&title=《BTrace使用笔记》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20171115/39-btrace.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《BTrace使用笔记》 — 凝雨 - Yun&url=https://ningyu1.github.io/20171115/39-btrace.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20171115/39-btrace.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20171124/40-distributed-db-paging.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">跨库分页-架构技术实践</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20171109/38-activemq-slow-speed.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">ActiveMQ发送速度慢问题排查</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20171115/39-btrace.html&title=《BTrace使用笔记》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20171115/39-btrace.html&title=《BTrace使用笔记》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20171115/39-btrace.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《BTrace使用笔记》 — 凝雨 - Yun&url=https://ningyu1.github.io/20171115/39-btrace.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20171115/39-btrace.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACKUlEQVR42u3aQW7EIAwF0Ln/pdPtVFPBN85UCjxWVaoSXhaubfx6xet6W+9Pxr/9fP655/gtNy8MDIzHMq7hSl4wPvQYP94hORsGBsY5jHFArL5+fIhqKE+CNQYGBsZ46zxMV1NGDAwMjDVGEijXEkcMDAyMMSMpYjsJX95o+3otjoGB8UBG3nX//5+/cr+BgYHxKMZVXGNY51hXY2FgYOzN6L8mIXWmI/LhDwwMjF0ZnQDXKWKrY2ETGAYGxgGMajKXh8j+4FcU1jEwMI5h3JW6dS4+82vRX7/FwMA4gLH2x3nhmjfs8hGQSRGLgYGxEWNt5KI6KnHXEMYN15kYGBgPZJSTsOKh87C71rab1OIYGBjbMfL2fZ7MVZPIas8fAwPjHEYSNKsl69p1af5R/pgWwcDA2JqRh8i7jlj9QIUiFgMDY1NGZwjsriuE6pPJ/QYGBsYBjLzpXx3wyg9XKLAxMDCOZKwliEmqt7ZPeWYEAwNjI0befF9LDatpYqvZh4GBcQAj2fRqrE5xO/7QGBgYpzHWwm613M0PWmjJYWBgHMCYhLM4XVtr/a+lmBgYGCcw1tK76shF9buWC2YMDIytGfnqjE0kCWLe/qvuhoGBsQejGmT7Lf61QDwpazEwMA5g9ANf3m676yoUAwMDI7/OzEe7OqF5QsXAwMAISJ1mXH6p8JX/GxgYGA9hdNK7/lVBv5DGwMDYm5GXjv0nySHygI6BgXEA4wc14n+t+EfEGQAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

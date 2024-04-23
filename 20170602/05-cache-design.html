@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>Cache设计和使用上的套路 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Redis,Cache">
+    <meta name="description" content="Cache设计和使用上的套路，Redis使用注意事项">
+<meta name="keywords" content="Redis,Cache">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cache设计和使用上的套路">
+<meta property="og:url" content="https://ningyu1.github.io/20170602/05-cache-design.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="Cache设计和使用上的套路，Redis使用注意事项">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ningyu1.github.io/img/cache/1.jpg">
+<meta property="og:image" content="https://ningyu1.github.io/img/cache/2.jpg">
+<meta property="og:image" content="https://ningyu1.github.io/img/cache/3.jpg">
+<meta property="og:image" content="https://ningyu1.github.io/img/cache/4.jpg">
+<meta property="og:image" content="https://ningyu1.github.io/img/cache/Cache-Aside-Design-Pattern-Flow-Diagram.jpg">
+<meta property="og:image" content="https://ningyu1.github.io/img/cache/Write-through_with_no-write-allocation.jpg">
+<meta property="og:image" content="https://ningyu1.github.io/img/cache/Write-back_with_write-allocation.jpg">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.029Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Cache设计和使用上的套路">
+<meta name="twitter:description" content="Cache设计和使用上的套路，Redis使用注意事项">
+<meta name="twitter:image" content="https://ningyu1.github.io/img/cache/1.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Cache设计和使用上的套路</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Cache设计和使用上的套路</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-06-02T06:06:34.000Z" itemprop="datePublished" class="page-time">
+  2017-06-02
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Redis/">Redis</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#一、管道（pipeline）提升效率"><span class="post-toc-number">1.</span> <span class="post-toc-text">一、管道（pipeline）提升效率</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#二、连接池使用问题"><span class="post-toc-number">2.</span> <span class="post-toc-text">二、连接池使用问题</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#三、使用key值前缀来作命名空间"><span class="post-toc-number">3.</span> <span class="post-toc-text">三、使用key值前缀来作命名空间</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#四、expire对于key过期时间来控制垃圾回收"><span class="post-toc-number">4.</span> <span class="post-toc-text">四、expire对于key过期时间来控制垃圾回收</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#五、乱用（不要有个锤子看哪都是钉子）"><span class="post-toc-number">5.</span> <span class="post-toc-text">五、乱用（不要有个锤子看哪都是钉子）</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#六、缓存设计的误区"><span class="post-toc-number">6.</span> <span class="post-toc-text">六、缓存设计的误区</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#七、缓存更新的问题"><span class="post-toc-number">7.</span> <span class="post-toc-text">七、缓存更新的问题</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-05-cache-design"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Cache设计和使用上的套路</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-06-02 14:06:34" datetime="2017-06-02T06:06:34.000Z"  itemprop="datePublished">2017-06-02</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Redis/">Redis</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="一、管道（pipeline）提升效率"><a href="#一、管道（pipeline）提升效率" class="headerlink" title="一、管道（pipeline）提升效率"></a>一、管道（pipeline）提升效率</h1><p>Redis是一个cs模式的tcp server，使用和http类似的请求响应协议。一个client可以通过一个socket连接发起多个请求命令。每个请求命令发出后client通常会阻塞并等待redis服务处理，redis处理完后请求命令后会将结果通过响应报文返回给client。每执行一个命令需要2个tcp报文才能完成，由于通信会有网络延迟,假如从client和server之间的包传输时间需要0.125秒，那么执行四个命令8个报文至少会需要1秒才能完成，这样即使redis每秒能处理100k命令，而我们的client也只能一秒钟发出四个命令。这显示没有充分利用 redis的处理能力。因此我们需要使用管道（pipeline）的方式从client打包多条命令一起发出，不需要等待单条命令的响应返回，而redis服务端会处理完多条命令后会将多条命令的处理结果打包到一起返回给客户端（它能够让（多条）执行命令简单的，更加快速的发送给服务器，但是没有任何原子性的保证）<a href="https://redis.io/topics/pipelining" title="https://redis.io/topics/pipelining" target="_blank" rel="noopener">官方资料</a></p>
+<p>【反例】</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/cache/1.jpg" alt="cache1" title>
+                </div>
+                <div class="image-caption">cache1</div>
+            </figure>
+<p>【正例】<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//管道，批量发送多条命令，但是不支持namespace需要手动添加namespace</span><br><span class="line">Pipeline pipelined = redisClient.pipelined();</span><br><span class="line">pipelined.set(key, value);</span><br><span class="line">pipelined.get(key);</span><br><span class="line">pipelined.syncAndReturnAll(); //发送命令并接受返回值</span><br><span class="line">pipelined.sync();//发送命令不接受返回值</span><br></pre></td></tr></table></figure></p>
+<p>使用管道注意事项：</p>
+<ol>
+<li>tcp报文过长会被拆分。</li>
+<li>如果使用pipeline服务器会被迫使用内存队列来发送应答（服务器会在处理完命令前先缓存所有的命令处理结果）</li>
+<li>打包的命令越多，缓存消耗内存也越多，所以并不是打包命令越多越好，需要结合测试找到合适我们业务场景的量（双刃剑）</li>
+<li>不保证原子性，因此在Redis中没有数据需要走DB获取数据，Redis也支持事务（multi、watch）但是会影响性能（没有事务和有事务相差还是蛮大的），不是非要强一致的场景请不要使用。</li>
+</ol>
+<h1 id="二、连接池使用问题"><a href="#二、连接池使用问题" class="headerlink" title="二、连接池使用问题"></a>二、连接池使用问题</h1><p>jedis客户端2.4版本以上对连接池资源使用上进行了优化，提供了更优雅的资源回收方法并且支持broken处理，提供close方法替换原来的回收资源方法（returnBrokenResource 、returnResource）</p>
+<p>【反例】</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/cache/2.jpg" alt="cache2" title>
+                </div>
+                <div class="image-caption">cache2</div>
+            </figure>
+<p>【正例】</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/cache/3.jpg" alt="cache3" title>
+                </div>
+                <div class="image-caption">cache3</div>
+            </figure>
+<h1 id="三、使用key值前缀来作命名空间"><a href="#三、使用key值前缀来作命名空间" class="headerlink" title="三、使用key值前缀来作命名空间"></a>三、使用key值前缀来作命名空间</h1><p>虽然说Redis支持多个数据库（默认32个，可以配置更多），但是除了默认的0号库以外，其它的都需要通过一个额外请求才能使用。所以用前缀作为命名空间可能会更明智一点。另外，在使用前缀作为命名空间区隔不同key的时候，最好在程序中使用全局配置来实现，直接在代码里写前缀的做法要严格避免，这样可维护性实在太差了。</p>
+<p>命名分割符使用 “.” 分隔</p>
+<p>【正例】</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/cache/4.jpg" alt="cache4" title>
+                </div>
+                <div class="image-caption">cache4</div>
+            </figure>
+<h1 id="四、expire对于key过期时间来控制垃圾回收"><a href="#四、expire对于key过期时间来控制垃圾回收" class="headerlink" title="四、expire对于key过期时间来控制垃圾回收"></a>四、expire对于key过期时间来控制垃圾回收</h1><p>Redis是一个提供持久化功能的内存数据库，如果你不指定上面值的过期时间（TTL），并且也不进行定期的清理工作，那么你的Redis内存占用会越来越大，当有一天它超过了系统可用内存，那么swap上场，离性能陡降的时间就不远了。所以在Redis中保存数据时，一定要预先考虑好数据的生命周期，这有很多方法可以实现。</p>
+<p>比如你可以采用Redis自带的过期时间（setEX）为你的数据设定过期时间。但是自动过期有一个问题，很有可能导致你还有大量内存可用时，就让key过期去释放内存，或者是内存已经不足了key还没有过期。</p>
+<p>（LRU）如果你想更精准的控制你的数据过期，你可以用一个ZSET来维护你的数据更新程度，你可以用时间戳作为score值，每次更新操作时更新一下score，这样你就得到了一个按更新时间排序序列串，你可以轻松地找到最老的数据，并且从最老的数据开始进行删除，一直删除到你的空间足够为止。</p>
+<p>【正例】<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">redisClient.setex(bizkey, 60, value);//set一个key并设置ttl60秒</span><br></pre></td></tr></table></figure></p>
+<h1 id="五、乱用（不要有个锤子看哪都是钉子）"><a href="#五、乱用（不要有个锤子看哪都是钉子）" class="headerlink" title="五、乱用（不要有个锤子看哪都是钉子）"></a>五、乱用（不要有个锤子看哪都是钉子）</h1><p>当你使用Redis构建你的服务的时候，一定要记住，你只是找了一个合适的工具来实现你需要的功能。而不是说你在用Redis构建一个服务，这是很不同的，你把Redis当作你很多工具中的一个，只在合适使用的时候再使用它，在不合适的时候选择其它的方法。</p>
+<p>我们对它的定位更多是Cache服务而非DB</p>
+<h1 id="六、缓存设计的误区"><a href="#六、缓存设计的误区" class="headerlink" title="六、缓存设计的误区"></a>六、缓存设计的误区</h1><p>我们通常是这样设计的，应用程序先从cache取数据，没有得到，则从数据库中取数据，成功后，放到缓存中。</p>
+<p>那试想一下，如果取出来的null，需不需要放入cache呢？答案当然是需要的。</p>
+<p>我们试想一下如果取出为null不放入cache会有什么结果？很显然每次取cache没有走db返回null，很容易让攻击者利用这个漏洞搞垮你的服务器，利用洪水攻击让你的程序夯在这个地方导致你的正常流程抢不到资源。</p>
+<h1 id="七、缓存更新的问题"><a href="#七、缓存更新的问题" class="headerlink" title="七、缓存更新的问题"></a>七、缓存更新的问题</h1><p><span style="color:blue"><strong><em>以下内容摘自<a href="https://coolshell.cn/articles/17416.html" target="_blank" rel="noopener">酷壳-COOLSHELL的文章《缓存更新的套路》</a></em></strong></span></p>
+<p>很多人在写更新缓存数据代码时，先删除缓存，然后再更新数据库，而后续的操作会把数据再装载的缓存中。然而，这个是逻辑是错误的。试想，两个并发操作，一个是更新操作，另一个是查询操作，更新操作删除缓存后，查询操作没有命中缓存，先把老数据读出来后放到缓存中，然后更新操作更新了数据库。于是，在缓存中的数据还是老的数据，导致缓存中的数据是脏的，而且还一直这样脏下去了。</p>
+<p>正确更新缓存的Design Pattern有四种：Cache aside, Read through, Write through, Write behind caching</p>
+<p>Cache Aside Pattern</p>
+<p>这是最常用最常用的pattern了。其具体逻辑如下：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/cache/Cache-Aside-Design-Pattern-Flow-Diagram.jpg" alt="cache5" title>
+                </div>
+                <div class="image-caption">cache5</div>
+            </figure>
+<p>失效：应用程序先从cache取数据，没有得到，则从数据库中取数据，成功后，放到缓存中。</p>
+<p>命中：应用程序从cache中取数据，取到后返回。</p>
+<p>更新：先把数据存到数据库中，成功后，再让缓存失效。</p>
+<p>注意，我们的更新是先更新数据库，成功后，让缓存失效。那么，这种方式是否可以没有文章前面提到过的那个问题呢？我们可以脑补一下。</p>
+<p>一个是查询操作，一个是更新操作的并发，首先，没有了删除cache数据的操作了，而是先更新了数据库中的数据，此时，缓存依然有效，所以，并发的查询操作拿的是没有更新的数据，但是，更新操作马上让缓存的失效了，后续的查询操作再把数据从数据库中拉出来。而不会像文章开头的那个逻辑产生的问题，后续的查询操作一直都在取老的数据。</p>
+<p>这是标准的design pattern，包括Facebook的论文<a href="https://www.usenix.org/system/files/conference/nsdi13/nsdi13-final170_update.pdf" title="《Scaling Memcache at Facebook》" target="_blank" rel="noopener">《Scaling Memcache at Facebook》</a>也使用了这个策略。为什么不是写完数据库后更新缓存？你可以看一下Quora上的这个问答<a href="https://www.quora.com/Why-does-Facebook-use-delete-to-remove-the-key-value-pair-in-Memcached-instead-of-updating-the-Memcached-during-write-request-to-the-backend" title="《Why does Facebook use delete to remove the key-value pair in Memcached instead of updating the Memcached during write request to the backend?》" target="_blank" rel="noopener">《Why does Facebook use delete to remove the key-value pair in Memcached instead of updating the Memcached during write request to the backend?》</a>，主要是怕两个并发的写操作导致脏数据</p>
+<p>那么，是不是Cache Aside这个就不会有并发问题了？不是的，比如，一个是读操作，但是没有命中缓存，然后就到数据库中取数据，此时来了一个写操作，写完数据库后，让缓存失效，然后，之前的那个读操作再把老的数据放进去，所以，会造成脏数据。</p>
+<p>但，这个case理论上会出现，不过，实际上出现的概率可能非常低，因为这个条件需要发生在读缓存时缓存失效，而且并发着有一个写操作。而实际上数据库的写操作会比读操作慢得多，而且还要锁表，而读操作必需在写操作前进入数据库操作，而又要晚于写操作更新缓存，所有的这些条件都具备的概率基本并不大。</p>
+<p>所以，这也就是Quora上的那个答案里说的，要么通过2PC或是Paxos协议保证一致性，要么就是拼命的降低并发时脏数据的概率，而Facebook使用了这个降低概率的玩法，因为2PC太慢，而Paxos太复杂。当然，最好还是为缓存设置上过期时间。</p>
+<p>Read/Write Through Pattern</p>
+<p>我们可以看到，在上面的Cache Aside套路中，我们的应用代码需要维护两个数据存储，一个是缓存（Cache），一个是数据库（Repository）。所以，应用程序比较啰嗦。而Read/Write Through套路是把更新数据库（Repository）的操作由缓存自己代理了，所以，对于应用层来说，就简单很多了。可以理解为，应用认为后端就是一个单一的存储，而存储自己维护自己的Cache。</p>
+<p>Read Through</p>
+<p>Read Through 套路就是在查询操作中更新缓存，也就是说，当缓存失效的时候（过期或LRU换出），Cache Aside是由调用方负责把数据加载入缓存，而Read Through则用缓存服务自己来加载，从而对应用方是透明的。</p>
+<p>Write Through</p>
+<p>Write Through 套路和Read Through相仿，不过是在更新数据时发生。当有数据更新的时候，如果没有命中缓存，直接更新数据库，然后返回。如果命中了缓存，则更新缓存，然后再由Cache自己更新数据库（这是一个同步操作）</p>
+<p>下图自来Wikipedia的<a href="https://en.wikipedia.org/wiki/Cache_&#40;computing&#41;" title="Cache词条" target="_blank" rel="noopener">Cache词条</a>。其中的Memory你可以理解为就是我们例子里的数据库。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/cache/Write-through_with_no-write-allocation.jpg" alt="cache6" title>
+                </div>
+                <div class="image-caption">cache6</div>
+            </figure>
+<p>Write Behind Caching Pattern</p>
+<p>Write Behind 又叫 Write Back。一些了解Linux操作系统内核的同学对write back应该非常熟悉，这不就是Linux文件系统的Page Cache的算法吗？是的，你看基础这玩意全都是相通的。所以，基础很重要，我已经不是一次说过基础很重要这事了。</p>
+<p>Write Back套路，一句说就是，在更新数据的时候，只更新缓存，不更新数据库，而我们的缓存会异步地批量更新数据库。这个设计的好处就是让数据的I/O操作飞快无比（因为直接操作内存嘛 ），因为异步，write backg还可以合并对同一个数据的多次操作，所以性能的提高是相当可观的。</p>
+<p>但是，其带来的问题是，数据不是强一致性的，而且可能会丢失（我们知道Unix/Linux非正常关机会导致数据丢失，就是因为这个事）。在软件设计上，我们基本上不可能做出一个没有缺陷的设计，就像算法设计中的时间换空间，空间换时间一个道理，有时候，强一致性和高性能，高可用和高性性是有冲突的。软件设计从来都是取舍Trade-Off。</p>
+<p>另外，Write Back实现逻辑比较复杂，因为他需要track有哪数据是被更新了的，需要刷到持久层上。操作系统的write back会在仅当这个cache需要失效的时候，才会被真正持久起来，比如，内存不够了，或是进程退出了等情况，这又叫lazy write。</p>
+<p>在wikipedia上有一张write back的流程图，基本逻辑如下：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/cache/Write-back_with_write-allocation.jpg" alt="cache7" title>
+                </div>
+                <div class="image-caption">cache7</div>
+            </figure>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.029Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20170602/05-cache-design.html" target="_blank" rel="external">https://ningyu1.github.io/20170602/05-cache-design.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cache/">Cache</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/">Redis</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20170602/05-cache-design.html&title=《Cache设计和使用上的套路》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20170602/05-cache-design.html&title=《Cache设计和使用上的套路》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20170602/05-cache-design.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Cache设计和使用上的套路》 — 凝雨 - Yun&url=https://ningyu1.github.io/20170602/05-cache-design.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20170602/05-cache-design.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20170630/03-nginx-502-Bad-Gateway.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Nginx 502 Bad Gateway问题分析与踩过的坑</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20170511/06-activemq-settings.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">ActiveMQ使用经验分享，配置详解</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20170602/05-cache-design.html&title=《Cache设计和使用上的套路》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20170602/05-cache-design.html&title=《Cache设计和使用上的套路》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20170602/05-cache-design.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Cache设计和使用上的套路》 — 凝雨 - Yun&url=https://ningyu1.github.io/20170602/05-cache-design.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20170602/05-cache-design.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACKElEQVR42u3aQW7bQAwF0Nz/0i7QVQvHyicpBwnnzUqwbGmeFwQ55MdHvB5/17/Xz+v6m69++/yW589vWxgYGL+W8bhckw0lv71+WrI3DAyMcxh5kE2C8nU8zL+T7A0DAwMjSQ2vN5o/BwMDA+N9jCTtm/8WAwMDo3qINknsekH8tlocAwPjFzJ6jYHvuX57fwMDA+PHMx7F9eo186P/0a4wMDBWM6ovmAfKXtIZNRgwMDCWMpLxrLyk7AXTaln7yc4xMDAOYFSD3aRinqSGL3kYGBirGXlmdRcvH9HIQzwGBsYJjF4ozL+Tbzf5U774WzEwMNYx8uCYD3L1TsDyUYwvilgMDIx1jOuolW/3htcHmOguBgbGakZ+4JWnickrJ0UvBgbGCYxqQzG5niSL+fP/u4uBgbGakY9W9NK4Xnuy+adgYGAsZUyGtKqpYXVzBR4GBsYBjN7W8wRu8nlUVGNgYBzGyENn8oRqcpkPW2BgYJzDqA46JKNd+fhX7/CukIxiYGCsYFTHvCYBsVcGR3cxMDCOYSSkeSmbH8blzQYMDIzdjLtaksnWJ2Vts4jFwMBYwXgU1wSZBPFeIxMDA2M3Y3JYXz2Ay1sReZGMgYFxDiM/COsdpc1L5cLIBQYGxmpGLwjmwbTa2qyOd2BgYGDkTcdeI3OyHwwMDIykHO0VsVVGVMRiYGCsZvSK2ATTa5SWy2kMDIzVjF5jILmewPLjOQwMjNWMP5NuhJpyrbbUAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

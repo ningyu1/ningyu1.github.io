@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>Trouble Shooting —— CAS Server集群环境下报错：Server redirected too many  times (20) | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="trouble shooting,CAS,iphash,TomcatRedisSessionManager,Server redirected too many  times (20)">
+    <meta name="description" content="Trouble Shooting —— CAS Server集群环境下报错：Server redirected too many  times (20)">
+<meta name="keywords" content="trouble shooting,CAS,iphash,TomcatRedisSessionManager,Server redirected too many  times (20)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Trouble Shooting —— CAS Server集群环境下报错：Server redirected too many  times (20)">
+<meta property="og:url" content="https://ningyu1.github.io/20180323/73-cas-server-pit1.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="Trouble Shooting —— CAS Server集群环境下报错：Server redirected too many  times (20)">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.037Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Trouble Shooting —— CAS Server集群环境下报错：Server redirected too many  times (20)">
+<meta name="twitter:description" content="Trouble Shooting —— CAS Server集群环境下报错：Server redirected too many  times (20)">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Trouble Shooting —— CAS Server集群环境下报错：Server redirected too many  times (20)</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Trouble Shooting —— CAS Server集群环境下报错：Server redirected too many  times (20)</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-03-23T08:01:00.000Z" itemprop="datePublished" class="page-time">
+  2018-03-23
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/CAS/">CAS</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#cas使用总结博文目录"><span class="post-toc-number">1.</span> <span class="post-toc-text">cas使用总结博文目录</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#问题现象"><span class="post-toc-number">2.</span> <span class="post-toc-text">问题现象</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#cas单点登录过程剖析"><span class="post-toc-number">3.</span> <span class="post-toc-text">cas单点登录过程剖析</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#问题分析"><span class="post-toc-number">4.</span> <span class="post-toc-text">问题分析</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#问题总结"><span class="post-toc-number">5.</span> <span class="post-toc-text">问题总结</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-73-cas-server-pit1"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Trouble Shooting —— CAS Server集群环境下报错：Server redirected too many  times (20)</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-03-23 16:01:00" datetime="2018-03-23T08:01:00.000Z"  itemprop="datePublished">2018-03-23</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/CAS/">CAS</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>当我们使用<code>cas</code>做单点登录的时候往往会使用集群方式部署，不管是<code>cas server</code>或者是接入的<code>app server</code>都会采用集群的方式部署。</p>
+<p>在对<code>cas server</code>做集群实现无状态化，需要注意一下几点，也是我上一篇<code>cas</code>遇到的<code>TGC</code>验证问题中总结出来的：</p>
+<ol>
+<li><code>cas</code>的<code>ticket</code>需要做到集中存储，可以使用<code>redis</code>、<code>jpa</code>、或者其他方式，这个官方文章上有详细介绍：<a href="https://apereo.github.io/cas/5.0.x/installation/Configuration-Properties.html#ticket-registry" target="_blank" rel="noopener">ticket-registry</a></li>
+<li><code>cas</code>的<code>session</code>信息需要做到集中存储，如果使用的是<code>tomcat</code>可以使用<a href="https://github.com/ran-jit/tomcat-cluster-redis-session-manager" target="_blank" rel="noopener">TomcatRedisSessionMananger</a>插件来通过<code>redis</code>做<code>session</code>集中存储。</li>
+<li>还有一个就是上面遇到的问题，客户端<code>cookie</code>信息：<code>TGC</code>，<code>TGC</code>采用<code>cookie</code>方式存在客户端，因此需要开启会话保持，使得相同客户端每次都会被路由到同一个<code>cas server</code>上去做<code>TGC</code>验证。</li>
+<li>最后一个就是需要接入<code>sso</code>的<code>client</code>应用端的<code>session</code>信息也需要做集中存储，因此<code>cas server</code>会和<code>client</code>进行通信去验证<code>ticket</code>，验证完后会生成信息并存储到<code>sesson</code>中，因此也需要使用<a href="https://github.com/ran-jit/tomcat-cluster-redis-session-manager" target="_blank" rel="noopener">TomcatRedisSessionMananger</a>插件来通过<code>redis</code>做<code>session</code>集中存储。</li>
+<li>cas server端和接入的app服务端需要保证网络通畅。</li>
+</ol>
+<h1 id="cas使用总结博文目录"><a href="#cas使用总结博文目录" class="headerlink" title="cas使用总结博文目录"></a>cas使用总结博文目录</h1><p>最近<code>cas</code>遇到的问题我都总结到了blog中，这里整理一下目录如下：</p>
+<ul>
+<li><a href="https://ningyu1.github.io/site/post/54-cas-server/">《CAS使用经验总结，纯干货》</a></li>
+<li><a href="https://ningyu1.github.io/site/post/57-cas-server1/">《CAS Server强制踢人功能实现方式》</a></li>
+<li><a href="https://ningyu1.github.io/site/post/70-cas-server-pit/">《Trouble Shooting —— CAS Server集群环境下TGC验证问题排查，需要开启会话保持》</a></li>
+</ul>
+<p>接下来我们就说一下这次遇到的问题。</p>
+<h1 id="问题现象"><a href="#问题现象" class="headerlink" title="问题现象"></a>问题现象</h1><p>通过上面的方式可以将<code>cas server</code>做到集群无状态化，但是避免不了其他的问题，下面就是最近与到的问题，现象是这样的，一部分人可以正常登陆，一部分人登陆时报错，错误如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">2018-03-23 10:33:22.768 [http-nio-7051-exec-1] ERROR org.jasig.cas.client.util.CommonUtils - Server redirected too many  times (20)</span><br><span class="line">java.net.ProtocolException: Server redirected too many  times (20)</span><br><span class="line">	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1637) ~[na:1.7.0_79]</span><br><span class="line">	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(HttpsURLConnectionImpl.java:254) ~[na:1.7.0_79]</span><br><span class="line">	at org.jasig.cas.client.util.CommonUtils.getResponseFromServer(CommonUtils.java:393) ~[cas-client-core-3.3.3.jar:3.3.3]</span><br><span class="line">	at org.jasig.cas.client.validation.AbstractCasProtocolUrlBasedTicketValidator.retrieveResponseFromServer(AbstractCasProtocolUrlBasedTicketValidator.java:45) [cas-client-core-3.3.3.jar:3.3.3]</span><br><span class="line">	at org.jasig.cas.client.validation.AbstractUrlBasedTicketValidator.validate(AbstractUrlBasedTicketValidator.java:200) [cas-client-core-3.3.3.jar:3.3.3]</span><br><span class="line">	at org.springframework.security.cas.authentication.CasAuthenticationProvider.authenticateNow(CasAuthenticationProvider.java:140) [spring-security-cas-3.1.7.RELEASE.jar:3.1.7.RELEASE]</span><br><span class="line">	at org.springframework.security.cas.authentication.CasAuthenticationProvider.authenticate(CasAuthenticationProvider.java:126) [spring-security-cas-3.1.7.RELEASE.jar:3.1.7.RELEASE]</span><br><span class="line">	at org.springframework.security.authentication.ProviderManager.authenticate(ProviderManager.java:156) [spring-security-core-3.1.7.RELEASE.jar:3.1.7.RELEASE]</span><br><span class="line">	at org.springframework.security.cas.web.CasAuthenticationFilter.attemptAuthentication(CasAuthenticationFilter.java:242) [spring-security-cas-3.1.7.RELEASE.jar:3.1.7.RELEASE]</span><br><span class="line">	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:195) [spring-security-web-3.1.7.RELEASE.jar:3.1.7.RELEASE]</span><br><span class="line">	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:342) [spring-security-web-3.1.7.RELEASE.jar:3.1.7.RELEASE]</span><br><span class="line">	at org.jasig.cas.client.session.SingleSignOutFilter.doFilter(SingleSignOutFilter.java:100) [cas-client-core-3.3.3.jar:3.3.3]</span><br><span class="line">	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:342) [spring-security-web-3.1.7.RELEASE.jar:3.1.7.RELEASE]</span><br><span class="line">	at com.bstek.bdf2.core.security.filter.PreAuthenticatedProcessingFilter.doFilter(PreAuthenticatedProcessingFilter.java:41) [scm-bdf2-core-1.1.0-SNAPSHOT.jar:na]</span><br><span class="line">	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:342) [spring-security-web-3.1.7.RELEASE.jar:3.1.7.RELEASE]</span><br><span class="line">	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:105) [spring-security-web-3.1.7.RELEASE.jar:3.1.7.RELEASE]</span><br><span class="line">	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:342) [spring-security-web-3.1.7.RELEASE.jar:3.1.7.RELEASE]</span><br><span class="line">	at org.springframework.security.web.session.ConcurrentSessionFilter.doFilter(ConcurrentSessionFilter.java:125) [spring-security-web-3.1.7.RELEASE.jar:3.1.7.RELEASE]</span><br><span class="line">	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:342) [spring-security-web-3.1.7.RELEASE.jar:3.1.7.RELEASE]</span><br><span class="line">	at com.bstek.bdf2.core.security.filter.ContextFilter.doFilter(ContextFilter.java:36) [scm-bdf2-core-1.1.0-SNAPSHOT.jar:na]</span><br><span class="line">	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:342) [spring-security-web-3.1.7.RELEASE.jar:3.1.7.RELEASE]</span><br><span class="line">	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:87) [spring-security-web-3.1.7.RELEASE.jar:3.1.7.RELEASE]</span><br><span class="line">	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:342) [spring-security-web-3.1.7.RELEASE.jar:3.1.7.RELEASE]</span><br><span class="line">	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:192) [spring-security-web-3.1.7.RELEASE.jar:3.1.7.RELEASE]</span><br><span class="line">	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:160) [spring-security-web-3.1.7.RELEASE.jar:3.1.7.RELEASE]</span><br><span class="line">	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:344) [spring-web-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br><span class="line">	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:261) [spring-web-4.0.0.RELEASE.jar:4.0.0.RELEASE]</span><br></pre></td></tr></table></figure>
+<p>从异常的描述来看是服务器端多次<code>redirected</code>超过了20次导致的问题，什么原因会造成这个问题？</p>
+<h1 id="cas单点登录过程剖析"><a href="#cas单点登录过程剖析" class="headerlink" title="cas单点登录过程剖析"></a>cas单点登录过程剖析</h1><p><code>cas</code>的单点登录的过程大致是这样的。</p>
+<p>第一步：访问app地址，例如：<code>https://app.domain.com</code>，app端的<code>cas-client-core</code>会判断是否已经登录，如果没有登录会重定向到如下地址：<code>https://login.domain.com/login?service=https%3A%2F%2Fapp.domain.com%2Fcas_security_check_</code></p>
+<p>第二步：当重定向到<code>cas</code>登录页面后，我们输入用户名密码，<code>cas server</code>端会进行如下操作</p>
+<ul>
+<li>先进行<code>AUTHENTICATION</code>过程，这个过程是验证我们的用户名密码是否正确，会输出如下日志：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">2018-03-23 14:58:01,429 INFO [org.apereo.inspektr.audit.support.Slf4jLoggingAuditTrailManager] - &lt;Audit trail record BEGIN</span><br><span class="line">=============================================================</span><br><span class="line">WHO: admin</span><br><span class="line">WHAT: Supplied credentials: [admin]</span><br><span class="line">ACTION: AUTHENTICATION_SUCCESS</span><br><span class="line">APPLICATION: CAS</span><br><span class="line">WHEN: Fri Mar 23 14:58:01 HKT 2018</span><br><span class="line">CLIENT IP ADDRESS: xx.xx.xx.xx</span><br><span class="line">SERVER IP ADDRESS: xx.xx.xx.xx</span><br><span class="line">=============================================================</span><br></pre></td></tr></table></figure>
+<ul>
+<li>当<code>AUTHENTICATION</code>通过以后会生成TGT（TICKET_GRANTING_TICKET），这个是换取服务票据的预授票据，并且将TGT保存起来，我这里使用的是jpa方式保存到db，会输出如下日志：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">=============================================================</span><br><span class="line">WHO: admin</span><br><span class="line">WHAT: TGT-***********************************************1VX72iaQBZ-077adac8d80f</span><br><span class="line">ACTION: TICKET_GRANTING_TICKET_CREATED</span><br><span class="line">APPLICATION: CAS</span><br><span class="line">WHEN: Fri Mar 23 14:58:01 HKT 2018</span><br><span class="line">CLIENT IP ADDRESS: 10.42.37.135</span><br><span class="line">SERVER IP ADDRESS: 10.42.185.88</span><br><span class="line">=============================================================</span><br><span class="line"></span><br><span class="line">&gt;</span><br><span class="line">Hibernate: insert into TICKETGRANTINGTICKET (NUMBER_OF_TIMES_USED, CREATION_TIME, EXPIRATION_POLICY, LAST_TIME_USED, PREVIOUS_LAST_TIME_USED, AUTHENTICATION, EXPIRED, PROXIED_BY, SERVICES_GRANTED_ACCESS_TO, ticketGrantingTicket_ID, TYPE, ID) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, &apos;TGT&apos;, ?)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>当<code>TGT</code>生成完后会生成ST（SERVICE_TICKET），这个是服务票据，是授权这个服务的票据，并且会将ST保存起来和更新TGT信息，我这里使用的是jpa方式保存到db，会输出如下日志：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">2018-03-23 14:58:01,504 INFO [org.apereo.inspektr.audit.support.Slf4jLoggingAuditTrailManager] - &lt;Audit trail record BEGIN</span><br><span class="line">=============================================================</span><br><span class="line">WHO: admin</span><br><span class="line">WHAT: ST-153-RfpK0ACJHtPsSdnbYhVf-077adac8d80f for https://app.domain.com/cas_security_check_</span><br><span class="line">ACTION: SERVICE_TICKET_CREATED</span><br><span class="line">APPLICATION: CAS</span><br><span class="line">WHEN: Fri Mar 23 14:58:01 HKT 2018</span><br><span class="line">CLIENT IP ADDRESS: xx.xx.xx.xx</span><br><span class="line">SERVER IP ADDRESS: xx.xx.xx.xx</span><br><span class="line">=============================================================</span><br><span class="line"></span><br><span class="line">&gt;</span><br><span class="line">Hibernate: insert into SERVICETICKET (NUMBER_OF_TIMES_USED, CREATION_TIME, EXPIRATION_POLICY, LAST_TIME_USED, PREVIOUS_LAST_TIME_USED, FROM_NEW_LOGIN, TICKET_ALREADY_GRANTED, SERVICE, ticketGrantingTicket_ID, TYPE, ID) values (?, ?, ?, ?, ?, ?, ?, ?, ?, &apos;ST&apos;, ?)</span><br><span class="line">Hibernate: update TICKETGRANTINGTICKET set NUMBER_OF_TIMES_USED=?, CREATION_TIME=?, EXPIRATION_POLICY=?, LAST_TIME_USED=?, PREVIOUS_LAST_TIME_USED=?, AUTHENTICATION=?, EXPIRED=?, PROXIED_BY=?, SERVICES_GRANTED_ACCESS_TO=?, ticketGrantingTicket_ID=? where ID=?</span><br></pre></td></tr></table></figure>
+<p>这个时候服务端生成的票据就完成了，会将ST信息生成TGC（TICKET_GRANTING_COOKIE）返回给app端。</p>
+<p>第三步：app端接收到cas server端的返回，TGC会直接写入到浏览器cookie中，app端会再发起一次ST验证，这个过程是在app的后端发起请求的，url如下：</p>
+<p><code>https://login.domain.com/serviceValidate?ticket=ST-153-RfpK0ACJHtPsSdnbYhVf-077adac8d80f&amp;service=https%3A%2F%2Fapp.domain.com%2Fcas_security_check_</code></p>
+<p>第四步：cas server端收到service validate请求后会验证ST和TGC是否合法，并且验证TGC的时候cas server需要开启会话保持，让请求发送到生成TGC的机器上去，因为TGC中保存生成的服务端地址，具体问题我前面分析过查看：<a href="https://ningyu1.github.io/site/post/70-cas-server-pit/">《Trouble Shooting —— CAS Server集群环境下TGC验证问题排查，需要开启会话保持》</a>，cas server验证成功后会输出如下的日志：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">2018-03-23 14:58:01,578 INFO [org.apereo.inspektr.audit.support.Slf4jLoggingAuditTrailManager] - &lt;Audit trail record BEGIN</span><br><span class="line">=============================================================</span><br><span class="line">WHO: admin</span><br><span class="line">WHAT: ST-153-RfpK0ACJHtPsSdnbYhVf-077adac8d80f</span><br><span class="line">ACTION: SERVICE_TICKET_VALIDATED</span><br><span class="line">APPLICATION: CAS</span><br><span class="line">WHEN: Fri Mar 23 14:58:01 HKT 2018</span><br><span class="line">CLIENT IP ADDRESS: xx.xx.xx.xx</span><br><span class="line">SERVER IP ADDRESS: xx.xx.xx.xx</span><br><span class="line">=============================================================</span><br></pre></td></tr></table></figure>
+<p><span style="color:red"><em>ps.出现下面日志表示验证失败</em></span></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">2018-03-23 14:58:01,580 INFO [org.apereo.inspektr.audit.support.Slf4jLoggingAuditTrailManager] - &lt;Audit trail record BEGIN</span><br><span class="line">=============================================================</span><br><span class="line">WHO: audit:unknown</span><br><span class="line">WHAT: ST-154-YA6KibaqHpOMGXbluz7V-077adac8d80f</span><br><span class="line">ACTION: SERVICE_TICKET_VALIDATE_FAILED</span><br><span class="line">APPLICATION: CAS</span><br><span class="line">WHEN: Fri Mar 23 14:58:01 HKT 2018</span><br><span class="line">CLIENT IP ADDRESS: xx.xx.xx.xx</span><br><span class="line">SERVER IP ADDRESS: xx.xx.xx.xx</span><br><span class="line">=============================================================</span><br></pre></td></tr></table></figure>
+<p>第五步：app后端接收到cas server端service验证成功的返回后，会生成session并且与TG进行关系绑定，绑定信息会保存起来，<span style="color:blue"><em>这里需要注意的是如果是集群环境需要保存到redis或者其他统一存储的地方。</em></span>，app后端接收验证成功后的输出日志如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">2018-03-23 14:58:01.531 [http-apr-8080-exec-1] DEBUG o.j.c.c.validation.Cas20ServiceTicketValidator - Constructing validation url: https://login.domain.com/serviceValidate?ticket=ST-153-RfpK0ACJHtPsSdnbYhVf-077adac8d80f&amp;service=https%3A%2F%2Fapp.domain.com%2Fcas_security_check_</span><br><span class="line">2018-03-23 14:58:01.531 [http-apr-8080-exec-1] DEBUG o.j.c.c.validation.Cas20ServiceTicketValidator - Retrieving response from server.</span><br><span class="line">2018-03-23 14:58:01.602 [http-apr-8080-exec-1] DEBUG o.j.c.c.validation.Cas20ServiceTicketValidator - Server response: &lt;cas:serviceResponse xmlns:cas=&apos;http://www.yale.edu/tp/cas&apos;&gt;</span><br><span class="line">    &lt;cas:authenticationSuccess&gt;</span><br><span class="line">        &lt;cas:user&gt;admin&lt;/cas:user&gt;</span><br><span class="line">    &lt;/cas:authenticationSuccess&gt;</span><br><span class="line">&lt;/cas:serviceResponse&gt;</span><br></pre></td></tr></table></figure>
+<p><span style="color:blue"><em>输出以上信息就是验证成功。到这里cas server端的所有验证都完成了。</em></span></p>
+<p><span style="color:red"><em>ps.出现下面日志表示app后端接收到的是验证失败返回信息</em></span></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">2018-03-23 14:58:02.295 [http-bio-7051-exec-6] DEBUG o.j.c.c.validation.Cas20ServiceTicketValidator - Constructing validation url: https://login.domain.com/serviceValidate?ticket=ST-154-YA6KibaqHpOMGXbluz7V-077adac8d80f&amp;service=https%3A%2F%2Fapp.domain.com%2Fcas_security_check_</span><br><span class="line">2018-03-23 14:58:02.295 [http-bio-7051-exec-6] DEBUG o.j.c.c.validation.Cas20ServiceTicketValidator - Retrieving response from server.</span><br><span class="line">2018-03-23 14:58:02.830 [http-bio-7051-exec-6] DEBUG o.j.c.c.validation.Cas20ServiceTicketValidator - Server response: &lt;cas:serviceResponse xmlns:cas=&apos;http://www.yale.edu/tp/cas&apos;&gt;</span><br><span class="line">    &lt;cas:authenticationFailure code=&quot;INVALID_TICKET&quot;&gt;Ticket &amp;#39;ST-154-YA6KibaqHpOMGXbluz7V-077adac8d80f&amp;#39; not recognized&lt;/cas:authenticationFailure&gt;</span><br><span class="line">&lt;/cas:serviceResponse&gt;</span><br></pre></td></tr></table></figure>
+<p>第六步：app端登录成功进入主页面。</p>
+<p>根据这个流程我们再来分析上面的异常是那个环节出现了问题。</p>
+<h1 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h1><p>首先上面的异常是app的后端出现的异常，app后端发起请求是在cas server生成完ticket之后才发起的，并且发起的是service validate验证请求，这个请求导致重定向超过20次。</p>
+<p>而且还有一个重要的信息就是，一部分人可以正常登录，一部分人不能登录，我们部署的结构是2台cas server，2台app服务。</p>
+<p>通过日志排查，2台app服务，其中一台没有出现过一场，另外一台爆出异常。这个时候问题已经有些明朗了，当负载均衡路由到出错的这台服务时，后台服务发起service validate验证时出现了问题，那接下来就让我们对比两台服务器上的配置。</p>
+<p>我们采用的是阿里云的SLB映射到后台的nginx，app的后台服务要和cas server通信那首先网络需要是通的，理论上网络应该是没问题的，但是为了验证问题，我们就从网络这块开始排查。</p>
+<p>因为我们使用的是阿里云而且app服务没有开通外网，app后天和cas服务通信走的是内网的SLB，接下来我们就ping一下登录地址看一下返回的slb地址是否相同。</p>
+<p>两台机器上ping login.domain.com ，果然返回的ip不一致，其中报错的那台机器返回的是本机ip，奥这就是问题的根源，<code>cat /etc/hosts</code>果然域名映射的ip不一致，应该是运维配置失误导致的问题。</p>
+<p>通过修改host配置之后再次验证错误解决。</p>
+<h1 id="问题总结"><a href="#问题总结" class="headerlink" title="问题总结"></a>问题总结</h1><p>最终定位的到的问题感觉很白痴的问题，是因为运维配置失误导致，但是值得回味的是，通过这个问题我们对cas的单点登录机制理解的更加深刻，这就是一种收获，往往通过繁琐的分析后定位到的问题都很easy，所以当我们分析问题、定位问题的时候一定要先理解其中的原理，再结合现象去一步一步分析，这是仔细和关注度是否全面的一种考验。好了问题就说到这里，希望能够帮助到需要的人。</p>
+<p>世界和平、Keep Real！</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.037Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20180323/73-cas-server-pit1.html" target="_blank" rel="external">https://ningyu1.github.io/20180323/73-cas-server-pit1.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CAS/">CAS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Server-redirected-too-many-times-20/">Server redirected too many  times (20)</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TomcatRedisSessionManager/">TomcatRedisSessionManager</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iphash/">iphash</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/trouble-shooting/">trouble shooting</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180323/73-cas-server-pit1.html&title=《Trouble Shooting —— CAS Server集群环境下报错：Server redirected too many  times (20)》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180323/73-cas-server-pit1.html&title=《Trouble Shooting —— CAS Server集群环境下报错：Server redirected too many  times (20)》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180323/73-cas-server-pit1.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Trouble Shooting —— CAS Server集群环境下报错：Server redirected too many  times (20)》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180323/73-cas-server-pit1.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180323/73-cas-server-pit1.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20180330/74-redisearch.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">RediSearch基于Redis的高性能全文搜索引擎，资料整理</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20180323/72-svn-query.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Subversion库如何全文检索代码？</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180323/73-cas-server-pit1.html&title=《Trouble Shooting —— CAS Server集群环境下报错：Server redirected too many  times (20)》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180323/73-cas-server-pit1.html&title=《Trouble Shooting —— CAS Server集群环境下报错：Server redirected too many  times (20)》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180323/73-cas-server-pit1.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Trouble Shooting —— CAS Server集群环境下报错：Server redirected too many  times (20)》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180323/73-cas-server-pit1.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180323/73-cas-server-pit1.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACK0lEQVR42u3aQXKDMAwFUO5/abptZxrQl6BTzPOKSVLs54UqW9q28tg/jO/fHv8+nWW7Y2BgYDyWsR+OTxOki/v0XJ/3ZGswMDBewEinr/Aq01fecLw2DAwMjN5zGnzTsI6BgYHRW2IlHFdmxMDAwJgcYus3XemF2p+exTEwMB7ImF+Z3fd8S30DAwPjUYw9HMfJ2aScsA8GBgbG2oz0mmxyQO2VMIMUEwMDY1HG8SLS4mIFGe9xZaMxMDCWZkwOtGkiOG//mm8TBgbGExmTg2g9TbwqiH/8HAMDY2lGvdGhV55MU8m0IeOkHouBgbEco1ewnDdA1EN5s7SJgYHxcEYaIuvUXvpYTy5/PGNgYCzNqL9oXuzs3fYF78HAwFiUUb+In4TjXloZhGYMDIwXMCpFxJSaNnhd1jOCgYGxNOOqa7i0hNnDnDRbYGBgvIxRX2Il7Pau8LbeEjEwMJZj9I6RVzWw9oL4LwEXAwNjOUb9ir83fW+begddDAyMtRnXhs5em1daHjhptsDAwHgBIz2m9gJ3mjKeJI4YGBivZPSKjqOlhAkrBgbGGxi9Bov0Mq5SDKinj/FpGwMD4+GMebROE7teU8UFd4cYGBgPZ1QCZb24mE5fZ48SRAwMjCUY826rNLGL2yaO/woDAwOj8JvK5+kb4t4QDAwMjDARrBcG0razW/5vYGBg/HtG2hJx36G013CGgYGxNqOXd02axtLyZBrcMTAwFmJ8Af0rLLrIMmp/AAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

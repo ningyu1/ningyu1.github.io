@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>如何编写高性能的 RPC 框架 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="rpc-benchmark">
+    <meta name="description" content="如何编写高性能的 RPC 框架">
+<meta name="keywords" content="rpc-benchmark">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何编写高性能的 RPC 框架">
+<meta property="og:url" content="https://ningyu1.github.io/20180919/99-rpc-benchmark1.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="如何编写高性能的 RPC 框架">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.039Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何编写高性能的 RPC 框架">
+<meta name="twitter:description" content="如何编写高性能的 RPC 框架">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">如何编写高性能的 RPC 框架</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">如何编写高性能的 RPC 框架</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-09-19T04:01:00.000Z" itemprop="datePublished" class="page-time">
+  2018-09-19
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/rpc/">rpc</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#过早的优化是万恶之源？"><span class="post-toc-number">1.</span> <span class="post-toc-text">过早的优化是万恶之源？</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#JMH-让-Benchmark-驱动开发成为可能"><span class="post-toc-number">2.</span> <span class="post-toc-text">JMH 让 Benchmark 驱动开发成为可能</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#RPC-的主要流程"><span class="post-toc-number">3.</span> <span class="post-toc-text">RPC 的主要流程</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#序列化方案"><span class="post-toc-number">4.</span> <span class="post-toc-text">序列化方案</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#方法调用"><span class="post-toc-number">5.</span> <span class="post-toc-text">方法调用</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#网络传输"><span class="post-toc-number">6.</span> <span class="post-toc-text">网络传输</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#消息格式"><span class="post-toc-number">7.</span> <span class="post-toc-text">消息格式</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#MethodParam-简介"><span class="post-toc-number">8.</span> <span class="post-toc-text">MethodParam 简介</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#序列化的进一步优化"><span class="post-toc-number">9.</span> <span class="post-toc-text">序列化的进一步优化</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#ObjectPool"><span class="post-toc-number">10.</span> <span class="post-toc-text">ObjectPool</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#基础类库优化"><span class="post-toc-number">11.</span> <span class="post-toc-text">基础类库优化</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#不足之处"><span class="post-toc-number">12.</span> <span class="post-toc-text">不足之处</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-99-rpc-benchmark1"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">如何编写高性能的 RPC 框架</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-09-19 12:01:00" datetime="2018-09-19T04:01:00.000Z"  itemprop="datePublished">2018-09-19</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/rpc/">rpc</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>最近看相关rpc-benchmark相关的东西发现这篇文章挺好的，所以转载出来，下面是文章出处。</p>
+<p>作者：鲁小憨<br>链接：<a href="https://www.jianshu.com/p/7182b8751e75" target="_blank" rel="noopener">https://www.jianshu.com/p/7182b8751e75</a><br>來源：简书<br>简书著作权归作者所有，任何形式的转载都请联系作者获得授权并注明出处。</p>
+<p>在 <a href="https://www.jianshu.com/p/18c95649b1a4" target="_blank" rel="noopener">RPC Benchmark Round 1</a> 中，<a href="https://github.com/hank-whu/turbo-rpc" target="_blank" rel="noopener">Turbo</a> 性能炸裂表现强悍，并且在 listUser 这一项目中，取得了 10x dubbo 性能的好成绩。本文将介绍 <a href="https://github.com/hank-whu/turbo-rpc" target="_blank" rel="noopener">Turbo</a> 强悍性能背后的原理，并探讨如何编写高性能的 RPC 框架。</p>
+<h1 id="过早的优化是万恶之源？"><a href="#过早的优化是万恶之源？" class="headerlink" title="过早的优化是万恶之源？"></a>过早的优化是万恶之源？</h1><p>这句话是 The Art of Computer Programming 作者，图领奖得主 Donald Knuth 大神说的。不过对于框架设计者而言，这句话并不正确。在设计一款高性能的基础框架时，必须始终重视性能优化，并将性能测试贯穿于整个设计开发过程中。这方面做到极致的类库有 <a href="https://github.com/LMAX-Exchange/disruptor" target="_blank" rel="noopener">Disruptor</a> <a href="https://github.com/JCTools/JCTools" target="_blank" rel="noopener">JCTools</a> <a href="https://github.com/real-logic/agrona" target="_blank" rel="noopener">Agrona</a> <a href="https://github.com/ngs-doo/dsl-json" target="_blank" rel="noopener">DSL-JSON</a> 等等，这几个高性能类库都坚持一个原则：不了解性能的外部类库坚决不用，如果现有的类库不能满足性能要求，那就重新设计一个。作为 <a href="https://github.com/hank-whu/turbo-rpc" target="_blank" rel="noopener">Turbo</a> 的设计者，我也尽量坚持这一原则，努力做到 Benchmark 驱动开发。</p>
+<h1 id="JMH-让-Benchmark-驱动开发成为可能"><a href="#JMH-让-Benchmark-驱动开发成为可能" class="headerlink" title="JMH 让 Benchmark 驱动开发成为可能"></a>JMH 让 Benchmark 驱动开发成为可能</h1><p>在 JMH 出现之前，要对某个类库进行微基准性能测试是一件非常困难的事情。很难保证公平的测试条件，预热次数难以确定，预热效果也不好观察。JMH 的出现让性能测试变得 标准化 简单化，也让 Benchmark 驱动开发成为可能。Turbo 在开发过程中用 JMH 进行了充分的 Benchmark，以确定核心环节的性能开销，选择合适的实现方案。更多关于 JMH 的介绍请参考下面的链接：</p>
+<ul>
+<li><a href="http://openjdk.java.net/projects/code-tools/jmh/" target="_blank" rel="noopener">OpenJDK: jmh</a></li>
+<li><a href="http://tutorials.jenkov.com/java-performance/jmh.html" target="_blank" rel="noopener">JMH - Java Microbenchmark Harness</a></li>
+<li><a href="http://www.importnew.com/12548.html" target="_blank" rel="noopener">ImportNew JMH简介</a></li>
+</ul>
+<h1 id="RPC-的主要流程"><a href="#RPC-的主要流程" class="headerlink" title="RPC 的主要流程"></a>RPC 的主要流程</h1><ol>
+<li>客户端 获取到 UserService 接口的 Refer: userServiceRefer</li>
+<li>客户端 调用 userServiceRefer.verifyUser(email, pwd)</li>
+<li>客户端 获取到 请求方法 和 请求数据</li>
+<li>客户端 把 请求方法 和 请求数据 序列化为 传输数据</li>
+<li>进行网络传输</li>
+<li>服务端 获取到 传输数据</li>
+<li>服务端 反序列化获取到 请求方法 和 请求数据</li>
+<li>服务端 获取到 UserService 的 Invoker: userServiceInvoker</li>
+<li>服务端 userServiceInvoker 调用 userServiceImpl.verifyUser(email, pwd) 获取到 响应结果</li>
+<li>服务端 把 响应结果 序列化为 传输数据</li>
+<li>进行网络传输</li>
+<li>客户端 接收到 传输数据</li>
+<li>客户端 反序列化获取到 响应结果</li>
+<li>客户端 userServiceRefer.verifyUser(email, pwd) 返回 响应结果</li>
+</ol>
+<p>整个流程中对性能影响比较大的环节有：序列化[4, 7, 10, 13]，方法调用[2, 3, 8, 9, 14]，网络传输[5, 6, 11, 12]。本文后续内容将着重介绍这3个部分。</p>
+<h1 id="序列化方案"><a href="#序列化方案" class="headerlink" title="序列化方案"></a>序列化方案</h1><p>Java 世界最常用的几款高性能序列化方案有 <a href="https://github.com/EsotericSoftware/kryo" target="_blank" rel="noopener">Kryo</a> <a href="https://github.com/protostuff/protostuff" target="_blank" rel="noopener">Protostuff</a> <a href="https://github.com/RuedigerMoeller/fast-serialization" target="_blank" rel="noopener">FST</a> <a href="https://github.com/FasterXML/jackson" target="_blank" rel="noopener">Jackson</a> <a href="https://github.com/alibaba/fastjson" target="_blank" rel="noopener">Fastjson</a>。只需要进行一次 Benchmark，然后从这5种序列化方案中选出性能最高的那个就行了。<a href="https://github.com/ngs-doo/dsl-json" target="_blank" rel="noopener">DSL-JSON</a> 使用起来过于繁琐，不在考虑之列。<a href="https://github.com/pascaldekloe/colfer" target="_blank" rel="noopener">Colfer</a> <a href="https://developers.google.com/protocol-buffers/" target="_blank" rel="noopener">Protocol</a> <a href="https://thrift.apache.org/" target="_blank" rel="noopener">Thrift</a> 因为必须预先定义描述文件，使用起来太麻烦，所以不在考虑之列。至于 Java 自带的序列化方案，早就因为性能问题被大家所抛弃，所以也不考虑。下面的表格列出了在考虑之列的5种序列化方案的性能。</p>
+<ul>
+<li><a href="https://github.com/hank-whu/rpc-benchmark/blob/master/benchmark-base/src/main/java/benchmark/bean/User.java" target="_blank" rel="noopener">User</a> 序列化+反序列化 性能</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>framework</th>
+<th>thrpt (ops/ms)</th>
+<th>size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>protostuff</td>
+<td>1654</td>
+<td>240</td>
+</tr>
+<tr>
+<td>kryo</td>
+<td>1288</td>
+<td>296</td>
+</tr>
+<tr>
+<td>fst</td>
+<td>1101</td>
+<td>263</td>
+</tr>
+<tr>
+<td>jackson</td>
+<td>959</td>
+<td>385</td>
+</tr>
+<tr>
+<td>fastjson</td>
+<td>603</td>
+<td>378</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>包含15个 <a href="https://github.com/hank-whu/rpc-benchmark/blob/master/benchmark-base/src/main/java/benchmark/bean/User.java" target="_blank" rel="noopener">User</a> 的 <a href="https://github.com/hank-whu/rpc-benchmark/blob/master/benchmark-base/src/main/java/benchmark/bean/Page.java" target="_blank" rel="noopener">Page</a> 序列化+反序列化 性能</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>framework</th>
+<th>thrpt (ops/ms)</th>
+<th>size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>kryo</td>
+<td>143</td>
+<td>2080</td>
+</tr>
+<tr>
+<td>fst</td>
+<td>118</td>
+<td>3495</td>
+</tr>
+<tr>
+<td>protostuff</td>
+<td>98</td>
+<td>3920</td>
+</tr>
+<tr>
+<td>jackson</td>
+<td>71</td>
+<td>5711</td>
+</tr>
+<tr>
+<td>fastjson</td>
+<td>40</td>
+<td>5606</td>
+</tr>
+</tbody>
+</table>
+<p>从这个 benchmark 中可以得出明确的结论：二进制协议的 protostuff kryo fst 要比文本协议的 jackson fastjson 有明显优势；文本协议中，jackson(开启了afterburner) 要比 fastjson 有明显的优势。</p>
+<p>无法确定的是：3个二进制协议到底哪个更好一些，毕竟 速度 和 size 对于 RPC 都很重要。直观上 kryo 或许是最佳选择，而且 kryo 也广受各大型系统的青睐。不过最终还是决定把这3个类库都留作备选，通过集成传输模块后的 Benchmark 来决定选用哪个。</p>
+<table>
+<thead>
+<tr>
+<th>framework</th>
+<th>exist op/ms</th>
+<th>create op/ms</th>
+<th>get op/ms</th>
+<th>list op/ms</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>proto</td>
+<td>103.92</td>
+<td>89.50</td>
+<td>83.33</td>
+<td>21.17</td>
+</tr>
+<tr>
+<td>kryo</td>
+<td>99.23</td>
+<td>76.71</td>
+<td>73.89</td>
+<td>25.68</td>
+</tr>
+<tr>
+<td>fst</td>
+<td>102.33</td>
+<td>76.24</td>
+<td>78.81</td>
+<td>23.30</td>
+</tr>
+</tbody>
+</table>
+<p>最终的结果也还是各有千秋难以抉择，所以 <a href="https://github.com/hank-whu/turbo-rpc" target="_blank" rel="noopener">Turbo</a> 保留了 protostuff 和 kryo 的实现，并允许用户自行替换为自己的实现。</p>
+<h1 id="方法调用"><a href="#方法调用" class="headerlink" title="方法调用"></a>方法调用</h1><p>可用的 动态方法调用 方案有：Reflection ClassGeneration MethodHandle。Reflection 是最古老的技术，据说性能不佳。ClassGeneration 动态类生成，从原理上说应该是跟直接调用一样的性能。MethodHandle 是从 Java 7 开始出现的技术，据说能达到跟直接调用一样的性能。实际结果如下：</p>
+<table>
+<thead>
+<tr>
+<th>type</th>
+<th>thrpt (ops/us)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>direct</td>
+<td>1062</td>
+</tr>
+<tr>
+<td>javassist</td>
+<td>920</td>
+</tr>
+<tr>
+<td>methodHandle</td>
+<td>430</td>
+</tr>
+<tr>
+<td>reflection</td>
+<td>337</td>
+</tr>
+</tbody>
+</table>
+<p>结论非常明显：使用类生成技术的 <a href="http://jboss-javassist.github.io/javassist/" target="_blank" rel="noopener">javassist</a> 跟直接调用几乎一样的性能，就用 <a href="http://jboss-javassist.github.io/javassist/" target="_blank" rel="noopener">javassist</a> 了。</p>
+<p>MethodHandle 表现并没有宣传的那么好，怎么回事？原来 MethodHandle 只有在明确知道调用 参数数量 参数类型 的情况下才能调用高性能的 invokeExact(Object… args)，所以它并不适合作为动态调用的方案。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">As is usual with virtual methods, source-level calls to invokeExact and invoke compile to an invokevirtual instruction. More unusually, the compiler must record the actual argument types, and may not perform method invocation conversions on the arguments. Instead, it must push them on the stack according to their own unconverted types. The method handle object itself is pushed on the stack before the arguments. The compiler then calls the method handle with a symbolic type descriptor which describes the argument and return types.</span><br><span class="line">refer: https://docs.oracle.com/javase/7/docs/api/java/lang/invoke/MethodHandle.html</span><br></pre></td></tr></table></figure>
+<h1 id="网络传输"><a href="#网络传输" class="headerlink" title="网络传输"></a>网络传输</h1><p><a href="https://github.com/netty/netty" target="_blank" rel="noopener">Netty</a> 已经成为事实上的标准，所有主流的项目现在使用的都是 <a href="https://github.com/netty/netty" target="_blank" rel="noopener">Netty</a>。<a href="http://mina.apache.org/" target="_blank" rel="noopener">Mina</a> <a href="https://github.com/javaee/grizzly" target="_blank" rel="noopener">Grizzly</a> 已经失去市场，所以也就不用考虑了。还好也不至于这么无聊，<a href="https://github.com/real-logic/aeron" target="_blank" rel="noopener">Aeron</a> 的闪亮登场让 Netty 多了一个有力的竞争对手。Aeron 是一个可靠高效的 UDP 单播 UDP 多播和 IPC 消息传递工具。性能是消息传递中的关键。Aeron 的设计旨在达到 高吞吐量 低开销 和 低延迟。实际效果到底如何呢？很遗憾，在 <a href="https://www.jianshu.com/p/18c95649b1a4" target="_blank" rel="noopener">RPC Benchmark Round 1</a> 中的表现一般。跟他们开发团队沟通后，最终确认其<a href="https://github.com/real-logic/aeron/issues/432" target="_blank" rel="noopener">无法对超过 64k 的消息进行 zero-copy 处理</a>，我觉得这可能是 Aeron 表现不佳的一个原因。Aeron 或许更适合 微小消息 极端低延迟 的场景，而不适用于更加通用的 RPC 场景。所以暂时还没有出现能够跟 Netty 一争高下的通用网络传输框架，现阶段 Netty 依然是 RPC 系统的最佳选择。</p>
+<ul>
+<li>existUser 判断某个 email 是否存在</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>framework</th>
+<th>thrpt (ops/ms)</th>
+<th>avgt (ms)</th>
+<th>p90 (ms)</th>
+<th>p99 (ms)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>turbo-rpc</td>
+<td>107.05</td>
+<td>0.28</td>
+<td>0.40</td>
+<td>0.87</td>
+</tr>
+<tr>
+<td>netty</td>
+<td>99.81</td>
+<td>0.32</td>
+<td>0.40</td>
+<td>0.52</td>
+</tr>
+<tr>
+<td>jupiter</td>
+<td>73.07</td>
+<td>0.44</td>
+<td>0.66</td>
+<td>1.49</td>
+</tr>
+<tr>
+<td>undertow</td>
+<td>70.38</td>
+<td>0.45</td>
+<td>1.16</td>
+<td>2.17</td>
+</tr>
+<tr>
+<td>turbo-rest</td>
+<td>68.49</td>
+<td>0.44</td>
+<td>1.17</td>
+<td>2.15</td>
+</tr>
+<tr>
+<td>undertow-async</td>
+<td>62.65</td>
+<td>0.49</td>
+<td>1.14</td>
+<td>2.41</td>
+</tr>
+<tr>
+<td>dubbo-kryo</td>
+<td>57.35</td>
+<td>0.53</td>
+<td>0.67</td>
+<td>1.02</td>
+</tr>
+<tr>
+<td>rapidoid</td>
+<td>52.96</td>
+<td>0.61</td>
+<td>1.32</td>
+<td>2.51</td>
+</tr>
+<tr>
+<td>dubbo</td>
+<td>52.12</td>
+<td>0.54</td>
+<td>0.67</td>
+<td>0.92</td>
+</tr>
+<tr>
+<td>motan</td>
+<td>44.96</td>
+<td>0.71</td>
+<td>1.15</td>
+<td>2.47</td>
+</tr>
+<tr>
+<td>aeron</td>
+<td>43.46</td>
+<td>0.90</td>
+<td>1.32</td>
+<td>5.10</td>
+</tr>
+<tr>
+<td>grpc</td>
+<td>38.97</td>
+<td>0.84</td>
+<td>1.07</td>
+<td>1.31</td>
+</tr>
+<tr>
+<td>thrift</td>
+<td>27.25</td>
+<td>1.59</td>
+<td>0.16</td>
+<td>64.87</td>
+</tr>
+<tr>
+<td>hprose</td>
+<td>26.24</td>
+<td>1.26</td>
+<td>1.53</td>
+<td>2.01</td>
+</tr>
+<tr>
+<td>springwebflux</td>
+<td>22.39</td>
+<td>1.42</td>
+<td>2.27</td>
+<td>3.19</td>
+</tr>
+<tr>
+<td>springboot</td>
+<td>12.54</td>
+<td>1.68</td>
+<td>2.38</td>
+<td>13.63</td>
+</tr>
+</tbody>
+</table>
+<h1 id="消息格式"><a href="#消息格式" class="headerlink" title="消息格式"></a>消息格式</h1><p>我们先来看一下 Dubbo 的消息格式</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public class RpcInvocation implements Invocation, Serializable &#123;</span><br><span class="line">    private String methodName;</span><br><span class="line">    private Class&lt;?&gt;[] parameterTypes;</span><br><span class="line">    private Object[] arguments;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以说是非常经典的设计，Client 必须告知 Server 要调用的 方法名称 参数类型 参数。Server 获取到这3个参数后，通过 方法名称 com.alibaba.service.auth.UserService.verifyUser 和<br>参数类型 (String, String) 获取到 Invoker，然后通过 Invoker 实际调用 userServiceImpl 的 verifyUser(String, String) 方法。其他的众多 RPC 框架也都采取了这一经典设计。</p>
+<p>但是，这是正确的做法吗？当然不是，这种做法非常浪费空间，每次请求消息体的大概内存布局应该是下面的样子：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public boolean verifyUser(String email, String pwd);</span><br><span class="line"></span><br><span class="line">|com.alibaba.service.auth.UserService.verifyUser|java.lang.String,java.lang.String|实际的参数|</span><br></pre></td></tr></table></figure>
+<p>啰里啰嗦的，浪费了 80 byte 来定义 方法 和 参数，并没有比 http+json 的方式高效多少。实际的 <a href="https://www.jianshu.com/p/18c95649b1a4" target="_blank" rel="noopener">性能测试</a> 也证明了这一点，undertow+jackson 要比 dubbo motan 的成绩都要好。</p>
+<p>那什么才是正确的做法？<a href="https://github.com/hank-whu/turbo-rpc" target="_blank" rel="noopener">Turbo</a> 在消息格式上做出了非常大的改变。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public class Request implements Serializable &#123;</span><br><span class="line">    private int requestId;</span><br><span class="line">    private int serviceId;</span><br><span class="line">    private MethodParam methodParam;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>大致的内存布局：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public boolean verifyUser(String email, String pwd);</span><br><span class="line">|int|int|实际的参数|</span><br></pre></td></tr></table></figure>
+<p>高效多了，只用了 4 byte 就做到了 方法 和 参数 的定义。大大减小了 传输数据 的 size，同时 int 类型的 serviceId 也降低了 Invoker 的查找开销。</p>
+<p>看到这里，有同学可能会问：那岂不是要为每个方法定义一个唯一 id ？<br>答案是不需要的，<a href="https://github.com/hank-whu/turbo-rpc" target="_blank" rel="noopener">Turbo</a> 解决了这一问题，详情参考 <a href="https://github.com/hank-whu/turbo-rpc/blob/master/turbo-rpc/src/main/java/rpc/turbo/common/TurboConnectService.java" target="_blank" rel="noopener">TurboConnectService</a> 。</p>
+<h1 id="MethodParam-简介"><a href="#MethodParam-简介" class="headerlink" title="MethodParam 简介"></a>MethodParam 简介</h1><p><a href="https://github.com/hank-whu/turbo-rpc/blob/master/turbo-rpc/src/main/java/rpc/turbo/param/MethodParamClassFactory.java" target="_blank" rel="noopener">MethodParam</a> 才是 <a href="https://github.com/hank-whu/turbo-rpc" target="_blank" rel="noopener">Turbo</a> 性能炸裂的真正原因。其基本原理是利用 ClassGeneration 对每个 Method 都生成一个 <a href="https://github.com/hank-whu/turbo-rpc/blob/master/turbo-rpc/src/main/java/rpc/turbo/param/MethodParamClassFactory.java" target="_blank" rel="noopener">MethodParam</a> 类，用于对方法参数的封装。这样做的好处有：</p>
+<ol>
+<li>减少基本数据类型的 装箱 拆箱 开销</li>
+<li>序列化时可以省略掉很多类型描述，大大减小 传输消息 的 size</li>
+<li>使 Invoker 可以高效调用 被代理类 的方法</li>
+<li>统一 RPC 和 REST 的数据模型，简化 序列化 反序列化 实现</li>
+<li>大大加快 json 格式数据 反序列化 速度</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//方法 test(long id, int value) 将会生成下面的 MethodParam 类:     </span><br><span class="line">public class TestService_test_2_MethodParam implements MethodParam &#123;</span><br><span class="line">    private long id;</span><br><span class="line">    private int value;</span><br><span class="line">     </span><br><span class="line">    public long $param0() &#123; return this.id; &#125;</span><br><span class="line">    public int $param1() &#123; return this.value; &#125;</span><br><span class="line"></span><br><span class="line">    //... getters and setters</span><br><span class="line">     </span><br><span class="line">    public TestService_test_2_MethodParam(long id, int value) &#123;</span><br><span class="line">        this.id = id;</span><br><span class="line">        this.value= value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="序列化的进一步优化"><a href="#序列化的进一步优化" class="headerlink" title="序列化的进一步优化"></a>序列化的进一步优化</h1><p>大部分 RPC 框架的 序列化 反序列化 过程都需要一个中间的 bytes</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">序列化过程：User &gt; bytes &gt; ByteBuf</span><br><span class="line">反序列化过程：ByteBuf &gt; bytes &gt; User</span><br></pre></td></tr></table></figure>
+<p>而 <a href="https://github.com/hank-whu/turbo-rpc" target="_blank" rel="noopener">Turbo</a> 砍掉了中间的 bytes，直接操作 ByteBuf，实现了 序列化 反序列化 的 zero-copy，大大减少了 内存分配 内存复制 的开销。具体实现请参考 <a href="https://github.com/hank-whu/turbo-rpc/blob/master/turbo-protostuff/src/main/java/rpc/turbo/serialization/protostuff/ProtostuffSerializer.java" target="_blank" rel="noopener">ProtostuffSerializer</a> 和 <a href="https://github.com/hank-whu/turbo-rpc/tree/master/turbo-rpc/src/main/java/rpc/turbo/transport/server/rpc/codec" target="_blank" rel="noopener">Codec</a>。</p>
+<p>对于已知类型和已知字段，<a href="https://github.com/hank-whu/turbo-rpc" target="_blank" rel="noopener">Turbo</a> 都尽量采用 手工序列化 手工反序列化 的方式来处理，以进一步减少性能开销。</p>
+<h1 id="ObjectPool"><a href="#ObjectPool" class="headerlink" title="ObjectPool"></a>ObjectPool</h1><p>常见的几个 ObjectPool 实现性能都很差，反而很容易成为性能瓶颈。Stormpot 性能强悍，不过存在偶尔死锁的问题，而且作者也停止维护了。HikariCP 性能不错，不过其本身是一款数据库连接池，用作 ObjectPool 并不称手。我的建议是尽量避免使用 ObjectPool，转而使用替代技术。更重要的是 Netty 的 Channel 是线程安全的，并不需要使用 ObjectPool 来管理。只需要一个简单的容器来存储 Channel，用的时候使用 负载均衡策略 选出一个 Channel 出来就行了。</p>
+<table>
+<thead>
+<tr>
+<th>framework</th>
+<th>thrpt (ops/us)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ThreadLocal</td>
+<td>685.418</td>
+</tr>
+<tr>
+<td>Stormpot</td>
+<td>272.934</td>
+</tr>
+<tr>
+<td>HikariCP</td>
+<td>139.126</td>
+</tr>
+<tr>
+<td>SegmentLock</td>
+<td>19.415</td>
+</tr>
+<tr>
+<td>Vibur</td>
+<td>4.668</td>
+</tr>
+<tr>
+<td>CommonsPool2</td>
+<td>1.107</td>
+</tr>
+<tr>
+<td>CommonsPool</td>
+<td>0.276</td>
+</tr>
+</tbody>
+</table>
+<h1 id="基础类库优化"><a href="#基础类库优化" class="headerlink" title="基础类库优化"></a>基础类库优化</h1><p>除了上述的关键流程优化，<a href="https://github.com/hank-whu/turbo-rpc" target="_blank" rel="noopener">Turbo</a> 还做了大量基础类库的优化</p>
+<ul>
+<li>AtomicMuiltInteger 多个 int 的原子性操作</li>
+<li>ConcurrentArrayList 无锁并发 List 实现，比 CopyOnWriteArrayList 的写入开销低，O(1) vs O(n)</li>
+<li>ConcurrentIntToObjectArrayMap 以 int 数组为底层实现的无锁并发 Map，读多写少情况下接近直接访问字段的性能，读多写多情况下是 ConcurrentHashMap 性能的 5x</li>
+<li>ConcurrentIntegerSequencer 快速序号生成器，并发环境下是 AtomicInteger 性能的10x</li>
+<li>ObjectId 全局唯一 id 生成器，是 Java 自带 UUID 性能的 200x</li>
+<li>HexUtils 查表 + 批量操作，是 Netty 和 Guava 实现的 2x~5x</li>
+<li>URLEncodeUtils 基于 HexUtils 实现，是 Java 和 Commons 实现的 2x，Guava 实现的 1.1x (Guava 只有 urlEncode 实现，无 urlDecode 实现)</li>
+<li>ByteBufUtils 实现了高效的 ZigZag 写入操作，最高可达通常实现的 4x</li>
+</ul>
+<p>上面的内容仅介绍了作者认为重要的东西，更多内容请直接查看 <a href="https://github.com/hank-whu/turbo-rpc/" target="_blank" rel="noopener">Turbo 源码</a></p>
+<h1 id="不足之处"><a href="#不足之处" class="headerlink" title="不足之处"></a>不足之处</h1><ul>
+<li>有很多优化是毫无价值的，Donald Knuth 大神说得很对</li>
+<li>强制必须使用 CompletableFuture 作为返回值导致了一些性能开销</li>
+<li>滥用 ClassGeneration，而且并没有考虑类的卸载，这方面需要改进</li>
+<li>实现了 <a href="https://github.com/hank-whu/turbo-rpc/blob/master/turbo-utils/src/main/java/rpc/turbo/util/UnsafeStringUtils.java" target="_blank" rel="noopener">UnsafeStringUtils</a>，这是个危险的黑魔法实现，需要重新思考下</li>
+<li>对性能的追求有点走火入魔，导致了很多地方的设计过于复杂</li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.039Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20180919/99-rpc-benchmark1.html" target="_blank" rel="external">https://ningyu1.github.io/20180919/99-rpc-benchmark1.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/rpc-benchmark/">rpc-benchmark</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180919/99-rpc-benchmark1.html&title=《如何编写高性能的 RPC 框架》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180919/99-rpc-benchmark1.html&title=《如何编写高性能的 RPC 框架》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180919/99-rpc-benchmark1.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《如何编写高性能的 RPC 框架》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180919/99-rpc-benchmark1.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180919/99-rpc-benchmark1.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20180926/100-git-centralized-workflow.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Git常用开发流程 —— 中心化的工作流</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20180918/98-rpc-benchmark.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">怎样对RPC进行有效的性能测试</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180919/99-rpc-benchmark1.html&title=《如何编写高性能的 RPC 框架》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180919/99-rpc-benchmark1.html&title=《如何编写高性能的 RPC 框架》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180919/99-rpc-benchmark1.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《如何编写高性能的 RPC 框架》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180919/99-rpc-benchmark1.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180919/99-rpc-benchmark1.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACJ0lEQVR42u3aO27DMBAFwNz/0k6bALHy3lIJIHJUuZAljorF/j4+4uv15bq+Z3Z//q+lCwMD47GM1+X17p6W+u6Z189PzoaBgXEOIwmgSZTLj57zkmCNgYGBkQfK2Z2zz4eBgYHRBty2WE1KXwwMDIy2iM3D6HWymKeYf1KLY2BgPJCRd93///efzDcwMDAexXiVVz62zJO/2Um+PQcDA2NrRh7g8rRshZ2nfRgYGKcxkuFiPqRcWfBqS9+it4eBgfFwRrvy1bbv2/bcMMXEwMDYlJEnYbM1iGtGzv7lbBgYGIcxZqPK4pXxMkfemMPAwNib0S5pzcLryvCyaMZhYGBsysjbYfkwIE/7ZsniMMPFwMB4LCNPAfN1invnFXXXEAMDY2vGbDAwK2Lz4WgR1jEwMLZmzGrftjHXDjiHOyMYGBjbMWavTIJvG6ZbzA/zDQwMjE0ZsyTsrtWuJFgXTUAMDIytGSsN+jZ9zA86GxVgYGCcwCj+EBS0ecG8lBRiYGAcwLi3Kb8yBE0+5dtPhoGBcRgjf8RKQ21lFIGBgXEmY7Yq0S5PzJLIKGHFwMDYlDFr7t/QFIvTxIiNgYGxNePedbF8UWPWvCt6hxgYGNsxZksSs1euBOKlBBEDA2MLxl1HzEvW9cEnBgYGxspr8n+1Y4liWwQDA+N4xiyktoE7fzsGBsYJjHadKy932wFn8mQMDIzTGOsJXz74nI0nk3IaAwNjU8YnbXxBzzb4qa4AAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

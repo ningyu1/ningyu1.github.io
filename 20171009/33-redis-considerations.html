@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>Redis数据结构使用以及注意事项，运维问题总结 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Redis,AOF Block,AOF,Asynchronous AOF fsync is taking too long (disk is busy?)Writing the AOF buffer without waiting for fsync to complete, this may slow down Redis">
+    <meta name="description" content="Redis数据结构使用以及注意事项，运维问题总结">
+<meta name="keywords" content="Redis,AOF Block,AOF,Asynchronous AOF fsync is taking too long (disk is busy?)Writing the AOF buffer without waiting for fsync to complete, this may slow down Redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis数据结构使用以及注意事项，运维问题总结">
+<meta property="og:url" content="https://ningyu1.github.io/20171009/33-redis-considerations.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="Redis数据结构使用以及注意事项，运维问题总结">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.033Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Redis数据结构使用以及注意事项，运维问题总结">
+<meta name="twitter:description" content="Redis数据结构使用以及注意事项，运维问题总结">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Redis数据结构使用以及注意事项，运维问题总结</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Redis数据结构使用以及注意事项，运维问题总结</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-10-09T04:00:36.000Z" itemprop="datePublished" class="page-time">
+  2017-10-09
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Redis/">Redis</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#优缺点"><span class="post-toc-number">1.</span> <span class="post-toc-text">优缺点</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Feature速览"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">Feature速览</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#八卦"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">八卦</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#数据结构"><span class="post-toc-number">2.</span> <span class="post-toc-text">数据结构</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Key"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">Key</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#String"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">String</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Hash"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">Hash</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#List"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">List</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Set"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">Set</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Sorted-Set"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">Sorted Set</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#事务"><span class="post-toc-number">2.7.</span> <span class="post-toc-text">事务</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Lua-Script"><span class="post-toc-number">2.8.</span> <span class="post-toc-text">Lua Script</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#过期数据清除"><span class="post-toc-number">2.9.</span> <span class="post-toc-text">过期数据清除</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#性能"><span class="post-toc-number">3.</span> <span class="post-toc-text">性能</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#测试结果"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">测试结果</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#为什么快"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">为什么快</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#性能调优"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">性能调优</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#容量"><span class="post-toc-number">4.</span> <span class="post-toc-text">容量</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#最大内存"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">最大内存</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#内存占用"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">内存占用</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#水平分区，Sharding"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">水平分区，Sharding</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#高可用性"><span class="post-toc-number">5.</span> <span class="post-toc-text">高可用性</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#持久化"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">持久化</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#RDB文件"><span class="post-toc-number">5.2.</span> <span class="post-toc-text">RDB文件</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#AOF文件"><span class="post-toc-number">5.3.</span> <span class="post-toc-text">AOF文件</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#读写性能"><span class="post-toc-number">5.4.</span> <span class="post-toc-text">读写性能</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#性能调整"><span class="post-toc-number">5.5.</span> <span class="post-toc-text">性能调整</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Trouble-Shooting-——-Enable-AOF可能导致整个Redis被Block住，在2-6-12版之前"><span class="post-toc-number">5.6.</span> <span class="post-toc-text">Trouble Shooting —— Enable AOF可能导致整个Redis被Block住，在2.6.12版之前</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#现象描述："><span class="post-toc-number">5.6.1.</span> <span class="post-toc-text">现象描述：</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#原因分析："><span class="post-toc-number">5.6.2.</span> <span class="post-toc-text">原因分析：</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#解决方法："><span class="post-toc-number">5.6.3.</span> <span class="post-toc-text">解决方法：</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Master-Slave复制"><span class="post-toc-number">5.7.</span> <span class="post-toc-text">Master-Slave复制</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#概述"><span class="post-toc-number">5.7.1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#slaveof执行过程，完全重用已有功能，非常经济"><span class="post-toc-number">5.7.2.</span> <span class="post-toc-text">slaveof执行过程，完全重用已有功能，非常经济</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Trouble-Shooting-again"><span class="post-toc-number">5.7.3.</span> <span class="post-toc-text">Trouble Shooting again</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Fail-Over"><span class="post-toc-number">5.8.</span> <span class="post-toc-text">Fail-Over</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#主要执行过程"><span class="post-toc-number">5.8.1.</span> <span class="post-toc-text">主要执行过程</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#master-slave-及-其他sentinel的发现"><span class="post-toc-number">5.8.2.</span> <span class="post-toc-text">master/slave 及 其他sentinel的发现</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#自定义reconfig脚本"><span class="post-toc-number">5.8.3.</span> <span class="post-toc-text">自定义reconfig脚本</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Client的高可用性"><span class="post-toc-number">5.9.</span> <span class="post-toc-text">Client的高可用性</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Geographic-Replication"><span class="post-toc-number">5.10.</span> <span class="post-toc-text">Geographic Replication</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#运维"><span class="post-toc-number">6.</span> <span class="post-toc-text">运维</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#安装"><span class="post-toc-number">6.1.</span> <span class="post-toc-text">安装</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#部署模型"><span class="post-toc-number">6.2.</span> <span class="post-toc-text">部署模型</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#配置"><span class="post-toc-number">6.3.</span> <span class="post-toc-text">配置</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#三条路"><span class="post-toc-number">6.3.1.</span> <span class="post-toc-text">三条路</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#安全保护"><span class="post-toc-number">6.3.2.</span> <span class="post-toc-text">安全保护</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#监控与维护"><span class="post-toc-number">6.4.</span> <span class="post-toc-text">监控与维护</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#监控指令"><span class="post-toc-number">6.4.1.</span> <span class="post-toc-text">监控指令</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Trouble-Shooting支持"><span class="post-toc-number">6.4.2.</span> <span class="post-toc-text">Trouble Shooting支持</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#持久化文件维护"><span class="post-toc-number">6.4.3.</span> <span class="post-toc-text">持久化文件维护</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#三方工具"><span class="post-toc-number">6.4.4.</span> <span class="post-toc-text">三方工具</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Java-Driver"><span class="post-toc-number">7.</span> <span class="post-toc-text">Java Driver</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Driver选择"><span class="post-toc-number">7.1.</span> <span class="post-toc-text">Driver选择</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Jedis的细节"><span class="post-toc-number">7.2.</span> <span class="post-toc-text">Jedis的细节</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Redis对Client端连接的处理"><span class="post-toc-number">7.3.</span> <span class="post-toc-text">Redis对Client端连接的处理</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Windows的版本"><span class="post-toc-number">8.</span> <span class="post-toc-text">Windows的版本</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#成功案例"><span class="post-toc-number">9.</span> <span class="post-toc-text">成功案例</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#In-SpringSide"><span class="post-toc-number">10.</span> <span class="post-toc-text">In SpringSide</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Jedis-Template"><span class="post-toc-number">10.1.</span> <span class="post-toc-text">Jedis Template</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Scheduler与Master-Elector"><span class="post-toc-number">10.2.</span> <span class="post-toc-text">Scheduler与Master Elector</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Showcase中的Demo"><span class="post-toc-number">10.3.</span> <span class="post-toc-text">Showcase中的Demo</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#附录"><span class="post-toc-number">11.</span> <span class="post-toc-text">附录</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#附录1：-对redis-conf默认配置的修改"><span class="post-toc-number">11.1.</span> <span class="post-toc-text">附录1： 对redis.conf默认配置的修改</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Master主机"><span class="post-toc-number">11.1.1.</span> <span class="post-toc-text">Master主机</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Slave主机"><span class="post-toc-number">11.1.2.</span> <span class="post-toc-text">Slave主机</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#附录2：版本变更历史"><span class="post-toc-number">11.2.</span> <span class="post-toc-text">附录2：版本变更历史</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#附录3：其他参考资料"><span class="post-toc-number">11.3.</span> <span class="post-toc-text">附录3：其他参考资料</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-33-redis-considerations"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Redis数据结构使用以及注意事项，运维问题总结</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-10-09 12:00:36" datetime="2017-10-09T04:00:36.000Z"  itemprop="datePublished">2017-10-09</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Redis/">Redis</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>文章转自：<a href="http://www.cnblogs.com/cnmenglang/p/6225987.html" target="_blank" rel="noopener">http://www.cnblogs.com/cnmenglang/p/6225987.html</a><br>作者：@江南白衣</p>
+<h2 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h2><p>非常非常的快，有测评说比Memcached还快(当大家都是单CPU的时候)，而且是无短板的快，读写都一般的快，所有API都差不多快，也没有MySQL Cluster、MongoDB那样更新同一条记录如Counter时慢下去的毛病。</p>
+<p>丰富的数据结构，超越了一般的Key-Value数据库而被认为是一个数据结构服务器。组合各种结构，限制Redis用途的是你自己的想象力，作者自己捉刀写的用途入门。</p>
+<p>因为是个人作品，Redis目前只有2.3万行代码，Keep it simple的死硬做法，使得普通公司而不需淘宝那个级别的文艺公司也可以吃透它。</p>
+<p>Redis宣言就是作者的自白，我最喜欢其中的”代码像首诗”，”设计是一场与复杂性的战斗”，”Coding是一件艰苦的事情，唯一的办法是享受它。如果它已不能带来快乐就停止它。为了防止这一天的出现，我们要尽量避免把Redis往乏味的路上带。</p>
+<p>让人又爱又恨的单线程架构，使得代码不用处理平时最让人头痛的并发而大幅简化，也不用老是担心作者的并发有没有写对，但也带来CPU的瓶颈，而且单线程被慢操作所阻塞时，其他请求的延时变得不确定。</p>
+<p>那Redis不是什么？</p>
+<p>Redis 不是Big Data，数据都在内存中，无法以T为单位。</p>
+<p>在Redis-Cluster发布并被稳定使用之前，Redis没有真正的平滑水平扩展能力。</p>
+<p>Redis 不支持Ad-Hoc Query，提供的只是数据结构的API，没有SQL一样的查询能力。</p>
+<h3 id="Feature速览"><a href="#Feature速览" class="headerlink" title="Feature速览"></a>Feature速览</h3><p>所有数据都在内存中。</p>
+<p>五种数据结构：String / Hash / List / Set / Ordered Set。</p>
+<p>数据过期时间支持。</p>
+<p>不完全的事务支持。</p>
+<p>服务端脚本：使用Lua Script编写，类似存储过程的作用。</p>
+<p>PubSub：捞过界的消息一对多发布订阅功能，起码Redis-Sentinel使用了它。</p>
+<p>持久化：支持定期导出内存的Snapshot 与 记录写操作日志的Append Only File两种模式。</p>
+<p>Replication：Master-Slave模式，Master可连接多个只读Slave，暂无专门的Geographic Replication支持。</p>
+<p>Fail-Over：Redis-Sentinel节点负责监控Master节点，在master失效时提升slave，独立的仲裁节点模式有效防止脑裂。</p>
+<p>Sharding：开发中的Redis-Cluser。</p>
+<p>动态配置：所有参数可用命令行动态配置不需重启，并重新写回配置文件中，对云上的大规模部署非常合适。</p>
+<h3 id="八卦"><a href="#八卦" class="headerlink" title="八卦"></a>八卦</h3><p>作者是意大利的Salvatore Sanfilippo(antirez)，又是VMWare大善人聘请了他专心写Redis。</p>
+<p>EMC与VMWare将旗下的开源产品如Redis和Spring都整合到了孙公司Pivotal公司。</p>
+<p><a href="http://blog.gopivotal.com/pivotal-people/pivotal-people-salvatore-sanfilippo-inventor-of-redis" target="_blank" rel="noopener">Pivotal做的antirez访谈录</a>，内含一切八卦，比如他的爱好是举重、跑步和品红酒。</p>
+<p>默认端口6379，是手机按键上MERZ对应的号码，意大利歌女Alessia Merz是antirez和朋友们认为愚蠢的代名词。</p>
+<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><h3 id="Key"><a href="#Key" class="headerlink" title="Key"></a>Key</h3><p>Key 不能太长，比如1024字节，但antirez也不喜欢太短如”u:1000:pwd”，要表达清楚意思才好。他私人建议用”:”分隔域，用”.”作为单词间的连接，如”comment:1234:reply.to”。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/key/keys.html" target="_blank" rel="noopener">Keys</a>，返回匹配的key，支持通配符如 “keys a*” 、 “keys a?c”，但不建议在生产环境大数据量下使用。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/key/sort.html" target="_blank" rel="noopener">Sort</a>，对集合按数字或字母顺序排序后返回或另存为list，还可以关联到外部key等。因为复杂度是最高的O(N+M*log(M))(N是集合大小，M 为返回元素的数量)，有时会安排到slave上执行。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/key/expire.html" target="_blank" rel="noopener">Expire</a>/<a href="http://redis.readthedocs.org/en/latest/key/expireat.html" target="_blank" rel="noopener">ExpireAt</a>/<a href="http://redis.readthedocs.org/en/latest/key/persist.html" target="_blank" rel="noopener">Persist</a>/<a href="http://redis.readthedocs.org/en/latest/key/ttl.html" target="_blank" rel="noopener">TTL</a>，关于Key超时的操作。默认以秒为单位，也有p字头的以毫秒为单位的版本， Redis的内部实现见2.9 过期数据清除。</p>
+<h3 id="String"><a href="#String" class="headerlink" title="String"></a>String</h3><p>最普通的key-value类型，说是String，其实是任意的byte[]，比如图片，最大512M。 所有常用命令的复杂度都是O(1)，普通的Get/Set方法，可以用来做Cache，存Session，为了简化架构甚至可以替换掉Memcached。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/string/incr.html" target="_blank" rel="noopener">Incr</a>/<a href="http://redis.readthedocs.org/en/latest/string/incrby.html" target="_blank" rel="noopener">IncrBy</a>/<a href="http://redis.readthedocs.org/en/latest/string/incrbyfloat.html" target="_blank" rel="noopener">IncrByFloat</a>/<a href="http://redis.readthedocs.org/en/latest/string/decr.html" target="_blank" rel="noopener">Decr</a>/<a href="http://redis.readthedocs.org/en/latest/string/decrby.html" target="_blank" rel="noopener">DecrBy</a>，可以用来做计数器，做自增序列。key不存在时会创建并贴心的设原值为0。IncrByFloat专门针对float，没有对应的decrByFloat版本？用负数啊。</p>
+<p>SetNx， 仅当key不存在时才Set。可以用来选举Master或做分布式锁：所有Client不断尝试使用SetNx master myName抢注Master，成功的那位不断使用Expire刷新它的过期时间。</p>
+<p>如果Master倒掉了key就会失效，剩下的节点又会发生新一轮抢夺。</p>
+<p>其他Set指令：</p>
+<p><a href="http://redis.readthedocs.org/en/latest/string/setnx.html" target="_blank" rel="noopener">SetEx</a>， Set + Expire 的简便写法，p字头版本以毫秒为单位。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/string/getset.html" target="_blank" rel="noopener">GetSet</a>， 设置新值，返回旧值。比如一个按小时计算的计数器，可以用GetSet获取计数并重置为0。这种指令在服务端做起来是举手之劳，客户端便方便很多。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/string/mget.html" target="_blank" rel="noopener">MGet</a>/<a href="http://redis.readthedocs.org/en/latest/string/mset.html" target="_blank" rel="noopener">MSet</a>/<a href="http://redis.readthedocs.org/en/latest/string/msetnx.html" target="_blank" rel="noopener">MSetNx</a>， 一次get/set多个key。</p>
+<p>2.6.12版开始，Set命令已融合了Set/SetNx/SetEx三者，SetNx与SetEx可能会被废弃，这对Master抢注非常有用，不用担心setNx成功后，来不及执行Expire就倒掉了。可惜有些懒惰的Client并没有快速支持这个新指令。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/string/getbit.html" target="_blank" rel="noopener">GetBit</a>/<a href="http://redis.readthedocs.org/en/latest/string/Setbit.html" target="_blank" rel="noopener">SetBit</a>/<a href="http://redis.readthedocs.org/en/latest/string/bitop.html" target="_blank" rel="noopener">BitOp,与或非</a>/<a href="http://redis.readthedocs.org/en/latest/string/bitcount.html" target="_blank" rel="noopener">BitCount</a>/<a href="http://blog.getspool.com/2011/11/29/fast-easy-realtime-metrics-using-redis-bitmaps/" target="_blank" rel="noopener">BitMap的玩法</a>，比如统计今天的独立访问用户数时，每个注册用户都有一个offset，他今天进来的话就把他那个位设为1，用BitCount就可以得出今天的总人树。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/string/append.html" target="_blank" rel="noopener">Append</a>/<a href="http://redis.readthedocs.org/en/latest/string/setrange.html" target="_blank" rel="noopener">SetRange</a>/<a href="http://redis.readthedocs.org/en/latest/string/getrange.html" target="_blank" rel="noopener">GetRange</a>/<a href="http://redis.readthedocs.org/en/latest/string/strlen.html" target="_blank" rel="noopener">StrLen</a>，对文本进行扩展、替换、截取和求长度，只对特定数据格式如字段定长的有用，json就没什么用。</p>
+<h3 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h3><p>Key-HashMap结构，相比String类型将这整个对象持久化成JSON格式，Hash将对象的各个属性存入Map里，可以只读取/更新对象的某些属性。</p>
+<p>这样有些属性超长就让它一边呆着不动，另外不同的模块可以只更新自己关心的属性而不会互相并发覆盖冲突。</p>
+<p>另一个用法是土法建索引。比如User对象，除了id有时还要按name来查询。</p>
+<p>可以有如下的数据记录:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(String) user:101 -&gt; &#123;&quot;id&quot;:101,&quot;name&quot;:&quot;calvin&quot;...&#125;</span><br><span class="line">(String) user:102 -&gt; &#123;&quot;id&quot;:102,&quot;name&quot;:&quot;kevin&quot;...&#125;</span><br><span class="line">(Hash) user:index-&gt; &quot;calvin&quot;-&gt;101, &quot;kevin&quot; -&gt; 102</span><br></pre></td></tr></table></figure>
+<p>底层实现是<a href="http://www.redisbook.com/en/latest/internal-datastruct/dict.html" target="_blank" rel="noopener">hash table</a>，一般操作复杂度是O(1)，要同时操作多个field时就是O(N)，N是field的数量。</p>
+<h3 id="List"><a href="#List" class="headerlink" title="List"></a>List</h3><p>List是一个<a href="http://www.redisbook.com/en/latest/internal-datastruct/adlist.html" target="_blank" rel="noopener">双向链表</a>，支持双向的Pop/Push，江湖规矩一般从左端Push，右端Pop——<a href="http://redis.readthedocs.org/en/latest/list/lpush.html" target="_blank" rel="noopener">LPush</a>/<a href="http://redis.readthedocs.org/en/latest/list/rpop.html" target="_blank" rel="noopener">RPop</a>，而且还有Blocking的版本<a href="http://redis.readthedocs.org/en/latest/list/blpop.html" target="_blank" rel="noopener">BLPop</a>/<a href="http://redis.readthedocs.org/en/latest/list/brpop.html" target="_blank" rel="noopener">BRPop</a>，客户端可以阻塞在那直到有消息到来，所有操作都是O(1)的好孩子，可以当Message Queue来用。</p>
+<p>当多个Client并发阻塞等待，有消息入列时谁先被阻塞谁先被服务。任务队列系统<a href="http://github.com/defunkt/resque" target="_blank" rel="noopener">Resque</a>是其典型应用。</p>
+<p>还有<a href="http://redis.readthedocs.org/en/latest/list/rpoplpush.html" target="_blank" rel="noopener">RPopLPush</a>/ <a href="http://redis.readthedocs.org/en/latest/list/brpoplpush" target="_blank" rel="noopener">BRPopLPush</a>，弹出来返回给client的同时，把自己又推入另一个list，<a href="http://redis.readthedocs.org/en/latest/list/llen.html" target="_blank" rel="noopener">LLen</a>获取列表的长度。</p>
+<p>还有按值进行的操作：LRem(按值删除元素)、LInsert(插在某个值的元素的前后)，复杂度是O(N)，N是List长度，因为List的值不唯一，所以要遍历全部元素，而Set只要O(log(N))。</p>
+<p>按下标进行的操作：下标从0开始，队列从左到右算，下标为负数时则从右到左。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/list/lset.html" target="_blank" rel="noopener">LSet</a> ，按下标设置元素值。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/list/lindex.html" target="_blank" rel="noopener">LIndex</a>，按下标返回元素。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/list/lrange.html" target="_blank" rel="noopener">LRange</a>，不同于POP直接弹走元素，只是返回列表内一段下标的元素，是分页的最爱。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/list/ltrim.html" target="_blank" rel="noopener">LTrim</a>，限制List的大小，比如只保留最新的20条消息。</p>
+<p>复杂度也是O(N)，其中LSet的N是List长度，LIndex的N是下标的值，LRange的N是start的值+列出元素的个数，因为是链表而不是数组，所以按下标访问其实要遍历链表，除非下标正好是队头和队尾。LTrim的N是移除元素的个数。</p>
+<p>在消息队列中，并没有JMS的ack机制，如果消费者把job给Pop走了又没处理完就死机了怎么办？</p>
+<p>解决方法之一是加多一个sorted set，分发的时候同时发到list与sorted set，以分发时间为score，用户把job做完了之后要用ZREM消掉sorted set里的job，并且定时从sorted set中取出超时没有完成的任务，重新放回list。</p>
+<p>另一个做法是为每个worker多加一个的list，弹出任务时改用RPopLPush，将job同时放到worker自己的list中，完成时用LREM消掉。</p>
+<p>如果集群管理(如zookeeper)发现worker已经挂掉，就将worker的list内容重新放回主list。</p>
+<h3 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h3><p>Set就是Set，可以将重复的元素随便放入而Set会自动去重，底层实现也是<a href="http://www.redisbook.com/en/latest/internal-datastruct/dict.html" target="_blank" rel="noopener">hash table</a>。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/set/sadd.html" target="_blank" rel="noopener">SAdd</a>/<a href="http://redis.readthedocs.org/en/latest/set/srem.html" target="_blank" rel="noopener">SRem</a>/<a href="http://redis.readthedocs.org/en/latest/set/sismember.html" target="_blank" rel="noopener">SISMember</a>/<a href="http://redis.readthedocs.org/en/latest/set/scard.html" target="_blank" rel="noopener">SCard</a>/<a href="http://redis.readthedocs.org/en/latest/set/smove.html" target="_blank" rel="noopener">SMove</a>/<a href="http://redis.readthedocs.org/en/latest/set/smembers.html" target="_blank" rel="noopener">SMembers</a>，各种标准操作。除了SMembers都是O(1)。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/set/sinter.html" target="_blank" rel="noopener">SInter</a>/<a href="http://redis.readthedocs.org/en/latest/set/sinterstore.html" target="_blank" rel="noopener">SInterStore</a>/<a href="http://redis.readthedocs.org/en/latest/set/sunion.html" target="_blank" rel="noopener">SUnion</a>/<a href="http://redis.readthedocs.org/en/latest/set/sunionstore.html" target="_blank" rel="noopener">SUnionStore</a>/<a href="http://redis.readthedocs.org/en/latest/set/sdiff.html" target="_blank" rel="noopener">SDiff</a>/<a href="http://redis.readthedocs.org/en/latest/set/sdiffstore.html" target="_blank" rel="noopener">SDiffStore</a>，各种集合操作。交集运算可以用来显示在线好友(在线用户 交集 好友列表)，共同关注(两个用户的关注列表的交集)。</p>
+<p>O(N)，并集和差集的N是集合大小之和，交集的N是小的那个集合的大小*2。</p>
+<h3 id="Sorted-Set"><a href="#Sorted-Set" class="headerlink" title="Sorted Set"></a>Sorted Set</h3><p>有序集，元素放入集合时还要提供该元素的分数。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/sorted_set/zrange.html" target="_blank" rel="noopener">ZRange</a>/<a href="http://redis.readthedocs.org/en/latest/sorted_set/zrevrange.html" target="_blank" rel="noopener">ZRevRange</a>，按排名的上下限返回元素，正数与倒数。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/sorted_set/zrangebyscore.html" target="_blank" rel="noopener">ZRangeByScore</a>/<a href="http://redis.readthedocs.org/en/latest/sorted_set/zrevrangebyscore.html" target="_blank" rel="noopener">ZRevRangeByScore</a>，按分数的上下限返回元素，正数与倒数。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/sorted_set/zremrangebyrank.html" target="_blank" rel="noopener">ZRemRangeByRank</a>/<a href="http://redis.readthedocs.org/en/latest/sorted_set/zremrangebyscore.html" target="_blank" rel="noopener">ZRemRangeByScore</a>，按排名/按分数的上下限删除元素。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/sorted_set/zcount.html" target="_blank" rel="noopener">ZCount</a>，统计分数上下限之间的元素个数。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/sorted_set/zrank.html" target="_blank" rel="noopener">ZRank</a>/<a href="http://redis.readthedocs.org/en/latest/sorted_set/zrevrank.html" target="_blank" rel="noopener">ZRevRank</a> ，显示某个元素的正倒序的排名。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/sorted_set/zscore.html" target="_blank" rel="noopener">ZScore</a>/<a href="http://redis.readthedocs.org/en/latest/sorted_set/zincrby.html" target="_blank" rel="noopener">ZIncrby</a>，显示元素的分数/增加元素的分数。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/sorted_set/zadd.html" target="_blank" rel="noopener">ZAdd</a>(Add)/<a href="http://redis.readthedocs.org/en/latest/sorted_set/zrem.html" target="_blank" rel="noopener">ZRem</a>(Remove)/<a href="http://redis.readthedocs.org/en/latest/sorted_set/zcard.html" target="_blank" rel="noopener">ZCard</a>(Count)，<a href="http://redis.readthedocs.org/en/latest/sorted_set/zinterstore.html" target="_blank" rel="noopener">ZInsertStore</a>(交集)/<a href="http://redis.readthedocs.org/en/latest/sorted_set/zunionstore.html" target="_blank" rel="noopener">ZUnionStore</a>(并集)，Set操作，与正牌Set相比，少了IsMember和差集运算。</p>
+<p>Sorted Set的实现是hash table(element-&gt;score, 用于实现ZScore及判断element是否在集合内)，和skip list(score-&gt;element,按score排序)的混合体。</p>
+<p><a href="http://www.redisbook.com/en/latest/internal-datastruct/skiplist.html" target="_blank" rel="noopener">skip list</a>有点像平衡二叉树那样，不同范围的score被分成一层一层，每层是一个按score排序的链表。</p>
+<p>ZAdd/ZRem是O(log(N))，ZRangeByScore/ZRemRangeByScore是O(log(N)+M)，N是Set大小，M是结果/操作元素的个数。</p>
+<p>可见，原本可能很大的N被很关键的Log了一下，1000万大小的Set，复杂度也只是几十不到。</p>
+<p>当然，如果一次命中很多元素M很大那谁也没办法了。</p>
+<h3 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h3><p>用<a href="http://redis.readthedocs.org/en/latest/transaction/multi.html" target="_blank" rel="noopener">Multi</a>(Start Transaction)、<a href="http://redis.readthedocs.org/en/latest/transaction/exec.html" target="_blank" rel="noopener">Exec</a>(Commit)、<a href="http://redis.readthedocs.org/en/latest/transaction/discard.html" target="_blank" rel="noopener">Discard</a>(Rollback)实现。</p>
+<p>在事务提交前，不会执行任何指令，只会把它们存到一个队列里，不影响其他客户端的操作。在事务提交时，批量执行所有指令。<a href="http://www.redisbook.com/en/latest/feature/transaction.html" target="_blank" rel="noopener">《Redis设计与实现》</a>中的详述。</p>
+<p>注意，Redis里的事务，与我们平时的事务概念很不一样：</p>
+<p>它仅仅是保证事务里的操作会被连续独占的执行。因为是单线程架构，在执行完事务内所有指令前是不可能再去同时执行其他客户端的请求的。</p>
+<p>它没有隔离级别的概念，因为事务提交前任何指令都不会被实际执行，也就不存在”事务内的查询要看到事务里的更新，在事务外查询不能看到”这个让人万分头痛的问题。</p>
+<p>它不保证原子性——所有指令同时成功或同时失败，只有决定是否开始执行全部指令的能力，没有执行到一半进行回滚的能力。</p>
+<p>在redis里失败分两种，一种是明显的指令错误，比如指令名拼错，指令参数个数不对，在2.6版中全部指令都不会执行。</p>
+<p>另一种是隐含的，比如在事务里，第一句是SET foo bar， 第二句是LLEN foo，对第一句产生的String类型的key执行LLEN会失败，但这种错误只有在指令运行后才能发现，这时候第一句成功，第二句失败。</p>
+<p>还有，如果事务执行到一半redis被KILL，已经执行的指令同样也不会被回滚。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/transaction/watch.html" target="_blank" rel="noopener">Watch</a>指令，类似乐观锁，事务提交时，如果Key的值已被别的客户端改变，比如某个list已被别的客户端push/pop过了，整个事务队列都不会被执行。</p>
+<h3 id="Lua-Script"><a href="#Lua-Script" class="headerlink" title="Lua Script"></a>Lua Script</h3><p>Redis2.6内置的<a href="http://redis.readthedocs.org/en/latest/script/eval.html" target="_blank" rel="noopener">Lua Script</a>支持，可以在Redis的Server端一次过运行大量逻辑，就像存储过程一样，避免了海量中间数据在网路上的传输。</p>
+<p><a href="http://www.lua.org/" target="_blank" rel="noopener">Lua</a>自称是在Script语言里关于快的标准，Redis选择了它而不是流行的JavaScript。</p>
+<p>因为Redis的单线程架构，整个Script默认是在一个事务里的。</p>
+<p>Script里涉及的所有Key尽量用变量，从外面传入，使Redis一开始就知道你要改变哪些key，为了日后做水平分区做准备。如果涉及的key在不同服务器……</p>
+<p>Eval每次传输一整段Script比较费带宽，可以先用<a href="http://redis.readthedocs.org/en/latest/script/script_load.html" target="_blank" rel="noopener">Script Load</a>载入script，返回哈希值。然后用<a href="http://redis.readthedocs.org/en/latest/script/evalsha.html" target="_blank" rel="noopener">EvalHash</a>执行。因为就是SHA-1，所以任何时候执行返回的哈希值都是一样的。</p>
+<p>内置的Lua库里还很贴心的带了CJSON，可以处理json字符串。</p>
+<p>Script一旦执行则不容易中断，中断了也会有不可知后果，因此最好在开发环境充分测试了再上线。</p>
+<p>一段用Redis做Timer的示例代码，下面的script被定期调用，从以触发时间为score的sorted set中取出已到期的Job，放到list中给Client们blocking popup。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-- KEYS: [1]job:sleeping, [2]job:ready</span><br><span class="line">-- ARGS: [1]currentTime</span><br><span class="line">-- Comments: result is the  job id</span><br><span class="line">local jobs=redis.call(&apos;zrangebyscore&apos;, KEYS[1], &apos;-inf&apos;, ARGV[1])</span><br><span class="line">local count = table.maxn(jobs)</span><br><span class="line"></span><br><span class="line">if count&gt;0  then</span><br><span class="line">  -- Comments: remove from Sleeping Job sorted set</span><br><span class="line">  redis.call(&apos;zremrangebyscore&apos;, KEYS[1], &apos;-inf&apos;, ARGV[1])</span><br><span class="line">  </span><br><span class="line">  -- Comments: add to the Ready Job list</span><br><span class="line">  -- Comments: can optimize to use lpush id1,id2,... for better performance</span><br><span class="line">  for i=1,count do </span><br><span class="line">    redis.call(&apos;lpush&apos;, KEYS[2], jobs[i])</span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<h3 id="过期数据清除"><a href="#过期数据清除" class="headerlink" title="过期数据清除"></a>过期数据清除</h3><p><a href="http://redis.io/commands/expire" target="_blank" rel="noopener">官方文档</a> 与 <a href="http://www.redisbook.com/en/latest/internal/db.html#id15" target="_blank" rel="noopener">《Redis设计与实现》</a>中的详述，过期数据的清除从来不容易，为每一条key设置一个timer，到点立刻删除的消耗太大，每秒遍历所有数据消耗也大，Redis使用了一种相对务实的做法：</p>
+<p>当client主动访问key会先对key进行超时判断，过时的key会立刻删除。</p>
+<p>如果clien永远都不再get那条key呢？ 它会在Master的后台，每秒10次的执行如下操作： 随机选取100个key校验是否过期，如果有25个以上的key过期了，立刻额外随机选取下100个key(不计算在10次之内)。</p>
+<p>可见，如果过期的key不多，它最多每秒回收200条左右，如果有超过25%的key过期了，它就会做得更多，但只要key不被主动get，它占用的内存什么时候最终被清理掉只有天知道。</p>
+<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><h3 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h3><p>测试环境： RHEL 6.3 / HP Gen8 Server/ 2 * Intel Xeon 2.00GHz(6 core) / 64G DDR3 memory / 300G RAID-1 SATA / 1 master(writ AOF), 1 slave(write AOF &amp; RDB)</p>
+<p>数据准备： 预加载两千万条数据，占用10G内存。</p>
+<p>测试工具：自带的redis-benchmark，默认只是基于一个很小的数据集进行测试，调整命令行参数如下，就可以开100条线程(默认50)，SET 1千万次(key在0-1千万间随机)，key长21字节，value长256字节的数据。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">redis-benchmark -t SET -c 100 -n 10000000 -r 10000000 -d 256</span><br></pre></td></tr></table></figure>
+<p>测试结果(TPS)： 1.SET：4.5万， 2.GET：6万 ，3.INCR：6万，4.真实混合场景: 2.5万SET &amp; 3万GET</p>
+<p>单条客户端线程时6千TPS，50与100条客户端线程差别不大，200条时会略多。</p>
+<p>Get/Set操作，经过了LAN，延时也只有1毫秒左右，可以反复放心调用，不用像调用REST接口和访问数据库那样，每多一次外部访问都心痛。</p>
+<p>资源监控:</p>
+<ol>
+<li>CPU: 占了一个处理器的100%，总CPU是4%(因为总共有2CPU<em>6核</em>超线程 = 24个处理器)，可见单线程下单处理器的能力是瓶颈。 AOF rewrite时另一个处理器占用50-70%。</li>
+<li>网卡：15-20 MB/s receive, 3Mb/s send(no slave) or 15-20 MB/s send (with slave) 。当把value长度加到4K时，receive 99MB/s，已经到达千兆网卡的瓶颈，TPS降到2万。</li>
+<li>硬盘：15MB/s(AOF append), 100MB/s(AOF rewrite/AOF load，普通硬盘的瓶颈)</li>
+</ol>
+<h3 id="为什么快"><a href="#为什么快" class="headerlink" title="为什么快"></a>为什么快</h3><p>纯ANSI C编写。</p>
+<p>不依赖第三方类库，没有像memcached那样使用libevent，因为libevent迎合通用性而造成代码庞大，所以作者用libevent中两个文件修改实现了自己的epoll event loop。微软的兼容Windows补丁也因为同样原因被拒了。</p>
+<p>快，原因之一是Redis多样的数据结构，每种结构只做自己爱做的事，当然比数据库只有Table，MongogoDB只有JSON一种结构快了。</p>
+<p>可惜单线程架构，虽然作者认为CPU不是瓶颈，内存与网络带宽才是。但实际测试时并非如此，见上。</p>
+<h3 id="性能调优"><a href="#性能调优" class="headerlink" title="性能调优"></a>性能调优</h3><p><a href="http://www.redis.io/topics/latency" target="_blank" rel="noopener">官方文档关于各种产生Latency的原因的详细分析, 中文版</a></p>
+<p>正视网络往返时间：</p>
+<p>1.MSet/LPush/ZAdd等都支持一次输入多个Key。</p>
+<p>2.<a href="http://www.redis.io/topics/pipelining" target="_blank" rel="noopener">PipeLining</a>模式 可以一次输入多个指令。</p>
+<p>3.更快的是Lua Script模式，还可以包含逻辑，直接在服务端又get又set的，见2.8 Lua Script。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/server/slowlog.html" target="_blank" rel="noopener">发现执行缓慢的命令</a>，可配置执行超过多少时间的指令算是缓慢指令(默认10毫秒，不含IO时间)，可以用slowlog get 指令查看(默认只保留最后的128条)。</p>
+<p>单线程的模型下，一个请求占掉10毫秒是件大事情，注意设置和显示的单位为微秒。</p>
+<p>CPU永远是瓶颈，但top看到单个CPU 100%时，就是垂直扩展的时候了。</p>
+<p>持久化对性能的影响很大，见5.1持久化。</p>
+<p>要熟悉各指令的复杂度，不过只要不是O(N)一个超大集合，都不用太担心。</p>
+<h2 id="容量"><a href="#容量" class="headerlink" title="容量"></a>容量</h2><h3 id="最大内存"><a href="#最大内存" class="headerlink" title="最大内存"></a>最大内存</h3><p>所有的数据都必须在内存中，原来2.0版的VM策略(将Value放到磁盘，Key仍然放在内存)，2.4版后嫌麻烦又不支持了。</p>
+<p>一定要设置最大内存，否则物理内存用爆了就会大量使用Swap，写RDB文件时的速度慢得你想死。</p>
+<p>多留一倍内存是最安全的。重写AOF文件和RDB文件的进程(即使不做持久化，复制到Slave的时候也要写RDB)会fork出一条新进程来，采用了操作系统的Copy-On-Write策略(子进程与父进程共享Page。</p>
+<p>如果父进程的Page-每页4K有修改，父进程自己创建那个Page的副本，不会影响到子进程，父爱如山)。留意Console打出来的报告，如”RDB: 1215 MB of memory used by copy-on-write”。</p>
+<p>在系统极度繁忙时，如果父进程的所有Page在子进程写RDB过程中都被修改过了，就需要两倍内存。</p>
+<p>按照Redis启动时的提醒，设置 vm.overcommit_memory = 1 ，使得fork()一条10G的进程时，因为COW策略而不一定需要有10G的free memory。</p>
+<p>其他需要考虑的内存包括：</p>
+<p>1.AOF rewrite过程中对新写入命令的缓存(rewrite结束后会merge到新的aof文件)，留意”Background AOF buffer size: 80 MB”的字样。</p>
+<p>2.负责与Slave同步的Client的缓存，默认设置master需要为每个slave预留不高于256M的缓存(见5.1持久化)。</p>
+<p>当最大内存到达时，按照配置的Policy进行处理， 默认策略为volatile-lru，对设置了expire time的key进行LRU清除(不是按实际expire time)。</p>
+<p>如果沒有数据设置了expire time或者policy为noeviction，则直接报错，但此时系统仍支持get之类的读操作。</p>
+<p>另外还有几种policy，比如volatile-ttl按最接近expire time的，allkeys-lru对所有key都做LRU。</p>
+<h3 id="内存占用"><a href="#内存占用" class="headerlink" title="内存占用"></a>内存占用</h3><p>测试表明，string类型需要90字节的额外代价，就是说key 1个字节，value 1个字节时，还是需要占用92字节的长度，而上面的benchmark的记录就占用了367个字节。</p>
+<p>其他类型可根据文档自行计算或实际测试一下。</p>
+<p>使用jemalloc分配内存，删除数据后，内存并不会乖乖还给操作系统而是被Redis截留下来重用到新的数据上，直到Redis重启。</p>
+<p>因此进程实际占用内存是看INFO里返回的used_memory_peak_human。</p>
+<p>Redis内部用了<a href="http://www.redisbook.com/en/latest/compress-datastruct/ziplist.html" target="_blank" rel="noopener">ziplist</a>/<a href="http://www.redisbook.com/en/latest/compress-datastruct/intset.html" target="_blank" rel="noopener">intset</a>这样的压缩结构来减少hash/list/set/zset的存储，默认当集合的元素少于512个且最长那个值不超过64字节时使用，可配置。</p>
+<p>用make 32bit可以编译出32位的版本，每个指针占用的内存更小，但只支持最大4GB内存。</p>
+<h3 id="水平分区，Sharding"><a href="#水平分区，Sharding" class="headerlink" title="水平分区，Sharding"></a>水平分区，Sharding</h3><p>其实，大内存加上垂直分区也够了，不一定非要沙丁一把。</p>
+<p>Jedis支持在客户端做分区，局限是不能动态re-sharding， 有分区的master倒了，不能减少分区必须用slave顶上。要增加分区的话，呃…..</p>
+<p>antire在博客里提到了<a href="http://www.antirez.com/news/44" target="_blank" rel="noopener">Twemproxy</a>，一个Twitter写的Proxy，但它在发现节点倒掉后，只会重新计算一致性哈希环，把数据存到别的master去，而不是集成Sentinel指向新由slave升级的master，像Memcached一样的做法也只适合做Cache的场景。</p>
+<p>Redis-Cluster是今年工作重点，支持automatic re-sharding， 采用和Hazelcast类似的算法，总共有N个分区(eg.N=1024)，每台Server负责若干个分区。</p>
+<p>在客户端先hash出key 属于哪个分区，随便发给一台server，server会告诉它真正哪个Server负责这个分区，缓存下来，下次还有该分区的请求就直接发到地儿了。</p>
+<p>Re-sharding时，会将某些分区的数据移到新的Server上，完成后各Server周知分区<->Server映射的变化，因为分区数量有限，所以通讯量不大。</-></p>
+<p>在迁移过程中，客户端缓存的依然是旧的分区映射信息，原server对于已经迁移走的数据的get请求，会返回一个临时转向的应答，客户端先不会更新Cache。</p>
+<p>等迁移完成了，就会像前面那样返回一条永久转向信息，客户端更新Cache，以后就都去新server了。</p>
+<h2 id="高可用性"><a href="#高可用性" class="headerlink" title="高可用性"></a>高可用性</h2><p>高可用性关乎系统出错时到底会丢失多少数据，多久不能服务。要综合考虑持久化，Master-Slave复制及Fail-Over配置，以及具体Crash情形，比如Master死了，但Slave没死。或者只是Redis死了，操作系统没死等等。</p>
+<h3 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h3><p>综述： <a href="http://blog.nosqlfan.com/html/3813.html" target="_blank" rel="noopener">解密Redis持久化(中文概括版)</a>, <a href="http://redis.io/topics/persistence" target="_blank" rel="noopener">英文原版</a>，《Redis设计与实现》： <a href="http://www.redisbook.com/en/latest/internal/rdb.html" target="_blank" rel="noopener">RDB</a> 与 <a href="http://www.redisbook.com/en/latest/internal/aof.html" target="_blank" rel="noopener">AOF</a>。</p>
+<p>很多人开始会想象两者是互相结合的，即dump出一个snapshot到RDB文件，然后在此基础上记录变化日志到AOF文件。</p>
+<p>实际上两者毫无关系，完全独立运行，因为作者认为简单才不会出错。如果使用了AOF，重启时只会从AOF文件载入数据，不会再管RDB文件。</p>
+<p>正确关闭服务器：redis-cli shutdown 或者 kill，都会graceful shutdown，保证写RDB文件以及将AOF文件fsync到磁盘，不会丢失数据。</p>
+<p>如果是粗暴的Ctrl+C，或者kill -9 就可能丢失。</p>
+<h3 id="RDB文件"><a href="#RDB文件" class="headerlink" title="RDB文件"></a>RDB文件</h3><p>RDB是整个内存的压缩过的Snapshot，<a href="http://blog.nosqlfan.com/html/3734.html" target="_blank" rel="noopener">RDB的数据结构</a>，可以配置复合的快照触发条件，默认是1分钟内改了1万次，或5分钟内改了10次，或15分钟内改了1次。</p>
+<p>RDB写入时，会连内存一起Fork出一个新进程，遍历新进程内存中的数据写文件，这样就解决了些Snapshot过程中又有新的写入请求进来的问题。 Fork的细节见4.1最大内存。</p>
+<p>RDB会先写到临时文件，完了再Rename成，这样外部程序对RDB文件的备份和传输过程是安全的。而且即使写新快照的过程中Server被强制关掉了，旧的RDB文件还在。</p>
+<p>可配置是否进行压缩，压缩方法是字符串的LZF算法，以及将string形式的数字变回int形式存储。</p>
+<p>动态所有停止RDB保存规则的方法：redis-cli config set save “”</p>
+<h3 id="AOF文件"><a href="#AOF文件" class="headerlink" title="AOF文件"></a>AOF文件</h3><p>操作日志，记录所有有效的写操作，等于mysql的binlog，格式就是明文的<a href="http://redis.io/topics/protocol" target="_blank" rel="noopener">Redis协议</a>的纯文本文件。</p>
+<p>一般配置成每秒调用一次fdatasync将kernel的文件缓存刷到磁盘。当操作系统非正常关机时，文件可能会丢失不超过2秒的数据(更严谨的定义见后)。 如果设为fsync always，性能只剩几百TPS，不用考虑。</p>
+<p>如果设为no，靠操作系统自己的sync，Linux系统一般30秒一次。</p>
+<p>AOF文件持续增长而过大时，会fork出一条新进程来将文件重写(也是先写临时文件，最后再rename，)， 遍历新进程的内存中数据，每条记录有一条的Set语句。</p>
+<p>默认配置是当AOF文件大小是上次rewrite后大小的一倍，且文件大于64M时触发。</p>
+<p><a href="http://redis.io/topics/protocol" target="_blank" rel="noopener">Redis协议</a>，如set mykey hello，将持久化成*3 $3 set $5 mykey $5 hello， 第一个数字代表这条语句有多少元，其他的数字代表后面字符串的长度。</p>
+<p>这样的设计，使得即使在写文件过程中突然关机导致文件不完整，也能自我修复，执行redis-check-aof即可。</p>
+<p>综上所述，RDB的数据不实时，同时使用两者时服务器重启也只会找AOF文件。</p>
+<p>那要不要只使用AOF呢？作者建议不要，因为RDB更适合用于备份数据库(AOF在不断变化不好备份)，快速重启，而且不会有AOF可能潜在的bug，留着作为一个万一的手段。</p>
+<h3 id="读写性能"><a href="#读写性能" class="headerlink" title="读写性能"></a>读写性能</h3><p>AOF重写和RDB写入都是在fork出新进程后，遍历新进程的内存顺序写的，既不阻塞主进程继续处理客户端请求，顺序写的速度也比随机写快。</p>
+<p>测试把刚才benchmark的11G数据写成一个1.3的RDB文件，或者等大的AOF文件rewrite，需要80秒，在redis-cli info中可查看。启动时载入一个AOF或RDB文件的速度与上面写入时相同，在log中可查看。</p>
+<p>Fork一个使用了大量内存的进程也要时间，大约10ms per GB的样子，但Xen在EC2上是让人郁闷的239ms (KVM和VMWare貌似没有这个毛病)，<a href="http://blog.nosqlfan.com/html/3903.html" target="_blank" rel="noopener">各种系统的对比</a>，Info指令里的latest_fork_usec显示上次花费的时间。</p>
+<p>在bgrewriteaof过程中，所有新来的写入请求依然会被写入旧的AOF文件，同时放到buffer中，当rewrite完成后，会在主线程把这部分内容合并到临时文件中之后才rename成新的AOF文件。</p>
+<p>所以rewrite过程中会不断打印”Background AOF buffer size: 80 MB， Background AOF buffer size: 180 MB”，计算系统容量时要留意这部分的内存消耗。</p>
+<p>注意，这个合并的过程是阻塞的，如果你产生了280MB的buffer，在100MB/s的传统硬盘上，Redis就要阻塞2.8秒！！！</p>
+<p>NFS或者Amazon上的EBS都不推荐，因为它们也要消耗带宽。</p>
+<p>bgsave和bgaofrewrite不会被同时执行，如果bgsave正在执行，bgaofrewrite会自动延后。</p>
+<p>2.4版以后，写入AOF时的fdatasync由另一条线程来执行，不会再阻塞主线程。</p>
+<p>2.4版以后，lpush/zadd可以输入一次多个值了，使得AOF重写时可以将旧版本中的多个lpush/zadd指令合成一个，每64个key串一串。</p>
+<h3 id="性能调整"><a href="#性能调整" class="headerlink" title="性能调整"></a>性能调整</h3><p>因为RDB文件只用作后备用途，建议只在Slave上持久化RDB文件，而且只要15分钟备份一次就够了，只保留save 900 1这条规则。</p>
+<p>如果Enalbe AOF，好处是在最恶劣情况下也只会丢失不超过两秒数据，启动脚本较简单只load自己的AOF文件就可以了。</p>
+<p>代价一是带来了持续的IO，二是AOF rewrite的最后将rewrite过程中产生的新数据写到新文件造成的阻塞几乎是不可避免的。</p>
+<p>只要硬盘许可，应该尽量减少AOF rewrite的频率，AOF重写的基础大小默认值64M太小了，可以设到5G以上。</p>
+<p>默认超过原大小100%大小时重写可以改到适当的数值，比如之前的benchmark每个小时会产生40G大小的AOF文件，如果硬盘能撑到半夜系统闲时才用cron调度bgaofrewrite就好了。</p>
+<p>如果不Enable AOF，仅靠Master-Slave Replication 实现高可用性也可以。能省掉一大笔IO也减少了rewrite时带来的系统波动。</p>
+<p>代价是如果Master/Slave同时倒掉，会丢失十几分钟的数据，启动脚本也要比较两个Master/Slave中的RDB文件，载入较新的那个。新浪微博就选用了这种架构，<a href="http://timyang.net/data/redis-misunderstanding/" target="_blank" rel="noopener">见Tim的博客</a></p>
+<h3 id="Trouble-Shooting-——-Enable-AOF可能导致整个Redis被Block住，在2-6-12版之前"><a href="#Trouble-Shooting-——-Enable-AOF可能导致整个Redis被Block住，在2-6-12版之前" class="headerlink" title="Trouble Shooting —— Enable AOF可能导致整个Redis被Block住，在2.6.12版之前"></a>Trouble Shooting —— Enable AOF可能导致整个Redis被Block住，在2.6.12版之前</h3><h4 id="现象描述："><a href="#现象描述：" class="headerlink" title="现象描述："></a>现象描述：</h4><p>当AOF rewrite 15G大小的内存时，Redis整个死掉的样子，所有指令甚至包括slave发到master的ping，redis-cli info都不能被执行。</p>
+<h4 id="原因分析："><a href="#原因分析：" class="headerlink" title="原因分析："></a>原因分析：</h4><p><a href="http://www.redis.io/topics/latency" target="_blank" rel="noopener">官方文档，由IO产生的Latency详细分析</a>, 已经预言了悲剧的发生，但一开始没留意。</p>
+<p>Redis为求简单，采用了单请求处理线程结构。</p>
+<p>打开AOF持久化功能后， Redis处理完每个事件后会调用write(2)将变化写入kernel的buffer，如果此时write(2)被阻塞，Redis就不能处理下一个事件。</p>
+<p>Linux规定执行write(2)时，如果对同一个文件正在执行fdatasync(2)将kernel buffer写入物理磁盘，或者有system wide sync在执行，write(2)会被block住，整个Redis被block住。</p>
+<p>如果系统IO繁忙，比如有别的应用在写盘，或者Redis自己在AOF rewrite或RDB snapshot(虽然此时写入的是另一个临时文件，虽然各自都在连续写，但两个文件间的切换使得磁盘磁头的寻道时间加长），就可能导致fdatasync(2)迟迟未能完成从而block住write(2)，block住整个Redis。</p>
+<p>为了更清晰的看到fdatasync(2)的执行时长，可以使用”strace -p (pid of redis server) -T -e -f trace=fdatasync”，但会影响系统性能。</p>
+<p>Redis提供了一个自救的方式，当发现文件有在执行fdatasync(2)时，就先不调用write(2)，只存在cache里，免得被block。但如果已经超过两秒都还是这个样子，则会硬着头皮执行write(2)，即使redis会被block住。</p>
+<p>此时那句要命的log会打印：“Asynchronous AOF fsync is taking too long (disk is busy?). Writing the AOF buffer without waiting for fsync to complete, this may slow down Redis.” </p>
+<p>之后用redis-cli INFO可以看到aof_delayed_fsync的值被加1。</p>
+<p>因此，对于fsync设为everysec时丢失数据的可能性的最严谨说法是：如果有fdatasync在长时间的执行，此时redis意外关闭会造成文件里不多于两秒的数据丢失。</p>
+<p>如果fdatasync运行正常，redis意外关闭没有影响，只有当操作系统crash时才会造成少于1秒的数据丢失。</p>
+<h4 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h4><p>最后发现，原来是AOF rewrite时一直埋头的调用write(2)，由系统自己去触发sync。在RedHat Enterprise 6里，默认配置vm.dirty_background_ratio=10，也就是占用了10%的可用内存才会开始后台flush，而我的服务器有64G内存。</p>
+<p>很明显一次flush太多数据会造成阻塞，所以最后果断设置了sysctl vm.dirty_bytes=33554432(32M)，问题解决。</p>
+<p>然后提了个issue，<a href="https://github.com/antirez/redis/issues/1019" target="_blank" rel="noopener">AOF rewrite时定时也执行一下fdatasync嘛</a>， antirez三分钟后就回复了，新版中，AOF rewrite时32M就会重写主动调用fdatasync。</p>
+<h3 id="Master-Slave复制"><a href="#Master-Slave复制" class="headerlink" title="Master-Slave复制"></a>Master-Slave复制</h3><h4 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h4><p>slave可以在配置文件、启动命令行参数、以及redis-cli执行SlaveOf指令来设置自己是奴隶。</p>
+<p>测试表明同步延时非常小，指令一旦执行完毕就会立刻写AOF文件和向Slave转发，除非Slave自己被阻塞住了。</p>
+<p>比较蠢的是，即使在配置文件里设了slavof，slave启动时依然会先从数据文件载入一堆没用的数据，再去执行slaveof。</p>
+<p>“Slaveof no one”，立马变身master。</p>
+<p>2.8版本将支持<a href="http://www.antirez.com/news/47" target="_blank" rel="noopener">PSYNC部分同步</a>，master会拨出一小段内存来存放要发给slave的指令，如果slave短暂的断开了，重连时会从内存中读取需要补读的指令，这样就不需要断开两秒也搞一次全同步了。</p>
+<p>但如果断开时间较长，已经超过了内存中保存的数据，就还是要全同步。</p>
+<p>Slave也可以接收Read-Only的请求。</p>
+<h4 id="slaveof执行过程，完全重用已有功能，非常经济"><a href="#slaveof执行过程，完全重用已有功能，非常经济" class="headerlink" title="slaveof执行过程，完全重用已有功能，非常经济"></a>slaveof执行过程，完全重用已有功能，非常经济</h4><p>先执行一次全同步 – 请求master BgSave出自己的一个RDB Snapshot文件发给slave，slave接收完毕后，清除掉自己的旧数据，然后将RDB载入内存。</p>
+<p>再进行增量同步 – master作为一个普通的client连入slave，将所有写操作转发给slave，没有特殊的同步协议。</p>
+<h4 id="Trouble-Shooting-again"><a href="#Trouble-Shooting-again" class="headerlink" title="Trouble Shooting again"></a>Trouble Shooting again</h4><p>有时候明明master/slave都活得好好的，突然间就说要重新进行全同步了：</p>
+<p>1）Slave显示：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># MASTER time out: no data nor PING received...</span><br></pre></td></tr></table></figure>
+<p>slave会每隔repl-ping-slave-period(默认10秒)ping一次master，如果超过repl-timeout(默认60秒)都没有收到响应，就会认为Master挂了。</p>
+<p>如果Master明明没挂但被阻塞住了也会报这个错。可以适当调大repl-timeout。</p>
+<p>2）Master显示：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Client addr=10.175.162.123:44670 flags=S oll=104654 omem=2147487792 events=rw cmd=sync scheduled to be closed ASAP for overcoming of output buffer limits.</span><br></pre></td></tr></table></figure>
+<p>当slave没挂但被阻塞住了，比如正在loading Master发过来的RDB， Master的指令不能立刻发送给slave，就会放在output buffer中(见oll是命令数量，omem是大小)，</p>
+<p>在配置文件中有如下配置：client-output-buffer-limit slave 256mb 64mb 60， 这是说负责发数据给slave的client，如果buffer超过256m或者连续60秒超过64m，就会被立刻强行关闭！！！ Traffic大的话一定要设大一点。</p>
+<p>否则就会出现一个很悲剧的循环，Master传输一个大的RDB给Slave，Slave努力的装载，但还没装载完，Master对client的缓存满了，再来一次。</p>
+<p>平时可以在master执行 <a href="http://redis.io/commands/client-list" target="_blank" rel="noopener">redis-cli client list</a> 找那个cmd=sync，flag=S的client，注意OMem的变化。</p>
+<h3 id="Fail-Over"><a href="#Fail-Over" class="headerlink" title="Fail-Over"></a>Fail-Over</h3><p>Redis-sentinel是2.6版开始加入的另一组独立运行的节点，提供自动Fail Over的支持。</p>
+<p><a href="http://redis.io/topics/sentinel" target="_blank" rel="noopener">官方文档</a> 与 <a href="http://www.wzxue.com/redis%E6%A0%B8%E5%BF%83%E8%A7%A3%E8%AF%BB-%E9%9B%86%E7%BE%A4%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7redis-sentinel/" target="_blank" rel="noopener">Redis核心解读–集群管理工具(Redis-sentinel)</a></p>
+<p><a href="http://www.antirez.com/news/55" target="_blank" rel="noopener">antirez 对 Sentinel的反驳</a>，与<a href="http://www.antirez.com/news/56" target="_blank" rel="noopener">下篇</a></p>
+<h4 id="主要执行过程"><a href="#主要执行过程" class="headerlink" title="主要执行过程"></a>主要执行过程</h4><p>Sentinel每秒钟对所有master，slave和其他sentinel执行Ping，redis-server节点要应答+PONG或-LOADING或-MASTERDOWN.</p>
+<p>如果某一台Sentinel没有在30秒内(可配置得短一些哦)收到上述正确应答，它就会认为master处于sdown状态(主观Down)</p>
+<p>它向其他sentinel询问是否也认为该master倒了（SENTINEL is-master-down-by-addr ）， 如果quonum台(默认是2)sentinel在5秒钟内都这样认为，就会认为master真是odown了(客观Down)。</p>
+<p>此时会选出一台sentinel作为Leader执行fail-over, Leader会从slave中选出一个提升为master(执行slaveof no one)，然后让其他slave指向它(执行slaveof new master)。</p>
+<h4 id="master-slave-及-其他sentinel的发现"><a href="#master-slave-及-其他sentinel的发现" class="headerlink" title="master/slave 及 其他sentinel的发现"></a>master/slave 及 其他sentinel的发现</h4><p>master地址在sentinel.conf里, sentinel会每10秒一次向master发送INFO，知道master的slave有哪些。 如果master已经变为slave，sentinel会分析INFO的应答指向新的master。</p>
+<p>以前，sentinel重启时，如果master已经切换过了，但sentinel.conf里master的地址并没有变，很可能有悲剧发生。</p>
+<p>另外master重启后如果没有切换成slave，也可能有悲剧发生。新版好像修复了一点这个问题，待研究。</p>
+<p>另外，sentinel会在master上建一个pub/sub channel，名为”sentinel:hello”，通告各种信息，sentinel们也是通过接收pub/sub channel上的+sentinel的信息发现彼此，因为每台sentinel每5秒会发送一次自己的host信息，宣告自己的存在。</p>
+<h4 id="自定义reconfig脚本"><a href="#自定义reconfig脚本" class="headerlink" title="自定义reconfig脚本"></a>自定义reconfig脚本</h4><p>sentinel在failover时还会执行配置文件里指定的用户自定义reconfig脚本，做用户自己想做的事情，比如让master变为slave并指向新的master。</p>
+<p>脚本的将会在命令行按顺序传入如下参数： <master-name> &lt;role(leader/observer)&gt; &lt;state(上述三种情况)&gt; <from-ip> <from-port> <to-ip> <to-port></to-port></to-ip></from-port></from-ip></master-name></p>
+<p>脚本返回0是正常，如果返回1会被重新执行，如果返回2或以上不会。 如果超过60秒没返回会被强制终止。</p>
+<p>觉得Sentinel至少有两个可提升的地方:</p>
+<p>一是如果master 主动shutdown，比如系统升级，有办法主动通知sentinel提升新的master，减少服务中断时间。</p>
+<p>二是比起redis-server太原始了，要自己丑陋的以nohup sentinel &gt; logfile 2&gt;&amp;1 &amp; 启动，也不支持shutdown命令，要自己kill pid。</p>
+<h3 id="Client的高可用性"><a href="#Client的高可用性" class="headerlink" title="Client的高可用性"></a>Client的高可用性</h3><p>基于Sentinel的方案，client需要执行语句SENTINEL get-master-addr-by-name mymaster 可获得当前master的地址。</p>
+<p>Jedis正在集成sentinel，已经支持了sentinel的一些指令，但还没发布，但sentinel版的连接池则暂时完全没有，在公司的项目里我参考<a href="https://github.com/hamsterready/jedis-sentinel-pool" target="_blank" rel="noopener">网友的项目</a>自己写了一个。</p>
+<p><a href="https://github.com/taobao/tedis" target="_blank" rel="noopener">淘宝的Tedis driver</a>，使用了完全不同的思路，不基于Sentinel，而是多写随机读， 一开始就同步写入到所有节点，读的话随便读一个还活着的节点就行了。</p>
+<p>但有些节点成功有些节点失败如何处理? 节点死掉重新起来后怎么重新同步?什么时候可以重新Ready? 所以不是很敢用。</p>
+<p>另外如Ruby写的<a href="https://github.com/ryanlecompte/redis_failover" target="_blank" rel="noopener">redis_failover</a>，也是抛开了Redis Sentinel，基于ZooKeeper的临时方案。</p>
+<p>Redis作者也在博客里抱怨<a href="http://www.antirez.com/news/33" target="_blank" rel="noopener">怎么没有人做Dynamo-style 的client</a>。</p>
+<h3 id="Geographic-Replication"><a href="#Geographic-Replication" class="headerlink" title="Geographic Replication"></a>Geographic Replication</h3><p>没有特别支持，依然用Master Slave复制，<a href="http://3scale.github.io/2012/07/25/fun-with-redis-replication/" target="_blank" rel="noopener">3Scale想出了诸如用压缩的SSH隧道降低传输量等方法</a>。</p>
+<h2 id="运维"><a href="#运维" class="headerlink" title="运维"></a>运维</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>安装包制作：没有现成，需要自己编译，自己写rpm包的脚本，可参考utils中的install_server.sh与redis_init_script。</p>
+<p>但RHEL下设定script runlevel的方式不一样，redis_init_script中要增加一句 “# chkconfig: 345 90 10” ，而install_server.sh可以删掉后面的那句<code>chkconfig --level 345 reis</code></p>
+<p>云服务：<a href="http://redis-cloud.com/" target="_blank" rel="noopener">Redis Cloud</a>，在Amazon、Heroku、Windows Azure、App Frog上提供云服务，供同样部署在这些云上的应用使用。</p>
+<p>其他的云服务有<a href="http://garantiadata.com/" target="_blank" rel="noopener">GarantiaData</a>，已被redis-cloud收购。另外还有<a href="http://redistogo.com/" target="_blank" rel="noopener">Redis To Go</a>, <a href="https://openredis.com/" target="_blank" rel="noopener">OpenRedis</a>, <a href="http://www.redisgreen.net/" target="_blank" rel="noopener">RedisGreen</a>。</p>
+<p>CopperEgg统计自己的用户在AWS上的数据库部署：mysqld占了50%半壁江山, redis占了18%排第二, mongodb也有11%, cassandra是3%，Oracle只有可怜的2%。</p>
+<p>Chef Recipes：<a href="https://github.com/brianbianco/redisio" target="_blank" rel="noopener">brianbianco/redisio</a>，活跃，同步更新版本。</p>
+<h3 id="部署模型"><a href="#部署模型" class="headerlink" title="部署模型"></a>部署模型</h3><p>Redis只能使用单线程，为了提高CPU利用率，有提议在同一台服务器上启动多个Redis实例，但这会带来严重的IO争用，除非Redis不需要持久化，或者有某种方式保证多个实例不会在同一个时间重写AOF。</p>
+<p>一组sentinel能同时监控多个Master。</p>
+<p>有提议说环形的slave结构，即master只连一个slave，然后slave再连slave，此部署有两个前提，一是有大量的只读需求需要在slave完成，二是对slave传递时的数据不一致性不敏感。</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>约30个配置项，全都有默认配置，对redif.conf默认配置的修改见附录1。</p>
+<h4 id="三条路"><a href="#三条路" class="headerlink" title="三条路"></a>三条路</h4><p>可以配置文件中编写。</p>
+<p>可以在启动时的命令行配置，redis-server –port 7777 –slaveof 127.0.0.1 8888。</p>
+<p>云时代大规模部署，把配置文件满街传显然不是好的做法， 可以用redis-cli执行<a href="http://redis.readthedocs.org/en/latest/server/config_set.html" target="_blank" rel="noopener">Config Set</a>指令， 修改所有的参数，达到维护人员最爱的不重启服务而修改参数的效果，而且在新版本里还可以执行 <a href="http://antirez.com/news/54" target="_blank" rel="noopener">Config Rewrite</a> 将改动写回到文件中，不过全部默认值都会打印出来，可能会破坏掉原来的文件的排版，注释。</p>
+<h4 id="安全保护"><a href="#安全保护" class="headerlink" title="安全保护"></a>安全保护</h4><p>在配置文件里设置密码：requirepass foobar。</p>
+<p>禁止某些危险命令，比如残暴的FlushDB，将它rename成””：rename-command FLUSHDB “”。</p>
+<h3 id="监控与维护"><a href="#监控与维护" class="headerlink" title="监控与维护"></a>监控与维护</h3><p>综述： <a href="http://blog.nosqlfan.com/html/4166.html" target="_blank" rel="noopener">Redis监控技巧</a></p>
+<h4 id="监控指令"><a href="#监控指令" class="headerlink" title="监控指令"></a>监控指令</h4><p><a href="http://redis.readthedocs.org/en/latest/server/info.html" target="_blank" rel="noopener">Info</a>指令将返回非常丰富的信息。 着重监控检查内存使用，是否已接近上限，used_memory是Redis申请的内存，used_memory_rss是操作系统分配给Redis的物理内存，两者之间隔着碎片，隔着Swap。</p>
+<p>还有重点监控 AOF与RDB文件的保存情况，以及master-slave的关系。Statistic 信息还包括key命中率，所有命令的执行次数，所有client连接数量等， <a href="http://redis.readthedocs.org/en/latest/server/config_resetstat.html" target="_blank" rel="noopener">CONFIG RESETSTAT</a> 可重置为0。</p>
+<p><a href="http://redis.readthedocs.org/en/latest/server/monitor.html" target="_blank" rel="noopener">Monitor</a>指令可以显示Server收到的所有指令，主要用于debug，影响性能，生产环境慎用。</p>
+<p>SlowLog 检查慢操作(见2.性能)。</p>
+<h4 id="Trouble-Shooting支持"><a href="#Trouble-Shooting支持" class="headerlink" title="Trouble Shooting支持"></a>Trouble Shooting支持</h4><p>日志可以动态的设置成verbose/debug模式，但不见得有更多有用的log可看,verbose还会很烦的每5秒打印当前的key情况和client情况。指令为config set loglevel verbose。</p>
+<p>最爱Redis的地方是代码只有2.3万行，而且编码优美，而且huangz同学还在原来的注释上再加上了中文注释——<a href="https://github.com/huangz1990/annotated_redis_source/" target="_blank" rel="noopener">Redis 2.6源码中文注释版</a> ，所以虽然是C写的代码，虽然有十年没看过C代码，但这几天trouble shooting毫无难度，一看就懂。</p>
+<p>Trobule shotting的经历证明antirez处理issue的速度非常快(如果你的issue言之有物的话)，比Weblogic之类的商业支持还好。</p>
+<h4 id="持久化文件维护"><a href="#持久化文件维护" class="headerlink" title="持久化文件维护"></a>持久化文件维护</h4><p>如果AOF文件在写入过程中crash，可以用redis-check-aof修复，见5.1.2</p>
+<p>如果AOF rewrite和 RDB snapshot的过程中crash，会留下无用的临时文件，需要定期扫描删除。</p>
+<h4 id="三方工具"><a href="#三方工具" class="headerlink" title="三方工具"></a>三方工具</h4><p>官网列出了如下工具，但暂时没发现会直接拿来用的：</p>
+<p><a href="http://www.nkrode.com/article/real-time-dashboard-for-redis" target="_blank" rel="noopener">Redis Live</a>，基于Python的web应用，使用Info和Monitor获得系统情况和指令统计分析。 因为Monitor指令影响性能，所以建议用cron定期运行，每次偷偷采样两分钟的样子。</p>
+<p><a href="https://github.com/ErikDubbelboer/phpRedisAdmin" target="_blank" rel="noopener">phpRedisAdmin</a>，基于php的Web应用，目标是MysqlAdmin那样的管理工具，可以管理每一条Key的情况，但它的界面应该只适用于Key的数量不太多的情况，Demo。</p>
+<p><a href="https://github.com/Instagram/redis-faina" target="_blank" rel="noopener">Redis Faina</a>，基于Python的命令行，Instagram出品，用户自行获得Monitor的输出后发给它进行统计分析。由于Monitor输出的格式在Redis版本间不一样，要去github下最新版。</p>
+<p><a href="https://github.com/sripathikrishnan/redis-rdb-tools" target="_blank" rel="noopener">Redis-rdb-tools</a> 基于Python的命令行，可以分析RDB文件每条Key对应value所占的大小，还可以将RDB dump成普通文本文件然后比较两个库是否一致，还可以将RDB输出成JSON格式，可能是最有用的一个了。</p>
+<p><a href="https://github.com/antirez/redis-sampler" target="_blank" rel="noopener">Redis Sampler</a>，基于Ruby的命令行，antirez自己写的，统计数据分布情况。</p>
+<h2 id="Java-Driver"><a href="#Java-Driver" class="headerlink" title="Java Driver"></a>Java Driver</h2><h3 id="Driver选择"><a href="#Driver选择" class="headerlink" title="Driver选择"></a>Driver选择</h3><p>各个Driver好像只有<a href="https://github.com/xetorthio/jedis/" target="_blank" rel="noopener">Jedis</a>比较活跃，但也5个月没提交了，也是Java里唯一的Redis官方推荐。</p>
+<p><a href="http://www.springsource.org/spring-data/redis" target="_blank" rel="noopener">Spring Data Redis</a>的封装并不太必要，因为Jedis已足够简单，没有像Spring Data MongoDB对MongoDB java driver的封装那样大幅简化代码，顶多就是加强了一点点点pipeline和transaction状态下的coding，禁止了一些此状态下不能用的命令。</p>
+<p>而所谓屏蔽各种底层driver的差异并不太吸引人，因为我就没打算选其他几种driver。有兴趣的可以翻翻<a href="https://github.com/SpringSource/spring-data-redis/blob/master/src/main/java/org/springframework/data/redis/connection/jedis/JedisConnection.java" target="_blank" rel="noopener">它的JedisConnection代码</a>。</p>
+<p>所以，SpringSide直接在Jedis的基础上，按Spring的风格封装了一个JedisTemplate，负责从池中获取与归还Jedis实例，处理异常。</p>
+<h3 id="Jedis的细节"><a href="#Jedis的细节" class="headerlink" title="Jedis的细节"></a>Jedis的细节</h3><p>Jedis基于Apache Commons Pool做的连接池，默认MaxActive最大连接数只有8，必须重新设置。而且MaxIdle也要相应增大，否则所有新建的连接用完即弃，然后会不停的重新连接。</p>
+<p>另外Jedis设定了每30秒对所有连接执行一次ping，以发现失效的连接，这样每30秒会有一个拿不到连接的高峰。</p>
+<p>但效果如何需要独立分析。比如系统高峰之后可能有一长段时间很闲，而且Redis Server那边做了Timeout控制会把连接断掉，这时候做idle checking是有意义的，但30秒一次也太过频繁了。否则关掉它更好。</p>
+<p>Jedis的blocking pop函数，应用执行ExecutorService.shutdownNow()中断线程时并不能把它中断，见讨论组。</p>
+<p>两个解决方法：</p>
+<p>不要用不限时的blocking popup，传多一个超时时间参数，如5秒。</p>
+<p>找地方将调用blocking popup的jedis保存起来，shutdown时主动调用它的close。</p>
+<h3 id="Redis对Client端连接的处理"><a href="#Redis对Client端连接的处理" class="headerlink" title="Redis对Client端连接的处理"></a>Redis对Client端连接的处理</h3><p>Redis默认最大连接数是一万。</p>
+<p>Redis默认不对Client做Timeout处理，可以用timeout 项配置，但即使配了也不会非常精确。</p>
+<h2 id="Windows的版本"><a href="#Windows的版本" class="headerlink" title="Windows的版本"></a>Windows的版本</h2><p>Windows版本方便对应用的本地开发调试，但Redis并没有提供，好在微软提供了一个依赖LibUV实现兼容的补丁，<a href="https://github.com/MSOpenTech/redis%EF%BC%8C%E4%BD%86redis%E4%BD%9C%E8%80%85%E6%8B%92%E7%BB%9D%E5%90%88%E5%B9%B6%E5%88%B0master%E4%B8%AD%EF%BC%8C%E5%BE%AE%E8%BD%AF%E5%8F%AA%E5%A5%BD%E8%8B%A6%E6%86%8B%E7%9A%84%E6%97%B6%E6%97%B6%E4%BA%BA%E5%B7%A5%E5%90%8C%E6%AD%A5%E3%80%82" target="_blank" rel="noopener">https://github.com/MSOpenTech/redis，但redis作者拒绝合并到master中，微软只好苦憋的时时人工同步</a>。</p>
+<p>目前的稳定版是2.6版本，支持Lua脚本。</p>
+<p>因为github现在已经没有Download服务了，所以编译好的可执行文件藏在这里：</p>
+<p><a href="https://github.com/MSOpenTech/redis/tree/2.6/bin/release" target="_blank" rel="noopener">https://github.com/MSOpenTech/redis/tree/2.6/bin/release</a></p>
+<h2 id="成功案例"><a href="#成功案例" class="headerlink" title="成功案例"></a>成功案例</h2><p>注：下文中的链接都是网站的架构描述文档。</p>
+<p><a href="http://www.infoq.com/presentations/Real-Time-Delivery-Twitter" target="_blank" rel="noopener">Twitter</a>和<a href="http://www.infoq.com/cn/presentations/tfl-sina-weibo-platform-redis-practice" target="_blank" rel="noopener">新浪微博</a>， 都属于将Redis各种数据结构用得出神入化的那种，如何发布大V如奥巴马的消息是它们最头痛的问题。</p>
+<p><a href="http://highscalability.com/blog/2013/5/20/the-tumblr-architecture-yahoo-bought-for-a-cool-billion-doll.html" target="_blank" rel="noopener">Tumblr</a>： 11亿美刀卖给Yahoo的图片日志网站，22 台Redis server，每台运行8 - 32个实例，总共100多个Redis实例在跑。</p>
+<p>有着Redis has been completely problem free and the community is great的崇高评价。Redis在里面扮演了八爪鱼多面手的角色：</p>
+<p>Dashboard的海量通知的存储。</p>
+<p>Dashboard的二级索引。</p>
+<p>存储海量短链接的HBase前面的缓存。</p>
+<p>Gearman Job Queue的存储。</p>
+<p>正在替换另外30台memcached。</p>
+<p><a href="http://highscalability.com/blog/2011/12/6/instagram-architecture-14-million-users-terabytes-of-photos.html" target="_blank" rel="noopener">Instagram</a> ，曾经，Redis powers their main feed, activity feed, sessions system, and <a href="http://highscalability.com/blog/2012/4/16/instagram-architecture-update-whats-new-with-instagram.html" target="_blank" rel="noopener">other services</a>。</p>
+<p>但可惜目前<a href="http://planetcassandra.org/blog/post/instagram-making-the-switch-to-cassandra-from-redis-75-instasavings" target="_blank" rel="noopener">已迁往Cassandra</a>，说新架构只需1/4的硬件费用，是的，就是那个导致Digg CTO辞职的Canssandra。</p>
+<p><a href="http://code.flickr.net/2011/10/11/talk-real-time-updates-on-the-cheap-for-fun-and-profit/" target="_blank" rel="noopener">Flickr</a> , 依然是asynchronous task system and rudimentary queueing system。之前Task system放在mysql innodb，根本，撑不住。</p>
+<p>The Others：</p>
+<p><a href="http://nosql.mypopescu.com/post/17658415847/polyglot-persistence-at-pinterest-redis-membase" target="_blank" rel="noopener">Pinterest</a>，混合使用MySQL、Membase与Redis作为存储。</p>
+<p><a href="http://highscalability.com/blog/2012/4/2/youporn-targeting-200-million-views-a-day-and-beyond.html" target="_blank" rel="noopener">Youporn.com</a>，100%的Redis，MySQL只用于创建新需求用到的sorted set，300K QPS的大压力。</p>
+<p><a href="http://tech.naver.jp/blog/?p=1420" target="_blank" rel="noopener">日本微信</a> ，Redis在前负责异步Job Queue和O(n)的数据，且作为O(n<em>t)数据的cache，HBase在后，负责O(n</em>t)数据， n是用户，t是时间。</p>
+<p><a href="http://highscalability.com/blog/2011/3/3/stack-overflow-architecture-update-now-at-95-million-page-vi.html" target="_blank" rel="noopener">StackOverflow</a> ，2 Redis servers for distribute caching，好穷好轻量。</p>
+<p><a href="https://github.com/blog/530-how-we-made-github-fast" target="_blank" rel="noopener">Github</a>，任务系统<a href="http://github.com/defunkt/resque" target="_blank" rel="noopener">Resque</a>的存储。</p>
+<p><a href="https://github.com/discourse/discourse" target="_blank" rel="noopener">Discourge</a>，号称是为下一个十年打造的论坛系统， We use Redis for our job queue, rate limiting, as a cache and for transient data，刚好和我司的用法一样。</p>
+<p>情色网站 YouPorn，使用 Redis 进行数据存储，Redis 服务器每秒处理30万个页面请求，每小时会记录8-15GB数据。</p>
+<h2 id="In-SpringSide"><a href="#In-SpringSide" class="headerlink" title="In SpringSide"></a>In SpringSide</h2><p>extension modules项目封装了常用的函数与场景，showcase example的src/demo/redis目录里有各场景的benchmark测试。</p>
+<h3 id="Jedis-Template"><a href="#Jedis-Template" class="headerlink" title="Jedis Template"></a>Jedis Template</h3><p>典型的Spring Template风格，和JdbcTemplate，HibernateTemplate一样，封装从JedisPool获取与归还Connecton的代码，有带返回值与无返回值两种返回接口。</p>
+<p>同时，对最常用的Jedis调用，直接封装了一系列方法。</p>
+<h3 id="Scheduler与Master-Elector"><a href="#Scheduler与Master-Elector" class="headerlink" title="Scheduler与Master Elector"></a>Scheduler与Master Elector</h3><p>Scheduler实现了基于Redis的高并发单次定时任务分发。具体选型见<a href="https://github.com/springside/springside4/wiki/Schedule" target="_blank" rel="noopener">Scheduler</a>章节。</p>
+<p>Master Elector基于redis setNx()与expire()两个api实现，与基于Zookeeper，Hazelcast实现的效果类似。</p>
+<h3 id="Showcase中的Demo"><a href="#Showcase中的Demo" class="headerlink" title="Showcase中的Demo"></a>Showcase中的Demo</h3><p>计有Session，Counter，Scheduler 与 Master Elector四款。</p>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="附录1：-对redis-conf默认配置的修改"><a href="#附录1：-对redis-conf默认配置的修改" class="headerlink" title="附录1： 对redis.conf默认配置的修改"></a>附录1： 对redis.conf默认配置的修改</h3><h4 id="Master主机"><a href="#Master主机" class="headerlink" title="Master主机"></a>Master主机</h4><p>daemonize no -&gt; yes ，启动daemonize模式，注意如果用daemon工具启动redis-server时设回false。<br>logfile stdout -&gt; /var/log/redis/redis.log ，指定日志文件<br>注释掉RDB的所有触发规则，在Master不保存RDB文件。<br>dir ./ -&gt; /var/data/redis，指定持久化文件及临时文件目录.<br>maxmemory，设置为可用内存/2.<br>(可选)appendonly no-&gt;yes，打开AOF文件.<br>auto-aof-rewrite-percentage 100, 综合考虑硬盘大小，可接受重启加载延时等尽量的大，减少AOF rewrite频率.<br>auto-aof-rewrite-min-size 64mb，同上，起码设为5G.<br>client-output-buffer-limit slave 256mb 64mb 60. 考虑Traffic及Slave同步是RDB加载所需时间，正确设置避免buffer撑爆client被关掉后又要重新进行全同步。<br>Master上的安全配置，可选。</p>
+<h4 id="Slave主机"><a href="#Slave主机" class="headerlink" title="Slave主机"></a>Slave主机</h4><p>设置RDB保存频率，因为RDB只作为Backup工具，只保留15分钟的规则，设置为15分钟保存一次就够了save 900 1。</p>
+<p>(可选)slaveof 设置master地址，也可动态设定。</p>
+<p>repl-timeout 60, 适当加大比如120，避免master实际还没倒掉就认为master倒了。</p>
+<h3 id="附录2：版本变更历史"><a href="#附录2：版本变更历史" class="headerlink" title="附录2：版本变更历史"></a>附录2：版本变更历史</h3><p>3.0.1版-3.0.3版 2013-8-1，在微博发布后反应良好，持续修改。</p>
+<p>3.0版 2013-6-29，在公司Workshop后修订，提高wiki的可读性而不只是简单的记录知识点。</p>
+<h3 id="附录3：其他参考资料"><a href="#附录3：其他参考资料" class="headerlink" title="附录3：其他参考资料"></a>附录3：其他参考资料</h3><p><a href="http://timyang.net/data/redis-misunderstanding/" target="_blank" rel="noopener">Redis的几个认识误区</a> by Tim yang。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.033Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20171009/33-redis-considerations.html" target="_blank" rel="external">https://ningyu1.github.io/20171009/33-redis-considerations.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AOF/">AOF</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AOF-Block/">AOF Block</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Asynchronous-AOF-fsync-is-taking-too-long-disk-is-busy-Writing-the-AOF-buffer-without-waiting-for-fsync-to-complete-this-may-slow-down-Redis/">Asynchronous AOF fsync is taking too long (disk is busy?)Writing the AOF buffer without waiting for fsync to complete, this may slow down Redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/">Redis</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20171009/33-redis-considerations.html&title=《Redis数据结构使用以及注意事项，运维问题总结》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20171009/33-redis-considerations.html&title=《Redis数据结构使用以及注意事项，运维问题总结》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20171009/33-redis-considerations.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Redis数据结构使用以及注意事项，运维问题总结》 — 凝雨 - Yun&url=https://ningyu1.github.io/20171009/33-redis-considerations.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20171009/33-redis-considerations.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20171009/34-redis-rdb.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Redis RDB文件格式全解析</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20171009/32-redis-aof.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Trouble Shooting —— Enable AOF可能导致整个Redis被Block住，在3.0.6版本仍然存在</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20171009/33-redis-considerations.html&title=《Redis数据结构使用以及注意事项，运维问题总结》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20171009/33-redis-considerations.html&title=《Redis数据结构使用以及注意事项，运维问题总结》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20171009/33-redis-considerations.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Redis数据结构使用以及注意事项，运维问题总结》 — 凝雨 - Yun&url=https://ningyu1.github.io/20171009/33-redis-considerations.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20171009/33-redis-considerations.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACq0lEQVR42u3a0W7bMAwF0P7/T2+vG4qol6ToGcPJU+Cmto4CSMwVv77i168Prz//+unz36+f3ydPvPzCw8PDuzT0748/Pya/fr7/eZz5mPHw8PC2ecntzqvuZFmvDr0wxXh4eHgv4FU3hrzWTT6Jh4eH93/wzp9Mto18e8DDw8N7D693uyovCTv+WdaCh4eHF/Py8vc971fO9/Dw8PDGp+rVRoHePZNNonk3PDw8vAVevuBWmwl6pXm+OeXjxMPDw9vg5Ut8HhzM69vzxDWLbzw8PLwxL49Ne9FtUijPo5Dou8LDw8O7yssHkZTOeZRQba4q3xkPDw9vjddrcuoxJu0C1WACDw8P7xneJJ44D3r+rOrBGB4eHt4Gb1LyVpf1XqPAhegEDw8Pb4F3txadHO3n7QiFdgE8PDy8q7y8iWqjaaA3lXm4jIeHh7fB6x3PV4+veoDqARgeHh7ek7x8DvJB9LaKvKTOAxE8PDy853mT67carXrFOh4eHt4GrzegeQRcxVev/5W14OHh4a3x8gK3GjrkIUIei0RfDB4eHt4jvF58kIca1ffJZvDx6Xh4eHiP86oB6zn87cW1PVi0MeDh4eG1eNXGpmrkeqt1oLfZ4OHh4W3zklh20nCQhwjVTSiPOfDw8PBu8fKAID8wq+KroUNhG8DDw8Nb5lU7tnqtV/NJzI/f8PDw8LZ5ObXXSlWt7pOl/4dJx8PDw7vKu9t01SuLe0FDFOzi4eHhLfCq50QTZLVBYd6khYeHh7fHyzeDaumcz+skqoh6IvDw8PAWePOjpl4cXO5lKBbieHh4eG/gTRbr5FkJuxBG4OHh4b2AVz3KygvlpMSvlv54eHh4e7y88M2L4EnDQX6E9sN/4eHh4S3wqj/4e7FFUjTnYfGFMz08PDy8Du83WAWccUZUjCsAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>TiDB使用笔记 —— 测试环境集群部署 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="TiDB,TiKV,pd">
+    <meta name="description" content="TiDB使用笔记 —— 测试环境集群部署">
+<meta name="keywords" content="TiDB,TiKV,pd">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TiDB使用笔记 —— 测试环境集群部署">
+<meta property="og:url" content="https://ningyu1.github.io/20180410/76-tidb-notes.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="TiDB使用笔记 —— 测试环境集群部署">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ningyu1.github.io/img/tidb/1.png">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.037Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TiDB使用笔记 —— 测试环境集群部署">
+<meta name="twitter:description" content="TiDB使用笔记 —— 测试环境集群部署">
+<meta name="twitter:image" content="https://ningyu1.github.io/img/tidb/1.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">TiDB使用笔记 —— 测试环境集群部署</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">TiDB使用笔记 —— 测试环境集群部署</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-04-10T12:13:00.000Z" itemprop="datePublished" class="page-time">
+  2018-04-10
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/TiDB/">TiDB</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#简介"><span class="post-toc-number">1.</span> <span class="post-toc-text">简介</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#架构图"><span class="post-toc-number">2.</span> <span class="post-toc-text">架构图</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#TiDB-Server"><span class="post-toc-number">3.</span> <span class="post-toc-text">TiDB Server</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#PD-Server"><span class="post-toc-number">4.</span> <span class="post-toc-text">PD Server</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#TiKV-Server"><span class="post-toc-number">5.</span> <span class="post-toc-text">TiKV Server</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#特性"><span class="post-toc-number">6.</span> <span class="post-toc-text">特性</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#官方的部署建议"><span class="post-toc-number">7.</span> <span class="post-toc-text">官方的部署建议</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#测试部署"><span class="post-toc-number">8.</span> <span class="post-toc-text">测试部署</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-76-tidb-notes"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">TiDB使用笔记 —— 测试环境集群部署</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-04-10 20:13:00" datetime="2018-04-10T12:13:00.000Z"  itemprop="datePublished">2018-04-10</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/TiDB/">TiDB</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>TiDB是一个NewSql的分布式数据库，具体介绍我们引用官方的简介</p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>TiDB 是 PingCAP 公司受 Google <a href="http://research.google.com/archive/spanner.html" target="_blank" rel="noopener">Spanner</a> / <a href="http://research.google.com/pubs/pub41344.html" target="_blank" rel="noopener">F1</a> 论文启发而设计的开源分布式 NewSQL 数据库。</p>
+<p>TiDB 具备如下 NewSQL 核心特性：</p>
+<p>SQL支持（TiDB 是 MySQL 兼容的）<br>水平弹性扩展（吞吐可线性扩展）<br>分布式事务<br>跨数据中心数据强一致性保证<br>故障自恢复的高可用<br>海量数据高并发实时写入与实时查询（HTAP 混合负载）<br>TiDB 的设计目标是 100% 的 OLTP 场景和 80% 的 OLAP 场景，更复杂的 OLAP 分析可以通过 TiSpark 项目来完成。</p>
+<p>TiDB 对业务没有任何侵入性，能优雅的替换传统的数据库中间件、数据库分库分表等 Sharding 方案。同时它也让开发运维人员不用关注数据库 Scale 的细节问题，专注于业务开发，极大的提升研发的生产力。</p>
+<p>我们来看一下TiDB的架构图</p>
+<h2 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h2><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/tidb/1.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>从架构图中可以看出TiDB的三大组件都支持水平扩展而且内部通信使用的是gRPC，关于TiDB和gRPC的那些事可以查看InfoQ的文章：<a href="http://www.infoq.com/cn/articles/tidb-and-grpc" target="_blank" rel="noopener">《TiDB与gRPC的那点事》</a></p>
+<p>TiDB使用的TiKV作为存储，官方建议至少TiKV使用ssd硬盘，如果条件好pd模块最好也使用ssd硬盘。</p>
+<p>下来我们具体看一下三大组件分别都是干什么的</p>
+<h2 id="TiDB-Server"><a href="#TiDB-Server" class="headerlink" title="TiDB Server"></a>TiDB Server</h2><p>TiDB Server 负责接收 SQL 请求，处理 SQL 相关的逻辑，并通过 PD 找到存储计算所需数据的 TiKV 地址，与 TiKV 交互获取数据，最终返回结果。 TiDB Server 是无状态的，其本身并不存储数据，只负责计算，可以无限水平扩展，可以通过负载均衡组件（如LVS、HAProxy 或 F5）对外提供统一的接入地址。</p>
+<h2 id="PD-Server"><a href="#PD-Server" class="headerlink" title="PD Server"></a>PD Server</h2><p>Placement Driver (简称 PD) 是整个集群的管理模块，其主要工作有三个： 一是存储集群的元信息（某个 Key 存储在哪个 TiKV 节点）；二是对 TiKV 集群进行调度和负载均衡（如数据的迁移、Raft group leader 的迁移等）；三是分配全局唯一且递增的事务 ID。</p>
+<p>PD 是一个集群，需要部署奇数个节点，一般线上推荐至少部署 3 个节点。</p>
+<h2 id="TiKV-Server"><a href="#TiKV-Server" class="headerlink" title="TiKV Server"></a>TiKV Server</h2><p>TiKV Server 负责存储数据，从外部看 TiKV 是一个分布式的提供事务的 Key-Value 存储引擎。存储数据的基本单位是 Region，每个 Region 负责存储一个 Key Range （从 StartKey 到 EndKey 的左闭右开区间）的数据，每个 TiKV 节点会负责多个 Region 。TiKV 使用 Raft 协议做复制，保持数据的一致性和容灾。副本以 Region 为单位进行管理，不同节点上的多个 Region 构成一个 Raft Group，互为副本。数据在多个 TiKV 之间的负载均衡由 PD 调度，这里也是以 Region 为单位进行调度。</p>
+<h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><p>可以无限水平扩展而且三大组件都是高可用，TiDB/TiKV/PD 这三个组件都能容忍部分实例失效，不影响整个集群的可用性。关于三大组件出现问题后如何恢复可以查看：<a href="https://pingcap.com/docs-cn/overview/#tidb-%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84" target="_blank" rel="noopener">《tidb-整体架构中的高可用章节》</a></p>
+<h2 id="官方的部署建议"><a href="#官方的部署建议" class="headerlink" title="官方的部署建议"></a>官方的部署建议</h2><p>TiDB使用的TiKV作为存储，官方建议至少TiKV使用ssd硬盘，如果条件好pd模块最好也使用ssd硬盘。</p>
+<p>建议 4 台及以上，TiKV 至少 3 实例，且与 TiDB、PD 模块不位于同一主机。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">组件</th>
+<th style="text-align:center">CPU</th>
+<th style="text-align:center">内存</th>
+<th style="text-align:center">本地存储</th>
+<th style="text-align:center">网络</th>
+<th style="text-align:center">实例数量(最低要求)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">TiDB</td>
+<td style="text-align:center">8核+</td>
+<td style="text-align:center">16 GB+</td>
+<td style="text-align:center">SAS, 200 GB+</td>
+<td style="text-align:center">千兆网卡</td>
+<td style="text-align:center">1（可与 PD 同机器）</td>
+</tr>
+<tr>
+<td style="text-align:center">PD</td>
+<td style="text-align:center">8核+</td>
+<td style="text-align:center">16 GB+</td>
+<td style="text-align:center">SAS, 200 GB+</td>
+<td style="text-align:center">千兆网卡</td>
+<td style="text-align:center">1（可与 TiDB 同机器）</td>
+</tr>
+<tr>
+<td style="text-align:center">TiKV</td>
+<td style="text-align:center">8核+</td>
+<td style="text-align:center">32 GB+</td>
+<td style="text-align:center">SSD, 200 GB+</td>
+<td style="text-align:center">千兆网卡</td>
+<td style="text-align:center">3</td>
+</tr>
+<tr>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">服务器总计</td>
+<td style="text-align:center">4</td>
+</tr>
+</tbody>
+</table>
+<p>个人觉得这个使用的成本还是蛮高的。具体可以看<a href="https://pingcap.com/docs-cn/op-guide/recommendation/" target="_blank" rel="noopener">《软、硬件环境要求》</a></p>
+<h2 id="测试部署"><a href="#测试部署" class="headerlink" title="测试部署"></a>测试部署</h2><p>TiDB的部署方式还是蛮丰富的，可以使用Ansible在线以及离线的部署集群，<a href="https://github.com/pingcap/tidb-ansible" target="_blank" rel="noopener">TiDB-Ansible</a> 是 PingCAP 基于 Ansible playbook 功能编写的集群部署工具。使用 TiDB-Ansible 可以快速部署一个完整的 TiDB 集群（包括 PD、TiDB、TiKV 和集群监控模块)。</p>
+<p>TiDB同时也支持Docker部署方案，由于我们公司内网使用docker容器的方式管理所有服务，所以我这里使用docker方式部署。</p>
+<p>我们使用Rancher来做企业级的容器管理平台，没有使用k8s、mesos来进行编排管理，使用的是Rancher自带的Cattle，Cattle不光有编排管理还包含了应用、服务、卷、负载均衡、健康检查、服务升级、dns服务、等功能，有兴趣的可以查看：<a href="https://rancher.com/docs/rancher/v1.6/zh/cattle/stacks/" target="_blank" rel="noopener">《Rancher官方文档-Cattle》</a></p>
+<p>在进行部署之前需要先去Docker官方镜像库中拉TiDB集群所需要的三大组件的镜像： <a href="https://hub.docker.com/u/pingcap/" target="_blank" rel="noopener">Docker 官方镜像仓库</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker pull pingcap/tidb:latest</span><br><span class="line">docker pull pingcap/tikv:latest</span><br><span class="line">docker pull pingcap/pd:latest</span><br></pre></td></tr></table></figure>
+<p>这三个组件的镜像都不大，TiKV只有54MB，PD只有21MB，TiDB只有17MB</p>
+<p><span style="color:blue"><em>这个我需要说一下他们这块做的还是很不错的，将镜像压缩的都比较小，去除了很多无用的东西。</em></span></p>
+<p>我们需要创建7个容器来部署一个TiDB集群：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">容器</th>
+<th style="text-align:center">容器IP</th>
+<th style="text-align:center">宿主机IP</th>
+<th style="text-align:center">部署服务</th>
+<th style="text-align:center">数据盘挂载</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">PD1</td>
+<td style="text-align:center">10.42.59.28</td>
+<td style="text-align:center">192.168.18.108</td>
+<td style="text-align:center">PD1</td>
+<td style="text-align:center">/home/docker/TiDB</td>
+</tr>
+<tr>
+<td style="text-align:center">PD2</td>
+<td style="text-align:center">10.42.202.152</td>
+<td style="text-align:center">192.168.18.108</td>
+<td style="text-align:center">PD2</td>
+<td style="text-align:center">/home/docker/TiDB</td>
+</tr>
+<tr>
+<td style="text-align:center">PD3</td>
+<td style="text-align:center">10.42.214.245</td>
+<td style="text-align:center">192.168.18.108</td>
+<td style="text-align:center">PD3</td>
+<td style="text-align:center">/home/docker/TiDB</td>
+</tr>
+<tr>
+<td style="text-align:center">TiDB</td>
+<td style="text-align:center">10.42.188.35</td>
+<td style="text-align:center">192.168.18.109</td>
+<td style="text-align:center">TiDB</td>
+<td style="text-align:center">/home/docker/TiDB</td>
+</tr>
+<tr>
+<td style="text-align:center">TiKV1</td>
+<td style="text-align:center">10.42.106.167</td>
+<td style="text-align:center">192.168.18.109</td>
+<td style="text-align:center">TiKV1</td>
+<td style="text-align:center">/home/docker/TiDB</td>
+</tr>
+<tr>
+<td style="text-align:center">TiKV2</td>
+<td style="text-align:center">10.42.34.97</td>
+<td style="text-align:center">192.168.18.109</td>
+<td style="text-align:center">TiKV2</td>
+<td style="text-align:center">/home/docker/TiDB</td>
+</tr>
+<tr>
+<td style="text-align:center">TiKV3</td>
+<td style="text-align:center">10.42.170.152</td>
+<td style="text-align:center">192.168.18.109</td>
+<td style="text-align:center">TiKV3</td>
+<td style="text-align:center">/home/docker/TiDB</td>
+</tr>
+</tbody>
+</table>
+<p><span style="color:blue"><em>用docker的好处就是资源可以压缩到最小，我6个容器可以放在一到两台虚机上</em></span></p>
+<p>查看pd集群信息</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http://192.168.18.108:2379/v2/members</span><br><span class="line">http://192.168.18.108:2479/v2/members</span><br><span class="line">http://192.168.18.108:2579/v2/members</span><br></pre></td></tr></table></figure>
+<p>返回信息以json格式，三台pd返回集群信息都是一样的</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;&quot;members&quot;:[&#123;&quot;id&quot;:&quot;969b7171b723b804&quot;,&quot;name&quot;:&quot;pd3&quot;,&quot;peerURLs&quot;:[&quot;http://192.168.18.108:2580&quot;],&quot;clientURLs&quot;:[&quot;http://192.168.18.108:2579&quot;]&#125;,&#123;&quot;id&quot;:&quot;d141f07798663b47&quot;,&quot;name&quot;:&quot;pd2&quot;,&quot;peerURLs&quot;:[&quot;http://192.168.18.108:2480&quot;],&quot;clientURLs&quot;:[&quot;http://192.168.18.108:2479&quot;]&#125;,&#123;&quot;id&quot;:&quot;e5e987f33a60e672&quot;,&quot;name&quot;:&quot;pd1&quot;,&quot;peerURLs&quot;:[&quot;http://192.168.18.108:2380&quot;],&quot;clientURLs&quot;:[&quot;http://192.168.18.108:2379&quot;]&#125;]&#125;</span><br></pre></td></tr></table></figure>
+<p>具体的docker容器创建命令可以参考官方文档：<a href="https://pingcap.com/docs-cn/op-guide/docker-deployment/" target="_blank" rel="noopener">《Docker部署方案》</a></p>
+<p>TiDB支持mysql协议可以使用任意mysql客户端连接，默认安装好的集群使用mysql登录，端口：4000，用户名：root，密码为空，修改密码跟mysql修改密码方式完全一样。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SET PASSWORD FOR &apos;root&apos;@&apos;%&apos; = &apos;xxx&apos;;</span><br></pre></td></tr></table></figure>
+<p>下面说几个我们必须要关心的东西。</p>
+<p>事务隔离级别可以查看：<a href="https://pingcap.com/docs-cn/sql/transaction-isolation/" target="_blank" rel="noopener">《TiDB 事务隔离级别》</a></p>
+<p>SQL语法没有什么变化，具体可以查看：<a href="https://pingcap.com/docs-cn/sql/ddl/" target="_blank" rel="noopener">《SQL语句语法》</a></p>
+<p>SQL执行计划什么的都有跟使用mysql几乎一样，还增加了json的支持，可以设置字段列存储类型为json格式。</p>
+<p>具体与MySQL有什么差异可以查看：<a href="https://pingcap.com/docs-cn/sql/mysql-compatibility/" target="_blank" rel="noopener">《与MySQL兼容性对比》</a></p>
+<p>历史数据回溯问题可以查看：<a href="https://pingcap.com/docs-cn/op-guide/history-read/" target="_blank" rel="noopener">《TiDB 历史数据回溯》</a></p>
+<p>Binlog可以使用：<a href="https://pingcap.com/docs-cn/tools/tidb-binlog-kafka/" target="_blank" rel="noopener">《TiDB-Binlog 部署方案》</a></p>
+<p>还有<a href="https://pingcap.com/docs-cn/op-guide/backup-restore/" target="_blank" rel="noopener">《备份与恢复》</a> 和 <a href="https://pingcap.com/docs-cn/op-guide/migration-overview/" target="_blank" rel="noopener">《数据迁移》</a>。</p>
+<p>好了今天的大致介绍和测试环境集群搭建都到这里，后面会总结使用中遇到的问题。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.037Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20180410/76-tidb-notes.html" target="_blank" rel="external">https://ningyu1.github.io/20180410/76-tidb-notes.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TiDB/">TiDB</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TiKV/">TiKV</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pd/">pd</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180410/76-tidb-notes.html&title=《TiDB使用笔记 —— 测试环境集群部署》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180410/76-tidb-notes.html&title=《TiDB使用笔记 —— 测试环境集群部署》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180410/76-tidb-notes.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《TiDB使用笔记 —— 测试环境集群部署》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180410/76-tidb-notes.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180410/76-tidb-notes.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20180412/77-jenkins-sonarqube-jacoco-junit.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">单元测试以及代码覆盖率——Jenkins集成SonarQube、JaCoCo、Junit使用问题汇总</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20180408/75-mysql-lock-wait-timeout-exceeded.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">MySql Lock wait timeout exceeded该如何处理？</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180410/76-tidb-notes.html&title=《TiDB使用笔记 —— 测试环境集群部署》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180410/76-tidb-notes.html&title=《TiDB使用笔记 —— 测试环境集群部署》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180410/76-tidb-notes.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《TiDB使用笔记 —— 测试环境集群部署》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180410/76-tidb-notes.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180410/76-tidb-notes.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACJUlEQVR42u3ay26DMBAF0P7/T1Opq0pJyJ2xE4nheFURsDks3Hn45ycex984//X/PY9XkjmTp5YGBgbGZRnH6XhcMr8nAZ/zknfDwMC4D6M6Xe/Zlc/35p0xMDAwWq97fmXXuhgYGBj5ppncef4UBgYGxjkjCdFyRrW4lqy7LRfHwMC4IKPaGPjm3x/sb2BgYFyEcRRHb6s9X6vaDHgyAwYGxmjGedC268hF9SBFnu5GsScGBsY4xq6jWnufiubBwMAYykgCsl2B3a6c+01QiIGBMZSRtBvzwLHXwqwW+F7m4hgYGEMZK4Fd3ryspqZJmQ8DA+M+jGqBrNo26AWahWYnBgbGaMbeEls+Qy+5bbYwMTAwRjC+E8ZVw8c8lcXAwJjN6B2qSDD5ZpoX6V6yMTAwbsnIJ8pfpXrgtbC5Y2BgjGbkbcgjGEkc2muaLkW4GBgYIxi9Qw/JlfXNN9/WMTAwpjKqR7XWA8fqi0aFPAwMjNGM3jLr96zc+eb/BgYGxjhGr/VYTVnzDb3aOsXAwLgP4xMNgOpnytPpJ++AgYExmlHdTPNJ1wtz5fIfBgbGUMZRHFVAPkPSPMDAwLgno9cAyBcoL7OQJGNgYMxmrBz2yhPXatGtPA8GBsYNGOubbG9syMIxMDAwimFfry2aJL3RmREMDAyMIJjrNSCrJbal0BADA+OyjF3L7Eply58MAwNjNKOXalbLbXnY98EPgYGBcT3GL8275PMOb64WAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>Dubbo接口如何在Jmeter中测试，自研Dubbo Plugin for Apache JMeter | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="dubbo,jmeter,test,Dubbo可视化测试工具,Jmeter对Dubbo接口进行可视化压力测试,Dubbo Jmeter插件">
+    <meta name="description" content="Dubbo接口如何在Jmeter中测试，自研Dubbo Plugin for Apache JMeter">
+<meta name="keywords" content="dubbo,jmeter,test,Dubbo可视化测试工具,Jmeter对Dubbo接口进行可视化压力测试,Dubbo Jmeter插件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dubbo接口如何在Jmeter中测试，自研Dubbo Plugin for Apache JMeter">
+<meta property="og:url" content="https://ningyu1.github.io/20180209/60-jmeter-plugins-dubbo-support.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="Dubbo接口如何在Jmeter中测试，自研Dubbo Plugin for Apache JMeter">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ningyu1.github.io/img/jmeter-plugins-dubbo/1.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/jmeter-plugins-dubbo/2.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/jmeter-plugins-dubbo/3.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/jmeter-plugins-dubbo/4.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/jmeter-plugins-dubbo/5.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/jmeter-plugins-dubbo/6.png">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.035Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Dubbo接口如何在Jmeter中测试，自研Dubbo Plugin for Apache JMeter">
+<meta name="twitter:description" content="Dubbo接口如何在Jmeter中测试，自研Dubbo Plugin for Apache JMeter">
+<meta name="twitter:image" content="https://ningyu1.github.io/img/jmeter-plugins-dubbo/1.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Dubbo接口如何在Jmeter中测试，自研Dubbo Plugin for Apache JMeter</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Dubbo接口如何在Jmeter中测试，自研Dubbo Plugin for Apache JMeter</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-02-09T07:39:49.000Z" itemprop="datePublished" class="page-time">
+  2018-02-09
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/test/">test</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Jmeter-Plugin"><span class="post-toc-number">1.</span> <span class="post-toc-text">Jmeter Plugin</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#JMeter的GUI机制"><span class="post-toc-number">2.</span> <span class="post-toc-text">JMeter的GUI机制</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#第一种方式："><span class="post-toc-number">2.1.</span> <span class="post-toc-text">第一种方式：</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#通过Swing的Bean绑定机制"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">通过Swing的Bean绑定机制</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Dubbo-Plugin-for-Apache-JMeter"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">Dubbo Plugin for Apache JMeter</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#DubboSample使用"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">DubboSample使用</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#支持Jmeter版本"><span class="post-toc-number">2.4.1.</span> <span class="post-toc-text">支持Jmeter版本</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#插件安装"><span class="post-toc-number">2.4.2.</span> <span class="post-toc-text">插件安装</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#插件使用"><span class="post-toc-number">2.4.3.</span> <span class="post-toc-text">插件使用</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#运行结果"><span class="post-toc-number">2.4.4.</span> <span class="post-toc-text">运行结果</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#注意事项"><span class="post-toc-number">2.4.5.</span> <span class="post-toc-text">注意事项</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-60-jmeter-plugins-dubbo-support"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Dubbo接口如何在Jmeter中测试，自研Dubbo Plugin for Apache JMeter</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-02-09 15:39:49" datetime="2018-02-09T07:39:49.000Z"  itemprop="datePublished">2018-02-09</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/test/">test</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>最近公司测试需要对<code>Dubbo</code>的<code>RPC</code>接口进行测试，测试工具使用的是<code>Jmeter</code>，按照常规的做法需要包装一个<code>Java</code>请求，再配合<code>Jmeter</code>的<code>Java Sample</code>去做测试，这种做法是最简单最普遍的，但是这个方法不够灵活和方便，那我们能不能写一个<code>Jmeter Plugin</code>来解决这个问题？让<code>Dubbo RPC</code>接口测试更为方便一些？</p>
+<p>那我们先了解一下Jmeter的插件机制</p>
+<h1 id="Jmeter-Plugin"><a href="#Jmeter-Plugin" class="headerlink" title="Jmeter Plugin"></a>Jmeter Plugin</h1><p>先来看一下<code>Jmeter</code>的核心组件</p>
+<ol>
+<li><code>Sample</code> 取样器，这个是最主要的组件，测试的内容主要是靠Sample来实现，我们常见的Sample有，<code>HttpSample</code>、<code>FTPSample</code>、<code>JavaSample</code>、<code>SMTPSample</code>、<code>LDAPSample</code>等。</li>
+<li><code>Timer</code> 定时器，主要用于配置sample之间的等待时间，可以查看：<code>org.apache.jmeter.timers.RandomTimer</code></li>
+<li><code>ConfigElement</code> 配置组件，主要用于定义前置配置。如数据库连接，csv输入数据集等。主要功能是将配置转换为变量设置到JMeter context中。</li>
+<li><code>Assertion</code> 验证Sampler的结果是否符合预期</li>
+<li><code>PostProcessor</code> 一般用于对Sampler结果进行二次加工</li>
+<li><code>Visualizer</code> 将sampler的结果进行可视化展示。</li>
+<li><code>Controller</code> 对sampler进行逻辑控制。</li>
+<li><code>SampleListener</code> 负责处理监听，基于事件机制。一般用于保存sampler的结果等耗费时间的操作。</li>
+</ol>
+<p>Jmeter的插件机制比较简单，Jmeter提供了扩展类来支持自定义插件的开发。<br>继承<code>org.apache.jmeter.samplers.gui.AbstractSamplerGui</code>和<code>org.apache.jmeter.samplers.AbstractSampler</code>就可以完成一个插件开发。</p>
+<h1 id="JMeter的GUI机制"><a href="#JMeter的GUI机制" class="headerlink" title="JMeter的GUI机制"></a>JMeter的GUI机制</h1><p>由于<code>Jmeter</code>是一个基于<code>Swing</code>的GUI工具,所以开发插件需要对<code>Java Swing GUI</code>框架有一定了解。 <code>JMeter</code>内部有两种GUI的实现方式。</p>
+<h2 id="第一种方式："><a href="#第一种方式：" class="headerlink" title="第一种方式："></a>第一种方式：</h2><p>直接继承JMeterGUIComponent接口的抽象实现类:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">org.apache.jmeter.config.gui.AbstractConfigGui</span><br><span class="line">org.apache.jmeter.assertions.gui.AbstractAssertionGui</span><br><span class="line">org.apache.jmeter.control.gui.AbstractControllerGui</span><br><span class="line">org.apache.jmeter.timers.gui.AbstractTimerGui</span><br><span class="line">org.apache.jmeter.visualizers.gui.AbstractVisualizer</span><br><span class="line">org.apache.jmeter.samplers.gui.AbstractSamplerGui</span><br></pre></td></tr></table></figure>
+<h2 id="通过Swing的Bean绑定机制"><a href="#通过Swing的Bean绑定机制" class="headerlink" title="通过Swing的Bean绑定机制"></a>通过Swing的Bean绑定机制</h2><p>前者的好处是自由度高，可定制性强，但需要开发者关心GUI控件布局,以及从控件到Model的转换。后者基本不需要开发者接触到GUI层的东西，定义好<code>Bean</code>以及<code>BeanInfo</code>即可。但<code>SampleListener</code>不支持<code>BeanInfo</code>方式定义。</p>
+<p><strong>ps.如果java swing比较熟悉的话推荐使用第一种方式，自由度高。</strong></p>
+<p>下面是我写的插件DubboSample，主要用于Dubbo RPC接口测试。</p>
+<h2 id="Dubbo-Plugin-for-Apache-JMeter"><a href="#Dubbo-Plugin-for-Apache-JMeter" class="headerlink" title="Dubbo Plugin for Apache JMeter"></a>Dubbo Plugin for Apache JMeter</h2><p>jmeter-plugin-dubbo项目已经transfer到dubbo group下</p>
+<p><a href="https://github.com/dubbo/jmeter-plugins-dubbo" target="_blank" rel="noopener">github: jmeter-plugin-dubbo</a> </p>
+<p><a href="https://gitee.com/ningyu/jmeter-plugins-dubbo" target="_blank" rel="noopener">码云: jmeter-plugin-dubbo</a></p>
+<h2 id="DubboSample使用"><a href="#DubboSample使用" class="headerlink" title="DubboSample使用"></a>DubboSample使用</h2><h3 id="支持Jmeter版本"><a href="#支持Jmeter版本" class="headerlink" title="支持Jmeter版本"></a>支持Jmeter版本</h3><p>Jmeter版本：3.0</p>
+<h3 id="插件安装"><a href="#插件安装" class="headerlink" title="插件安装"></a>插件安装</h3><p>插件包可以去<code>github</code>上下载。将插件包放入Jmeter的lib的ext下。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$&#123;Path&#125;\apache-jmeter-3.0\lib\ext</span><br></pre></td></tr></table></figure>
+<p>如果使用的是:<code>jmeter-plugins-dubbo-1.0.0-SNAPSHOT-jar-with-dependencies.jar</code>包含所有依赖。</p>
+<p>如果使用的是：<code>jmeter-plugins-dubbo-1.0.0-SNAPSHOT.jar</code>需要自定添加插件的依赖包，推荐使用上面的包，依赖包版本如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">dubbo-2.5.3.jar</span><br><span class="line">javassist-3.15.0-GA.jar</span><br><span class="line">zookeeper-3.4.6.jar</span><br><span class="line">zkclient-0.1.jar</span><br><span class="line">jline-0.9.94.jar</span><br><span class="line">netty-3.7.0-Final.jar</span><br><span class="line">slf4j-api-1.7.5.jar</span><br><span class="line">log4j-over-slf4j-1.7.5.jar</span><br></pre></td></tr></table></figure>
+<h3 id="插件使用"><a href="#插件使用" class="headerlink" title="插件使用"></a>插件使用</h3><p>启动<code>Jmeter</code>添加<code>DubboSample</code>如下图：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/jmeter-plugins-dubbo/1.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>添加后能看到<code>DubboSample</code>的具体操作页面，如下图：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/jmeter-plugins-dubbo/2.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>根据上图提示传入值即可。</p>
+<p>接口以及接口依赖包请添加到<code>classpath</code>下，可以放在<code>apache-jmeter-3.0\lib\ext</code>下，也可以通过下图方式添加：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/jmeter-plugins-dubbo/3.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h3 id="运行结果"><a href="#运行结果" class="headerlink" title="运行结果"></a>运行结果</h3><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/jmeter-plugins-dubbo/4.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/jmeter-plugins-dubbo/5.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/jmeter-plugins-dubbo/6.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ol>
+<li>当使用zk，address填入zk地址（集群地址使用”,”分隔）,使用dubbo直连，address填写直连地址和服务端口</li>
+<li><code>timeout</code>：服务方法调用超时时间(毫秒)</li>
+<li><code>version</code>：服务版本，与服务提供者的版本一致</li>
+<li><code>retries</code>：远程服务调用重试次数，不包括第一次调用，不需要重试请设为0</li>
+<li><code>cluster</code>：集群方式，可选：failover/failfast/failsafe/failback/forking</li>
+<li>接口需要填写类型完全名称，含包名</li>
+<li>参数支持任何类型，包装类直接使用<code>java.lang</code>下的包装类，小类型使用：<code>int、float、shot、double、long、byte、boolean、char</code>，自定义类使用类完全名称。</li>
+<li>参数值，基础包装类和基础小类型直接使用值，例如：int为1，boolean为true等，自定义类与<code>List</code>或者<code>Map</code>等使用json格式数据。</li>
+<li>更多dubbo参数查看官方文档：<a href="http://dubbo.io/books/dubbo-user-book/references/xml/dubbo-reference.html" target="_blank" rel="noopener">http://dubbo.io/books/dubbo-user-book/references/xml/dubbo-reference.html</a></li>
+</ol>
+<p>到这里插件的就介绍完了。世界和平、keep real！</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.035Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20180209/60-jmeter-plugins-dubbo-support.html" target="_blank" rel="external">https://ningyu1.github.io/20180209/60-jmeter-plugins-dubbo-support.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dubbo-Jmeter插件/">Dubbo Jmeter插件</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dubbo可视化测试工具/">Dubbo可视化测试工具</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Jmeter对Dubbo接口进行可视化压力测试/">Jmeter对Dubbo接口进行可视化压力测试</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dubbo/">dubbo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jmeter/">jmeter</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/test/">test</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180209/60-jmeter-plugins-dubbo-support.html&title=《Dubbo接口如何在Jmeter中测试，自研Dubbo Plugin for Apache JMeter》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180209/60-jmeter-plugins-dubbo-support.html&title=《Dubbo接口如何在Jmeter中测试，自研Dubbo Plugin for Apache JMeter》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180209/60-jmeter-plugins-dubbo-support.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Dubbo接口如何在Jmeter中测试，自研Dubbo Plugin for Apache JMeter》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180209/60-jmeter-plugins-dubbo-support.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180209/60-jmeter-plugins-dubbo-support.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20180211/61-disconf-ext.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">扩展Disconf支持Global共享配置，简化业务应用参数配置</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20180207/59-py2exe-pyinstaller.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">如何将Python脚本打包成可执行文件？</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180209/60-jmeter-plugins-dubbo-support.html&title=《Dubbo接口如何在Jmeter中测试，自研Dubbo Plugin for Apache JMeter》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180209/60-jmeter-plugins-dubbo-support.html&title=《Dubbo接口如何在Jmeter中测试，自研Dubbo Plugin for Apache JMeter》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180209/60-jmeter-plugins-dubbo-support.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Dubbo接口如何在Jmeter中测试，自研Dubbo Plugin for Apache JMeter》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180209/60-jmeter-plugins-dubbo-support.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180209/60-jmeter-plugins-dubbo-support.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACxUlEQVR42u3cwWobQRAE0Pz/TzuQUyBoVdU9Izvw9iSsRTtvDzNNdeNfv+Lr68/17+e///J8vbr/1S8kzz124eHh4Y2W/rysV0vJwc9LnFGTV4mHh4d3j9ceBs/3Py8ieUr+ut9Y8PDw8L6Vl5fOL7fp9cvCw8PD+794z4FCy2hjCzw8PLyfxss3+jYmSJY7i3cPZy14eHh4MW/TAPuuzx/q7+Hh4eGVXfVN6JDfk39brxAPDw/vAi+PFdpGVx525PfngwvRY/Dw8PBGvFkU2276LSYJO6KiHw8PD+8ab9aenw0W5JHr5vcPTB/g4eHhlQ2wduNuj5A22mgHtvDw8PDu8ZL2f/5tvlk/M9pyPDr38PDw8A7xkuPhucjOI+Akfk3As3YaHh4e3ileEom2m/VsVGv2lzcrx8PDw7vAy7fgfBJhFtTOnl4fVHh4eHh3a+Di3zMlpFnAMRvzGoa8eHh4eAteviknr2DWk9p0surCGg8PDy/mffJhbWmex8FR1oKHh4d3gdeOYW2ihM0RkhT9eHh4eJ/k5VFCvohZS6xoa+WjA3h4eHhHeS1gdgzsxxSK4S08PDy8C7w8tM1fQX4wtHFDGyvj4eHh3eBtmv1tG+wruNpSO4px8fDw8K7xTj0mmU2Yhbx5cIyHh4d3jzeLbjdHQlsi5225VZcPDw8Pr+TlbadZ8b0JINqBsCIFwcPDw1vw2qZXOxAw2/qLojmJJPDw8PCu8TYhwiZuONVUe1NM4+Hh4a15X+WVN8byUYMWXM+U4eHh4R3lbaKKPCZog4a2uG8Lbjw8PLw9rx2Eah+cF+inBg7w8PDwPsOrM4xys86jh/bsevNq8PDw8H4YbzYE0CLzMv3wwYCHh4e35m2aVclT8uGDKyU1Hh4e3oUwom1oJYx29Kouu/Hw8PAu8D7ZAGuHA5JgN4ok8PDw8M7wfgM5WXOonU+z0QAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

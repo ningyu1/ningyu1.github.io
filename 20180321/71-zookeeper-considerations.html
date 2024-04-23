@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>Zookeeper常用命令与注意事项 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="zookeeper">
+    <meta name="description" content="Zookeeper常用命令与注意事项">
+<meta name="keywords" content="zookeeper">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Zookeeper常用命令与注意事项">
+<meta property="og:url" content="https://ningyu1.github.io/20180321/71-zookeeper-considerations.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="Zookeeper常用命令与注意事项">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ningyu1.github.io/img/zookeeper/1.png">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.037Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Zookeeper常用命令与注意事项">
+<meta name="twitter:description" content="Zookeeper常用命令与注意事项">
+<meta name="twitter:image" content="https://ningyu1.github.io/img/zookeeper/1.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Zookeeper常用命令与注意事项</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Zookeeper常用命令与注意事项</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-03-21T07:26:53.000Z" itemprop="datePublished" class="page-time">
+  2018-03-21
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/zookeeper/">zookeeper</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Zookeeper是什么？"><span class="post-toc-number">1.</span> <span class="post-toc-text">Zookeeper是什么？</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Zookeeper的原理"><span class="post-toc-number">2.</span> <span class="post-toc-text">Zookeeper的原理</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Zookeeper数据结构"><span class="post-toc-number">3.</span> <span class="post-toc-text">Zookeeper数据结构</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Zookeeper节点类型"><span class="post-toc-number">4.</span> <span class="post-toc-text">Zookeeper节点类型</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Zookeeper常用命令"><span class="post-toc-number">5.</span> <span class="post-toc-text">Zookeeper常用命令</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#启动服务"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">启动服务</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#查看当前zk节点状态"><span class="post-toc-number">5.2.</span> <span class="post-toc-text">查看当前zk节点状态</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#连接服务"><span class="post-toc-number">5.3.</span> <span class="post-toc-text">连接服务</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#查看节点信息"><span class="post-toc-number">5.4.</span> <span class="post-toc-text">查看节点信息</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#查看指定node的子node"><span class="post-toc-number">5.5.</span> <span class="post-toc-text">查看指定node的子node</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#创建一个普通节点"><span class="post-toc-number">5.6.</span> <span class="post-toc-text">创建一个普通节点</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#获取hello节点的数据与状态"><span class="post-toc-number">5.7.</span> <span class="post-toc-text">获取hello节点的数据与状态</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#删除hello节点"><span class="post-toc-number">5.8.</span> <span class="post-toc-text">删除hello节点</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#znode节点的状态信息"><span class="post-toc-number">5.9.</span> <span class="post-toc-text">znode节点的状态信息</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#zxid"><span class="post-toc-number">5.10.</span> <span class="post-toc-text">zxid</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#session"><span class="post-toc-number">5.11.</span> <span class="post-toc-text">session</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#创建不同类型的节点"><span class="post-toc-number">5.12.</span> <span class="post-toc-text">创建不同类型的节点</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#watch"><span class="post-toc-number">5.13.</span> <span class="post-toc-text">watch</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ls命令"><span class="post-toc-number">5.13.1.</span> <span class="post-toc-text">ls命令</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#get命令"><span class="post-toc-number">5.13.2.</span> <span class="post-toc-text">get命令</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#stat命令"><span class="post-toc-number">5.13.3.</span> <span class="post-toc-text">stat命令</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-71-zookeeper-considerations"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Zookeeper常用命令与注意事项</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-03-21 15:26:53" datetime="2018-03-21T07:26:53.000Z"  itemprop="datePublished">2018-03-21</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/zookeeper/">zookeeper</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p><code>Zookeeper</code>在互联网行业和分布式环境下是最常用的集群协调工具，那我们今天就对<code>Zookeeper</code>的常用命令和使用注意事项进一步说明，在这之前我们先看一下<code>Zookeeper</code>是什么，它能做什么？</p>
+<h1 id="Zookeeper是什么？"><a href="#Zookeeper是什么？" class="headerlink" title="Zookeeper是什么？"></a>Zookeeper是什么？</h1><p><code>ZooKeeper</code>是一个开源的分布式应用程序协调服务，是<code>Google</code>的<code>Chubby</code>一个开源的实现，是<code>Hadoop</code>和Hbase的重要组件。它是一个为分布式应用提供一致性服务的软件，提供的功能包括：配置维护、域名服务、分布式同步、组服务等。</p>
+<p>它的这些特性可以让我们在很多场景下使用它，可以用它做注册中心、分布式锁、选举、队列等。</p>
+<h1 id="Zookeeper的原理"><a href="#Zookeeper的原理" class="headerlink" title="Zookeeper的原理"></a>Zookeeper的原理</h1><p><code>ZooKeeper</code>是以<code>Fast Paxos</code>算法为基础的，<a href="https://baike.baidu.com/item/Paxos%20%E7%AE%97%E6%B3%95" target="_blank" rel="noopener"><code>Paxos</code> 算法</a>存在活锁的问题，即当有多个<code>proposer</code>交错提交时，有可能互相排斥导致没有一个<code>proposer</code>能提交成功，而<code>Fast Paxos</code>作了一些优化，通过选举产生一个<code>leader</code> (领导者)，只有<code>leader</code>才能提交<code>proposer</code>，具体算法可见<code>Fast Paxos</code>。因此，要想弄懂<code>ZooKeeper</code>首先得对<code>Fast Paxos</code>有所了解</p>
+<p><code>ZooKeeper</code>的基本运转流程：</p>
+<ol>
+<li>选举<code>Leader</code>。</li>
+<li>同步数据。</li>
+<li>选举<code>Leader</code>过程中算法有很多，但要达到的选举标准是一致的。</li>
+<li><code>Leader</code>要具有最高的执行<code>ID</code>，类似<code>root</code>权限。</li>
+<li>集群中大多数的机器得到响应并接受选出的<code>Leader</code>。</li>
+</ol>
+<h1 id="Zookeeper数据结构"><a href="#Zookeeper数据结构" class="headerlink" title="Zookeeper数据结构"></a>Zookeeper数据结构</h1><p>与普通的文件系统极其类似，如下：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/zookeeper/1.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>其中每个节点称为一个znode. 每个znode由3部分组成:</p>
+<ul>
+<li>stat. 此为状态信息, 描述该znode的版本, 权限等信息.</li>
+<li>data. 与该znode关联的数据.</li>
+<li>children. 该znode下的子节点.</li>
+</ul>
+<h1 id="Zookeeper节点类型"><a href="#Zookeeper节点类型" class="headerlink" title="Zookeeper节点类型"></a>Zookeeper节点类型</h1><ul>
+<li><code>persistent</code>： <code>persistent</code>节点不和特定的<code>session</code>绑定, 不会随着创建该节点的<code>session</code>的结束而消失, 而是一直存在, 除非该节点被显式删除.</li>
+<li><code>ephemeral</code>： <code>ephemeral</code>节点是临时性的, 如果创建该节点的<code>session</code>结束了, 该节点就会被自动删除.     <code>ephemeral</code>节点不能拥有子节点. 虽然<code>ephemeral</code>节点与创建它的<code>session</code>绑定, 但只要该该节点没有被删除, 其他<code>session</code>就可以读写该节点中关联的数据. 使用<code>-e</code>参数指定创建<code>ephemeral</code>节点.</li>
+<li><code>sequence</code>： 严格的说, <code>sequence</code>并非节点类型中的一种. <code>sequence</code>节点既可以是<code>ephemeral</code>的, 也可以是<code>persistent</code>的. 创建<code>sequence</code>节点时, <code>ZooKeeper server</code>会在指定的节点名称后加上一个数字序列, 该数字序列是递增的. 因此可以多次创建相同的<code>sequence</code>节点, 而得到不同的节点. 使用-s参数指定创建<code>sequence</code>节点.</li>
+</ul>
+<h1 id="Zookeeper常用命令"><a href="#Zookeeper常用命令" class="headerlink" title="Zookeeper常用命令"></a>Zookeeper常用命令</h1><h2 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[app@iZbp1dijzcfg8m0bcqfv9yZ zookeeper]$ ./bin/zkServer.sh start</span><br><span class="line">ZooKeeper JMX enabled by default</span><br><span class="line">Using config: /usr/local/servers/zookeeper/zookeeper/bin/../conf/zoo.cfg</span><br><span class="line">Starting zookeeper ... STARTED</span><br></pre></td></tr></table></figure>
+<h2 id="查看当前zk节点状态"><a href="#查看当前zk节点状态" class="headerlink" title="查看当前zk节点状态"></a>查看当前zk节点状态</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk@iZbp1dijzcfg8m0bcqfv9yZ bin]$ ./zkServer.sh status</span><br><span class="line">JMX enabled by default</span><br><span class="line">Using config: /usr/local/servers/zookeeper/zookeeper/bin/../conf/zoo.cfg</span><br><span class="line">Mode: standalone</span><br></pre></td></tr></table></figure>
+<p><span style="color:blue">ps. <code>standalone</code>代表单机模式，</span></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk@iZ23np2fk60Z bin]$ ./zkServer.sh status</span><br><span class="line">JMX enabled by default</span><br><span class="line">Using config: /usr/local/zookeeper/bin/../conf/zoo.cfg</span><br><span class="line">Mode: leader</span><br></pre></td></tr></table></figure>
+<p><span style="color:blue">ps. 集群模式下会显示的状态，<code>leader</code>节点，集群中其他机器会从leader节点同步数据</span></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk@iZ237ydkhyiZ bin]$ ./zkServer.sh status</span><br><span class="line">JMX enabled by default</span><br><span class="line">Using config: /usr/local/zookeeper/bin/../conf/zoo.cfg</span><br><span class="line">Mode: follower</span><br></pre></td></tr></table></figure>
+<p><span style="color:blue">ps. 集群模式下会显示的状态，<code>follower</code>节点在启动过程中会从leader节点同步所有数据</span></p>
+<h2 id="连接服务"><a href="#连接服务" class="headerlink" title="连接服务"></a>连接服务</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[app@iZbp1dijzcfg8m0bcqfv9yZ zookeeper]$ ./bin/zkCli.sh -server ip:port</span><br></pre></td></tr></table></figure>
+<p><span style="color:blue">ps. 不写ip端口默认连接本机服务.</span></p>
+<h2 id="查看节点信息"><a href="#查看节点信息" class="headerlink" title="查看节点信息"></a>查看节点信息</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 0] ls /</span><br><span class="line">[seq, dubbo, disconf, otter, pinpoint-cluster, zookeeper]</span><br></pre></td></tr></table></figure>
+<h2 id="查看指定node的子node"><a href="#查看指定node的子node" class="headerlink" title="查看指定node的子node"></a>查看指定node的子node</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 3] ls /zookeeper</span><br><span class="line">[quota]</span><br></pre></td></tr></table></figure>
+<h2 id="创建一个普通节点"><a href="#创建一个普通节点" class="headerlink" title="创建一个普通节点"></a>创建一个普通节点</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 6] create /hello world</span><br><span class="line">Created /hello</span><br></pre></td></tr></table></figure>
+<h2 id="获取hello节点的数据与状态"><a href="#获取hello节点的数据与状态" class="headerlink" title="获取hello节点的数据与状态"></a>获取hello节点的数据与状态</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 8] get /hello</span><br><span class="line">world</span><br><span class="line">cZxid = 0x262ea76</span><br><span class="line">ctime = Wed Mar 21 14:39:12 CST 2018</span><br><span class="line">mZxid = 0x262ea76</span><br><span class="line">mtime = Wed Mar 21 14:39:12 CST 2018</span><br><span class="line">pZxid = 0x262ea76</span><br><span class="line">cversion = 0</span><br><span class="line">dataVersion = 0</span><br><span class="line">aclVersion = 0</span><br><span class="line">ephemeralOwner = 0x0</span><br><span class="line">dataLength = 5</span><br><span class="line">numChildren = 0</span><br></pre></td></tr></table></figure>
+<h2 id="删除hello节点"><a href="#删除hello节点" class="headerlink" title="删除hello节点"></a>删除hello节点</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 9] delete /hello</span><br><span class="line">[zk: localhost:2181(CONNECTED) 10] get /hello</span><br><span class="line">Node does not exist: /hello</span><br></pre></td></tr></table></figure>
+<p><span style="color:blue">ps. 使用delete命令可以删除指定znode. 当该znode拥有子znode时, 必须先删除其所有子znode, 否则操作将失败. rmr命令可用于代替delete命令, rmr是一个递归删除命令, 如果发生指定节点拥有子节点时, rmr命令会首先删除子节点.</span></p>
+<h2 id="znode节点的状态信息"><a href="#znode节点的状态信息" class="headerlink" title="znode节点的状态信息"></a>znode节点的状态信息</h2><p>使用get命令获取指定节点的数据时, 同时也将返回该节点的状态信息, 称为Stat. 其包含如下字段:</p>
+<ul>
+<li>czxid. 节点创建时的zxid.</li>
+<li>mzxid. 节点最新一次更新发生时的zxid.</li>
+<li>ctime. 节点创建时的时间戳.</li>
+<li>mtime. 节点最新一次更新发生时的时间戳.</li>
+<li>dataVersion. 节点数据的更新次数.</li>
+<li>cversion. 其子节点的更新次数.</li>
+<li>aclVersion. 节点ACL(授权信息)的更新次数.</li>
+<li>ephemeralOwner. 如果该节点为ephemeral节点, ephemeralOwner值表示与该节点绑定的session id. 如果该节点不是ephemeral节点, ephemeralOwner值为0. 至于什么是ephemeral节点, 请看后面的讲述.</li>
+<li>dataLength. 节点数据的字节数.</li>
+<li>numChildren. 子节点个数.</li>
+</ul>
+<h2 id="zxid"><a href="#zxid" class="headerlink" title="zxid"></a>zxid</h2><p>znode节点的状态信息中包含czxid和mzxid, 那么什么是zxid呢?<br>ZooKeeper状态的每一次改变, 都对应着一个递增的Transaction id, 该id称为zxid. 由于zxid的递增性质, 如果zxid1小于zxid2, 那么zxid1肯定先于zxid2发生. 创建任意节点, 或者更新任意节点的数据, 或者删除任意节点, 都会导致Zookeeper状态发生改变, 从而导致zxid的值增加.</p>
+<h2 id="session"><a href="#session" class="headerlink" title="session"></a>session</h2><p>在client和server通信之前, 首先需要建立连接, 该连接称为session. 连接建立后, 如果发生连接超时, 授权失败, 或者显式关闭连接, 连接便处于CLOSED状态, 此时session结束.</p>
+<h2 id="创建不同类型的节点"><a href="#创建不同类型的节点" class="headerlink" title="创建不同类型的节点"></a>创建不同类型的节点</h2><p>节点的类型前面已经讲过。</p>
+<p>创建一个临时节点</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 12] create -e /hello world   </span><br><span class="line">Created /hello</span><br><span class="line">[zk: localhost:2181(CONNECTED) 13] get /hello</span><br><span class="line">world</span><br><span class="line">cZxid = 0x262ea78</span><br><span class="line">ctime = Wed Mar 21 14:45:23 CST 2018</span><br><span class="line">mZxid = 0x262ea78</span><br><span class="line">mtime = Wed Mar 21 14:45:23 CST 2018</span><br><span class="line">pZxid = 0x262ea78</span><br><span class="line">cversion = 0</span><br><span class="line">dataVersion = 0</span><br><span class="line">aclVersion = 0</span><br><span class="line">ephemeralOwner = 0x15c150a650f066c</span><br><span class="line">dataLength = 5</span><br><span class="line">numChildren = 0</span><br></pre></td></tr></table></figure>
+<p>创建一个序列节点</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 14] create -s /hello1 world</span><br><span class="line">Created /hello10000000007</span><br><span class="line">[zk: localhost:2181(CONNECTED) 15] create -s /hello1 world</span><br><span class="line">Created /hello10000000008</span><br><span class="line">[zk: localhost:2181(CONNECTED) 16] ls /</span><br><span class="line">[hello, dubbo, otter, zookeeper, seq, disconf, hello10000000007, hello10000000008, pinpoint-cluster]</span><br><span class="line">[zk: localhost:2181(CONNECTED) 17] get /hello10000000007</span><br><span class="line">world</span><br><span class="line">cZxid = 0x262ea7e</span><br><span class="line">ctime = Wed Mar 21 14:47:51 CST 2018</span><br><span class="line">mZxid = 0x262ea7e</span><br><span class="line">mtime = Wed Mar 21 14:47:51 CST 2018</span><br><span class="line">pZxid = 0x262ea7e</span><br><span class="line">cversion = 0</span><br><span class="line">dataVersion = 0</span><br><span class="line">aclVersion = 0</span><br><span class="line">ephemeralOwner = 0x0</span><br><span class="line">dataLength = 5</span><br><span class="line">numChildren = 0</span><br></pre></td></tr></table></figure>
+<h2 id="watch"><a href="#watch" class="headerlink" title="watch"></a>watch</h2><p>watch的意思是监听感兴趣的事件. 在命令行中, 以下几个命令可以指定是否监听相应的事件.</p>
+<h3 id="ls命令"><a href="#ls命令" class="headerlink" title="ls命令"></a>ls命令</h3><p>ls命令. ls命令的第一个参数指定znode, 第二个参数如果为true, 则说明监听该znode的子节点的增减, 以及该znode本身的删除事件.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 27] create /hello world</span><br><span class="line">Created /hello</span><br><span class="line">[zk: localhost:2181(CONNECTED) 28] ls /hello true</span><br><span class="line">[]</span><br><span class="line">[zk: localhost:2181(CONNECTED) 29] create /hello/test item001</span><br><span class="line"></span><br><span class="line">WATCHER::</span><br><span class="line"></span><br><span class="line">WatchedEvent state:SyncConnected type:NodeChildrenChanged path:/hello</span><br><span class="line">Created /hello/test</span><br></pre></td></tr></table></figure>
+<h3 id="get命令"><a href="#get命令" class="headerlink" title="get命令"></a>get命令</h3><p>get命令. get命令的第一个参数指定znode, 第二个参数如果为true, 则说明监听该znode的更新和删除事件.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 30] get /hello true</span><br><span class="line">world</span><br><span class="line">cZxid = 0x262ef5d</span><br><span class="line">ctime = Wed Mar 21 14:52:16 CST 2018</span><br><span class="line">mZxid = 0x262ef5d</span><br><span class="line">mtime = Wed Mar 21 14:52:16 CST 2018</span><br><span class="line">pZxid = 0x262ef5e</span><br><span class="line">cversion = 1</span><br><span class="line">dataVersion = 0</span><br><span class="line">aclVersion = 0</span><br><span class="line">ephemeralOwner = 0x0</span><br><span class="line">dataLength = 5</span><br><span class="line">numChildren = 1</span><br><span class="line">[zk: localhost:2181(CONNECTED) 31] create /hello/test1 item001</span><br><span class="line">Created /hello/test1</span><br><span class="line">[zk: localhost:2181(CONNECTED) 32] rmr /hello</span><br><span class="line"></span><br><span class="line">WATCHER::</span><br><span class="line"></span><br><span class="line">WatchedEvent state:SyncConnected type:NodeDeleted path:/hello</span><br></pre></td></tr></table></figure>
+<h3 id="stat命令"><a href="#stat命令" class="headerlink" title="stat命令"></a>stat命令</h3><p>stat命令. stat命令用于获取znode的状态信息. 第一个参数指定znode, 如果第二个参数为true.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 35] create /hello world</span><br><span class="line"></span><br><span class="line">WATCHER::</span><br><span class="line"></span><br><span class="line">WatchedEvent state:SyncConnected type:NodeCreated path:/hello</span><br><span class="line">Created /hello</span><br><span class="line">[zk: localhost:2181(CONNECTED) 36] stat /hello true</span><br><span class="line">cZxid = 0x262f0f0</span><br><span class="line">ctime = Wed Mar 21 14:56:31 CST 2018</span><br><span class="line">mZxid = 0x262f0f0</span><br><span class="line">mtime = Wed Mar 21 14:56:31 CST 2018</span><br><span class="line">pZxid = 0x262f0f0</span><br><span class="line">cversion = 0</span><br><span class="line">dataVersion = 0</span><br><span class="line">aclVersion = 0</span><br><span class="line">ephemeralOwner = 0x0</span><br><span class="line">dataLength = 5</span><br><span class="line">numChildren = 0</span><br></pre></td></tr></table></figure>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.037Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20180321/71-zookeeper-considerations.html" target="_blank" rel="external">https://ningyu1.github.io/20180321/71-zookeeper-considerations.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/zookeeper/">zookeeper</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180321/71-zookeeper-considerations.html&title=《Zookeeper常用命令与注意事项》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180321/71-zookeeper-considerations.html&title=《Zookeeper常用命令与注意事项》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180321/71-zookeeper-considerations.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Zookeeper常用命令与注意事项》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180321/71-zookeeper-considerations.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180321/71-zookeeper-considerations.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20180323/72-svn-query.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Subversion库如何全文检索代码？</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20180316/70-cas-server-pit.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Trouble Shooting —— CAS Server集群环境下TGC验证问题排查，需要开启会话保持</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180321/71-zookeeper-considerations.html&title=《Zookeeper常用命令与注意事项》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180321/71-zookeeper-considerations.html&title=《Zookeeper常用命令与注意事项》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180321/71-zookeeper-considerations.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Zookeeper常用命令与注意事项》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180321/71-zookeeper-considerations.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180321/71-zookeeper-considerations.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACrklEQVR42u3aS27CQBAFwNz/0uQAxOb1Z5AjlVcIA55iMd160z8/8fV6u97fv3/n6vX755PfWb7w8PDwxku/X/T9UpJlVZeerOdqbXh4eHjneFc/2vvMfanId+/JevDw8PCexsvb6Hy7rxYGPDw8vP/Cy1vkvAVPogo8PDy8p/Hyn7svEj12r6Vezlrw8PDwYl5+ivSc10fO9/Dw8PDGp+r5hlvd6CcHZoXV4uHh4R3g9SLXXpQwr13NaBgPDw/vK7z84L8XTOxGEh+abzw8PLxVXr5lvwZXcvw/GSOITvbw8PDwlnjVA/sqvrrdn7iLh4eHd4JXhVWX22vW58EEHh4e3mlevoicXW3fq2NVzbAYDw8Pb4lXLQlbd6uNe7NU4OHh4a3ydgPZyVLyAa/Ct/Dw8PC+yEsen7+ejGH1GnQ8PDy8E7y8DJzOSPPvFsIIPDw8vAO8XpM6CSOqowbV0YGFHhwPDw/v9rnJAFPeaieMakOfxxN/fBIPDw/vAC/5wiRQWF5W8Q/Fw8PDO8GrDjNVBwLyWKEaT0RrxsPDwzvA2zpw6oWzvWOwXhHCw8PD2+JV49F83CrZ0KvPLbPx8PDwDvCqUWkvYshji7zkNGfK8PDw8JZ41Qcn23oPvHU3GiPAw8PDG/AmoW01VN1qoPOjMjw8PLxzvHwrnxzn5wHHvMDg4eHhfYfXi3SrEW11gGBSBfDw8PB2ea/ilbfCvbZ4MlYVzZTh4eHhjXnzwCIfz+rFFsnft1Ba8PDw8AajA9Vjqt4oQL6t9w7eCo01Hh4e3oBXHWzqlYRq/FENIC5HB/Dw8PAew6tGEnlIkRSeqL3Gw8PDewyvF2TkZaN3lTNjPDw8vAGvNxpVPdDqhcV5CbksDHh4eHirvN6sVo+aF4zqwdvC+R4eHh7eZ94vRIRUuePK8yIAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>分布式锁（Redis实现）使用说明 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Redis,Lock,Distributed">
+    <meta name="description" content="分布式锁（Redis实现）使用说明">
+<meta name="keywords" content="Redis,Lock,Distributed">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式锁（Redis实现）使用说明">
+<meta property="og:url" content="https://ningyu1.github.io/20170927/29-distributed-lock.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="分布式锁（Redis实现）使用说明">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://github.com/ningyu1/distributed-lock/watchers">
+<meta property="og:image" content="http://www.gnu.org/licenses/gpl-3.0.html">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.033Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分布式锁（Redis实现）使用说明">
+<meta name="twitter:description" content="分布式锁（Redis实现）使用说明">
+<meta name="twitter:image" content="https://github.com/ningyu1/distributed-lock/watchers">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">分布式锁（Redis实现）使用说明</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">分布式锁（Redis实现）使用说明</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-09-27T08:43:36.000Z" itemprop="datePublished" class="page-time">
+  2017-09-27
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Redis/">Redis</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Redis/Lock/">Lock</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Redis/Lock/Distributed/">Distributed</a></li></ul></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#项目地址"><span class="post-toc-number">2.</span> <span class="post-toc-text">项目地址</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#实现的分布式锁特性"><span class="post-toc-number">3.</span> <span class="post-toc-text">实现的分布式锁特性</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#实现的分布式锁缺点"><span class="post-toc-number">4.</span> <span class="post-toc-text">实现的分布式锁缺点</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#使用步骤"><span class="post-toc-number">5.</span> <span class="post-toc-text">使用步骤</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Maven中引入"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">Maven中引入</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#spring中引入配置"><span class="post-toc-number">5.2.</span> <span class="post-toc-text">spring中引入配置</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#使用到了RedisClient"><span class="post-toc-number">5.3.</span> <span class="post-toc-text">使用到了RedisClient</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#代码中使用"><span class="post-toc-number">5.4.</span> <span class="post-toc-text">代码中使用</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#锁重试策略说明"><span class="post-toc-number">5.5.</span> <span class="post-toc-text">锁重试策略说明</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Example"><span class="post-toc-number">5.6.</span> <span class="post-toc-text">Example</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#第一种用法"><span class="post-toc-number">5.6.1.</span> <span class="post-toc-text">第一种用法</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#第二种用法"><span class="post-toc-number">5.6.2.</span> <span class="post-toc-text">第二种用法</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#第三种用法"><span class="post-toc-number">5.6.3.</span> <span class="post-toc-text">第三种用法</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#第四种用法"><span class="post-toc-number">5.6.4.</span> <span class="post-toc-text">第四种用法</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#注意事项"><span class="post-toc-number">5.7.</span> <span class="post-toc-text">注意事项</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-29-distributed-lock"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">分布式锁（Redis实现）使用说明</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-09-27 16:43:36" datetime="2017-09-27T08:43:36.000Z"  itemprop="datePublished">2017-09-27</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Redis/">Redis</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Redis/Lock/">Lock</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Redis/Lock/Distributed/">Distributed</a></li></ul></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>[<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://github.com/ningyu1/distributed-lock/watchers" alt="GitHub release](https://img.shields.io/github/release/ningyu1/distributed-lock.svg?style=social&label=Release)](https://github.com/ningyu1/distributed-lock/releases)&nbsp;[![GitHub stars](https://img.shields.io/github/stars/ningyu1/distributed-lock.svg?style=social&label=Star)](https://github.com/ningyu1/distributed-lock/stargazers)&nbsp;[![GitHub forks](https://img.shields.io/github/forks/ningyu1/distributed-lock.svg?style=social&label=Fork)](https://github.com/ningyu1/distributed-lock/fork)&nbsp;[![GitHub watchers](https://img.shields.io/github/watchers/ningyu1/distributed-lock.svg?style=social&label=Watch)" title>
+                </div>
+                <div class="image-caption">GitHub release](https://img.shields.io/github/release/ningyu1/distributed-lock.svg?style=social&label=Release)](https://github.com/ningyu1/distributed-lock/releases)&nbsp;[![GitHub stars](https://img.shields.io/github/stars/ningyu1/distributed-lock.svg?style=social&label=Star)](https://github.com/ningyu1/distributed-lock/stargazers)&nbsp;[![GitHub forks](https://img.shields.io/github/forks/ningyu1/distributed-lock.svg?style=social&label=Fork)](https://github.com/ningyu1/distributed-lock/fork)&nbsp;[![GitHub watchers](https://img.shields.io/github/watchers/ningyu1/distributed-lock.svg?style=social&label=Watch)</div>
+            </figure></p>
+<h2 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h2><p><a href="https://github.com/ningyu1/distributed-lock" title="项目地址" target="_blank" rel="noopener">distributed-lock</a> </p>
+<p>[<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://www.gnu.org/licenses/gpl-3.0.html" alt="License](https://img.shields.io/badge/license-GPLv3-blue.svg)" title>
+                </div>
+                <div class="image-caption">License](https://img.shields.io/badge/license-GPLv3-blue.svg)</div>
+            </figure></p>
+<p>分布式锁，默认是redis实现，可扩展接口增加zk、等其他实现,这个分布式锁采用redis实现，根据CAP理论保证了可用性、分区容错性、和最终一致性。</p>
+<h2 id="实现的分布式锁特性"><a href="#实现的分布式锁特性" class="headerlink" title="实现的分布式锁特性"></a>实现的分布式锁特性</h2><ol>
+<li>这把锁是非阻塞锁，可以根据超时时间和重试频率来定义重试次数</li>
+<li>这把锁支持失效时间，极端情况下解锁失败，到达时间之后锁会自动删除</li>
+<li>这把锁是非重入锁，一个线程获得锁之后，在释放锁之前，其他线程无法再次获得锁，只能根据获取锁超时时间和重试策略进行多次尝试获取锁。</li>
+<li>因为这把锁是非阻塞的，所以性能很好，支持高并发</li>
+<li>使用方无需手动获取锁和释放锁，锁的控制完全由框架控制操作，避免使用方由于没有释放锁或释放锁失败导致死锁的问题</li>
+</ol>
+<h2 id="实现的分布式锁缺点"><a href="#实现的分布式锁缺点" class="headerlink" title="实现的分布式锁缺点"></a>实现的分布式锁缺点</h2><ol>
+<li>通过超时时间来控制锁的失效时间其实并不完美，但是根据性能和CAP理论有做取舍</li>
+<li>这把锁不支持阻塞，因为要达到高的性能阻塞的特性是要牺牲</li>
+</ol>
+<h2 id="使用步骤"><a href="#使用步骤" class="headerlink" title="使用步骤"></a>使用步骤</h2><h3 id="Maven中引入"><a href="#Maven中引入" class="headerlink" title="Maven中引入"></a>Maven中引入</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;cn.tsoft.framework&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;distributed-lock&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.1.0-SNAPSHOT&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="spring中引入配置"><a href="#spring中引入配置" class="headerlink" title="spring中引入配置"></a>spring中引入配置</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;import resource=&quot;classpath:spring-lock.xml&quot; /&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="使用到了RedisClient"><a href="#使用到了RedisClient" class="headerlink" title="使用到了RedisClient"></a>使用到了RedisClient</h3><p>具体可以查看<a href="https://ningyu1.github.io/site/post/22-redis-client/">《RedisCliet使用说明》</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;aop:aspectj-autoproxy /&gt;</span><br><span class="line">&lt;context:component-scan base-package=&quot;cn.tsoft.framework&quot; /&gt;</span><br><span class="line">&lt;context:property-placeholder location=&quot;classpath:redis.properties&quot;/&gt;</span><br><span class="line">&lt;import resource=&quot;classpath:spring-redis.xml&quot; /&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="代码中使用"><a href="#代码中使用" class="headerlink" title="代码中使用"></a>代码中使用</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import cn.tsoft.framework.lock.Lock;</span><br><span class="line">import  cn.tsoft.framework.lock.LockCallBack;</span><br><span class="line">import  cn.tsoft.framework.lock.DefaultLockCallBack;</span><br><span class="line"> </span><br><span class="line">@Autowired</span><br><span class="line">Lock lock;</span><br><span class="line"></span><br><span class="line">//方法一</span><br><span class="line">T t = lock.lock(&quot;Test_key_2&quot;,20,60,new LockCallBack&lt;T&gt;()&#123;</span><br><span class="line">    public T handleObtainLock()&#123;</span><br><span class="line">        dosomething();</span><br><span class="line">    &#125;</span><br><span class="line">    public T handleNotObtainLock() throws LockCantObtainException&#123;</span><br><span class="line">        return T;//throw new LockCantObtainException();</span><br><span class="line">    &#125;</span><br><span class="line">    public T handleException(LockInsideExecutedException e) throws LockInsideExecutedException&#123;</span><br><span class="line">        return T;//throw new e;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">//方法二</span><br><span class="line">T t = lock.lock(&quot;Test_key_2&quot;,LockRetryFrequncy.VERY_QUICK,20,60,new DefaultLockCallBack&lt;T&gt;(T,T)&#123;</span><br><span class="line">    public T handleObtainLock()&#123;</span><br><span class="line">        dosomething();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="锁重试策略说明"><a href="#锁重试策略说明" class="headerlink" title="锁重试策略说明"></a>锁重试策略说明</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 锁重试获取频率策略</span><br><span class="line"> * </span><br><span class="line"> * @author ningyu</span><br><span class="line"> *</span><br><span class="line"> */</span><br><span class="line">LockRetryFrequncy.VERY_QUICK;  //非常快</span><br><span class="line">LockRetryFrequncy.QUICK;       //快</span><br><span class="line">LockRetryFrequncy.NORMAL;      //中</span><br><span class="line">LockRetryFrequncy.SLOW;        //慢</span><br><span class="line">LockRetryFrequncy.VERYSLOW;    //很慢</span><br><span class="line">//例如：</span><br><span class="line">//以获取锁的超时时间为：1秒来计算</span><br><span class="line">//VERY_QUICK的重试次数为：100次</span><br><span class="line">//QUICK的重试次数为：20次</span><br><span class="line">//NORMAL的重试次数为：10次</span><br><span class="line">//SLOW的重试次数为：2次</span><br><span class="line">//QUICK的重试次数为：1次</span><br><span class="line">//这个重试策略根据自身业务来选择合适的重试策略</span><br></pre></td></tr></table></figure>
+<h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><h4 id="第一种用法"><a href="#第一种用法" class="headerlink" title="第一种用法"></a>第一种用法</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//锁名称：Test_key_2</span><br><span class="line">//获取锁超时时间：20秒</span><br><span class="line">//锁最大过期时间：60秒</span><br><span class="line">//内部执行回调，包含（1.获取到锁回调，2.没有获取到锁回调，3.获取到锁内部执行业务代码报错）</span><br><span class="line">//默认策略：NORMAL</span><br><span class="line">lock.lock(&quot;Test_key_2&quot;,20,60,new LockCallBack&lt;String&gt;() &#123;</span><br><span class="line">   @Override</span><br><span class="line">   public String handleException(LockInsideExecutedException e) throws LockInsideExecutedException &#123;</span><br><span class="line">       logger.error(&quot;获取到锁，内部执行报错&quot;);</span><br><span class="line">       return &quot;Exception&quot;;         </span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   @Override</span><br><span class="line">   public String handleNotObtainLock() throws LockCantObtainException &#123;</span><br><span class="line">          logger.error(&quot;没有获取到锁&quot;);</span><br><span class="line">       return &quot;NotObtainLock&quot;;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   @Override</span><br><span class="line">   public String handleObtainLock() &#123;</span><br><span class="line">       logger.info(&quot;获取到锁&quot;);</span><br><span class="line">       dosomething();</span><br><span class="line">       return &quot;ok&quot;;</span><br><span class="line">   &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<h4 id="第二种用法"><a href="#第二种用法" class="headerlink" title="第二种用法"></a>第二种用法</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//锁名称：Test_key_2</span><br><span class="line">//获取锁超时时间：20秒</span><br><span class="line">//锁最大过期时间：60秒</span><br><span class="line">//内部执行回调，使用默认回调实现，只需要实现获取到锁后需要执行的方法，当遇到没有获取锁和获取锁内部执行错误时会返回构造函数中设置的值（支持泛型）</span><br><span class="line">//默认策略：NORMAL</span><br><span class="line">lock.lock(&quot;Test_key_2&quot;,20,60,new DefaultLockCallBack&lt;String&gt;(&quot;NotObtainLock&quot;, &quot;Exception&quot;) &#123;</span><br><span class="line">   @Override</span><br><span class="line">   public String handleObtainLock() &#123;</span><br><span class="line">       logger.info(&quot;获取到锁&quot;);</span><br><span class="line">       dosomething();</span><br><span class="line">       return &quot;ok&quot;;</span><br><span class="line">   &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<h4 id="第三种用法"><a href="#第三种用法" class="headerlink" title="第三种用法"></a>第三种用法</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//锁名称：Test_key_2</span><br><span class="line">//锁重试获取频率：VERY_QUICK 非常快</span><br><span class="line">//获取锁超时时间：20秒</span><br><span class="line">//锁最大过期时间：60秒</span><br><span class="line">//内部执行回调，包含（1.获取到锁回调，2.没有获取到锁回调，3.获取到锁内部执行业务代码报错）</span><br><span class="line">lock.lock(&quot;Test_key_2&quot;,LockRetryFrequncy.VERY_QUICK,20,60,new LockCallBack&lt;String&gt;() &#123;</span><br><span class="line">   @Override</span><br><span class="line">   public String handleException(LockInsideExecutedException e) throws LockInsideExecutedException &#123;</span><br><span class="line">       logger.error(&quot;获取到锁，内部执行报错&quot;);</span><br><span class="line">       return &quot;Exception&quot;;         </span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   @Override</span><br><span class="line">   public String handleNotObtainLock() throws LockCantObtainException &#123;</span><br><span class="line">          logger.error(&quot;没有获取到锁&quot;);</span><br><span class="line">       return &quot;NotObtainLock&quot;;</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   @Override</span><br><span class="line">   public String handleObtainLock() &#123;</span><br><span class="line">       logger.info(&quot;获取到锁&quot;);</span><br><span class="line">       dosomething();</span><br><span class="line">       return &quot;ok&quot;;</span><br><span class="line">   &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<h4 id="第四种用法"><a href="#第四种用法" class="headerlink" title="第四种用法"></a>第四种用法</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//锁名称：Test_key_2</span><br><span class="line">//锁重试获取频率：VERY_QUICK 非常快</span><br><span class="line">//获取锁超时时间：20秒</span><br><span class="line">//锁最大过期时间：60秒</span><br><span class="line">//内部执行回调，使用默认回调实现，只需要实现获取到锁后需要执行的方法，当遇到没有获取锁和获取锁内部执行错误时会返回构造函数中设置的值（支持泛型）</span><br><span class="line">lock.lock(&quot;Test_key_2&quot;,LockRetryFrequncy.VERY_QUICK,20,60,new DefaultLockCallBack&lt;String&gt;(&quot;NotObtainLock&quot;, &quot;Exception&quot;) &#123;</span><br><span class="line">   @Override</span><br><span class="line">   public String handleObtainLock() &#123;</span><br><span class="line">       logger.info(&quot;获取到锁&quot;);</span><br><span class="line">       dosomething();</span><br><span class="line">       return &quot;ok&quot;;</span><br><span class="line">   &#125;</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ol>
+<li>获取锁的超时时间和重试策略直接影响获取锁重试的次数，根据业务场景来定义适合的重试获取锁的频次，避免线程阻塞。</li>
+<li>场景：<ol>
+<li>快速响应给客户端的场景，超时时间尽量短，超时时间 &lt; 锁后执行时间，例如：秒杀、抢购</li>
+<li>可以容忍响应速度的场景，锁后执行时间*2 &gt; 超时时间 &gt;=锁后执行时间</li>
+</ol>
+</li>
+<li>根据业务场景来定义锁的最大过期时间，理论上业务执行越慢过期时间越大，因为是并发锁，为了杜绝因为获得锁而没有释放造成的问题</li>
+<li>建议 锁后执行时间*1.5 &gt; 锁超时时间 &gt; 锁后执行时间，避免并发问题</li>
+<li>获取锁后执行的代码块一定是小而快的，就像事务块使用原则一样，禁止重而长的逻辑包在里面造成其他线程获取锁失败率过高，如果逻辑很复杂需要分析那一块需要支持并发就把需要并发的代码包在里面。</li>
+</ol>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.033Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20170927/29-distributed-lock.html" target="_blank" rel="external">https://ningyu1.github.io/20170927/29-distributed-lock.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Distributed/">Distributed</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Lock/">Lock</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/">Redis</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20170927/29-distributed-lock.html&title=《分布式锁（Redis实现）使用说明》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20170927/29-distributed-lock.html&title=《分布式锁（Redis实现）使用说明》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20170927/29-distributed-lock.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《分布式锁（Redis实现）使用说明》 — 凝雨 - Yun&url=https://ningyu1.github.io/20170927/29-distributed-lock.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20170927/29-distributed-lock.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20170929/30-npm-nrm.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">npm registry太慢？怎么办？使用nrm</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20170925/28-redis-client-sentinel.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">RedisClient升级支持Sentinel使用说明</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20170927/29-distributed-lock.html&title=《分布式锁（Redis实现）使用说明》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20170927/29-distributed-lock.html&title=《分布式锁（Redis实现）使用说明》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20170927/29-distributed-lock.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《分布式锁（Redis实现）使用说明》 — 凝雨 - Yun&url=https://ningyu1.github.io/20170927/29-distributed-lock.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20170927/29-distributed-lock.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACIklEQVR42u3aQW7DMAwEwPz/0+m1h9TYpZwClkanAnVMjQ8ERer1itf7cv1+5q/n2yivbywMDIzHMvIt5s9cx7o3LgYGxjmMJGSbWJPwSeK+3hsGBgbG9davMUnqzONiYGBgfCPhXr8/OcRiYGBgzFppbVGYf7J/OotjYGA8kJGnwv//+yvzDQwMjEcx3uVa560PDD7sCgMDY2tGG6Y91s7eOfstBgbGaYy26R+FGbXbimIRAwNjU0beJltp9OcbTQalH/6LgYFxDGPWmp9dsMjHA9EIEwMD4xjGrLBLBpmzSxXFsBMDA+MAxkrjLG/DzQ6x0QfFwMA4gLE+BpgNJpONRjvBwMA4gHFXgBzTpuCo3YaBgXEAo23ct0PHpA2XDxU+tNswMDA2Zdxb3kXB4vffcGcEAwNjC0Y+JsyT44yXlI9FaYiBgbEdYxY+Kd3aUWV73MXAwDiBkWwiL9pmV8RmafdPJAYGxtaMHDNrwLXjyfagi4GBsTcjL87aBNoecVeufWBgYJzASMrBfOv56HH2OYowGBgYGzFWxpx3Xb9YeT8GBsaujHe5Et5KOm5HERgYGCcw8rVStK0MJttmHwYGxq6M9pJEm6Dbr5gnegwMjNMYbaLMt9Jeyxg27zAwMDDKZln+/Gx4WXQEMTAwjme01yyScWk+5rwt4WJgYDyEkYeZNeNmx9evtNswMDAeyMiPjiut/NmAc1ZWYmBgbMT4AbZxLLoXKkAfAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

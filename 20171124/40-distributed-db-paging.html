@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>跨库分页-架构技术实践 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="rdb-paging">
+    <meta name="description" content="跨库分页-架构技术实践">
+<meta name="keywords" content="rdb-paging">
+<meta property="og:type" content="article">
+<meta property="og:title" content="跨库分页-架构技术实践">
+<meta property="og:url" content="https://ningyu1.github.io/20171124/40-distributed-db-paging.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="跨库分页-架构技术实践">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ningyu1.github.io/img/rdb-paging/1.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/rdb-paging/2.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/rdb-paging/3.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/rdb-paging/4.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/rdb-paging/5.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/rdb-paging/6.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/rdb-paging/7.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/rdb-paging/8.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/rdb-paging/9.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/rdb-paging/10.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/rdb-paging/11.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/rdb-paging/12.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/rdb-paging/13.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/rdb-paging/14.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/rdb-paging/15.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/rdb-paging/16.png">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.034Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="跨库分页-架构技术实践">
+<meta name="twitter:description" content="跨库分页-架构技术实践">
+<meta name="twitter:image" content="https://ningyu1.github.io/img/rdb-paging/1.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">跨库分页-架构技术实践</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">跨库分页-架构技术实践</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-11-24T10:00:36.000Z" itemprop="datePublished" class="page-time">
+  2017-11-24
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/跨库分页/">跨库分页</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#一、需求缘起"><span class="post-toc-number">1.</span> <span class="post-toc-text">一、需求缘起</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#分页需求"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">分页需求</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#分库需求"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">分库需求</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#问题的提出"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">问题的提出</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#二、全局视野法"><span class="post-toc-number">2.</span> <span class="post-toc-text">二、全局视野法</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#三、业务折衷法"><span class="post-toc-number">3.</span> <span class="post-toc-text">三、业务折衷法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#业务折衷一：禁止跳页查询"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">业务折衷一：禁止跳页查询</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#业务折衷二：允许数据精度损失"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">业务折衷二：允许数据精度损失</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#四、终极武器：二次查询法"><span class="post-toc-number">4.</span> <span class="post-toc-text">四、终极武器：二次查询法</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#步骤一：查询改写"><span class="post-toc-number">5.</span> <span class="post-toc-text">步骤一：查询改写</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#步骤二：找到所返回3页全部数据的最小值"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">步骤二：找到所返回3页全部数据的最小值</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#步骤三：查询二次改写"><span class="post-toc-number">5.2.</span> <span class="post-toc-text">步骤三：查询二次改写</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#步骤四：在每个结果集中虚拟一个time-min记录，找到time-min在全局的offset"><span class="post-toc-number">5.3.</span> <span class="post-toc-text">步骤四：在每个结果集中虚拟一个time_min记录，找到time_min在全局的offset</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#五、总结"><span class="post-toc-number">6.</span> <span class="post-toc-text">五、总结</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-40-distributed-db-paging"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">跨库分页-架构技术实践</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-11-24 18:00:36" datetime="2017-11-24T10:00:36.000Z"  itemprop="datePublished">2017-11-24</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/跨库分页/">跨库分页</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>文章来源：<a href="http://gitbook.cn/books/58a98f512bd83c246b6b8866/index.html" target="_blank" rel="noopener">http://gitbook.cn/books/58a98f512bd83c246b6b8866/index.html</a><br>作者：@58沈剑<br>说明：文章转自沈老板的文章，分析的很不错</p>
+<h1 id="一、需求缘起"><a href="#一、需求缘起" class="headerlink" title="一、需求缘起"></a>一、需求缘起</h1><h2 id="分页需求"><a href="#分页需求" class="headerlink" title="分页需求"></a>分页需求</h2><p>互联网很多业务都有分页拉取数据的需求，例如： </p>
+<ul>
+<li>微信消息过多时，拉取第N页消息。</li>
+<li>京东下单过多时，拉取第N页订单。</li>
+<li>浏览58同城，查看第N页帖子。<br>这些业务场景对应的消息表，订单表，帖子表分页拉取需求有这样一些特点： </li>
+<li>有一个业务主键id，例如msg_id，order_id，tiezi_id</li>
+<li>分页排序是按照非业务主键id来排序的，业务中经常按照时间time来排序order by</li>
+</ul>
+<p>在数据量不大时，可以通过在排序字段time上建立索引，利用SQL提供的offset/limit功能就能满足分页查询需求： </p>
+<pre><code>select * from t_msg order by time offset 200 limit 100   
+select * from t_order order by time offset 200 limit 100   
+select * from t_tiezi order by time offset 200 limit 100
+</code></pre><p>此处假设一页数据为100条，均拉取第3页数据。</p>
+<h2 id="分库需求"><a href="#分库需求" class="headerlink" title="分库需求"></a>分库需求</h2><p>高并发大流量的互联网架构，一般通过服务层来访问数据库，随着数据量的增大，数据库需要进行水平切分，分库后将数据分布到不同的数据库实例（甚至物理机器）上，以达到降低数据量，增加实例数的扩容目的。 </p>
+<p>一旦涉及分库，逃不开“分库依据”patition key的概念，使用哪一个字段来水平切分数据库呢：大部分的业务场景，会使用业务主键id。 </p>
+<p>确定了分库依据patition key后，接下来要确定的是分库算法：大部分的业务场景，会使用业务主键id取模的算法来分库，这样即能够保证每个库的数据分布是均匀的，又能够保证每个库的请求分布是均匀的，实在是简单实现负载均衡的好方法，此法在互联网架构中应用颇多。 </p>
+<p>举一个更具体的例子： </p>
+<p><img src="/img/rdb-paging/1.png" alt></p>
+<p>用户库user，水平切分后变为两个库，分库依据patition key是uid，分库算法是uid取模：uid%2余0的数据会落到db0，uid%2余1的数据会落到db1。 </p>
+<h2 id="问题的提出"><a href="#问题的提出" class="headerlink" title="问题的提出"></a>问题的提出</h2><p>仍然是上述用户库的例子，如果业务要查询“最近注册的第3页用户”，该如何实现呢？单库上，可以<code>select * from t_user order by time offset 200 limit 100</code>，变成两个库后，分库依据是uid，排序依据是time，数据库层失去了time排序的全局视野，数据分布在两个库上，此时该怎么办呢？ </p>
+<p>如何满足“跨越多个水平切分数据库，且分库依据与排序依据为不同属性，并需要进行分页”的查询需求，实现<code>select*from T order by time offset X limit Y</code>的跨库分页SQL，是本文将要讨论的技术问题。 </p>
+<h1 id="二、全局视野法"><a href="#二、全局视野法" class="headerlink" title="二、全局视野法"></a>二、全局视野法</h1><p><img src="/img/rdb-paging/2.png" alt></p>
+<p>如上图所述，服务层通过uid取模将数据分布到两个库上去之后，每个数据库都失去了全局视野，数据按照time局部排序之后，不管哪个分库的第3页数据，都不一定是全局排序的第3页数据。 </p>
+<p>那到底哪些数据才是全局排序的第3页数据呢，暂且分三种情况讨论。 </p>
+<p>（1）极端情况，两个库的数据完全一样 </p>
+<p><img src="/img/rdb-paging/3.png" alt></p>
+<p>如果两个库的数据完全相同，只需要每个库offset一半，再取半页，就是最终想要的数据（如上图中粉色部分数据）。</p>
+<p>（2）极端情况，结果数据来自一个库 </p>
+<p><img src="/img/rdb-paging/4.png" alt></p>
+<p>也可能两个库的数据分布及其不均衡，例如db0的所有数据的time都大于db1的所有数据的time，则可能出现：一个库的第3页数据，就是全局排序后的第3页数据（如上图中粉色部分数据）。 </p>
+<p>（3）一般情况，每个库数据各包含一部分 </p>
+<p><img src="/img/rdb-paging/5.png" alt></p>
+<p>正常情况下，全局排序的第3页数据，每个库都会包含一部分（如上图中粉色部分数据）。 </p>
+<p>由于不清楚到底是哪种情况，所以必须每个库都返回3页数据，所得到的6页数据在服务层进行内存排序，得到数据全局视野，再取第3页数据，便能够得到想要的全局分页数据。 </p>
+<p>再总结一下这个方案的步骤： </p>
+<ul>
+<li>将<code>order by time offset X limit Y</code>，改写成<code>order by time offset 0 limit X+Y</code>。</li>
+<li>服务层将改写后的SQL语句发往各个分库：即例子中的各取3页数据。</li>
+<li>假设共分为N个库，服务层将得到N*(X+Y)条数据：即例子中的6页数据。</li>
+<li>服务层对得到的N*(X+Y)条数据进行内存排序，内存排序后再取偏移量X后的Y条记录，就是全局视野所需的一页数据。</li>
+</ul>
+<p>方案优点：通过服务层修改SQL语句，扩大数据召回量，能够得到全局视野，业务无损，精准返回所需数据。 </p>
+<p>方案缺点（显而易见）： </p>
+<ul>
+<li>每个分库需要返回更多的数据，增大了网络传输量（耗网络）；</li>
+<li>除了数据库按照time进行排序，服务层还需要进行二次排序，增大了服务层的计算量（耗CPU）；</li>
+<li>最致命的，这个算法随着页码的增大，性能会急剧下降，这是因为SQL改写后每个分库要返回X+Y行数据：返回第3页，offset中的X=200；假如要返回第100页，offset中的X=9900，即每个分库要返回100页数据，数据量和排序量都将大增，性能平方级下降。</li>
+</ul>
+<h1 id="三、业务折衷法"><a href="#三、业务折衷法" class="headerlink" title="三、业务折衷法"></a>三、业务折衷法</h1><p>“全局视野法”虽然性能较差， 但其业务无损，数据精准，不失为一种方案，有没有性能更优的方案呢？ </p>
+<p>“任何脱离业务的架构设计都是耍流氓”，技术方案需要折衷，在技术难度较大的情况下，业务需求的折衷能够极大的简化技术方案。 </p>
+<h2 id="业务折衷一：禁止跳页查询"><a href="#业务折衷一：禁止跳页查询" class="headerlink" title="业务折衷一：禁止跳页查询"></a>业务折衷一：禁止跳页查询</h2><p>在数据量很大，翻页数很多的时候，很多产品并不提供“直接跳到指定页面”的功能，而只提供“下一页”的功能，这一个小小的业务折衷，就能极大的降低技术方案的复杂度。 </p>
+<p><img src="/img/rdb-paging/6.png" alt></p>
+<p>如上图，不能够跳页，那么第一次只能够查询第一页： </p>
+<ul>
+<li>将查询<code>order by time offset 0 limit 100</code>，改写成<code>order by time where time&gt;0 limit 100</code>。</li>
+<li>上述改写和offset 0 limit 100的效果相同，都是每个分库返回了一页数据（上图中粉色部分）。</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/rdb-paging/7.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>服务层得到2页数据，内存排序，取出前100条数据，作为最终的第一页数据，这个全局的第一页数据，一般来说每个分库都包含一部分数据（如上图粉色部分）。</li>
+</ul>
+<p>咦，这个方案也需要服务器内存排序，岂不是和“全局视野法”一样么？第一页数据的拉取确实一样，但每一次“下一页”拉取的方案就不一样了。 </p>
+<p>点击“下一页”时，需要拉取第二页数据，在第一页数据的基础之上，能够找到第一页数据time的最大值： </p>
+<p><img src="/img/rdb-paging/8.png" alt></p>
+<p>这个上一页记录的time_max，会作为第二页数据拉取的查询条件： </p>
+<ul>
+<li>将查询<code>order by time offset 100 limit 100</code>，改写成<code>order by time where time&gt;$time_max limit 100</code>。</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/rdb-paging/9.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>这下不是返回2页数据了（“全局视野法，会改写成offset 0 limit 200”），每个分库还是返回一页数据（如上图中粉色部分）。</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/rdb-paging/10.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<ul>
+<li>服务层得到2页数据，内存排序，取出前100条数据，作为最终的第2页数据，这个全局的第2页数据，一般来说也是每个分库都包含一部分数据（如上图粉色部分）。</li>
+</ul>
+<p>如此往复，查询全局视野第100页数据时，不是将查询条件改写为offset 0 limit 9900+100（返回100页数据），而是改写为time&gt;$time_max99 limit 100（仍返回一页数据），以保证数据的传输量和排序的数据量不会随着不断翻页而导致性能下降。 </p>
+<h2 id="业务折衷二：允许数据精度损失"><a href="#业务折衷二：允许数据精度损失" class="headerlink" title="业务折衷二：允许数据精度损失"></a>业务折衷二：允许数据精度损失</h2><p>“全局视野法”能够返回业务无损的精确数据，在查询页数较大，例如第100页时，会有性能问题，此时业务上是否能够接受，返回的100页不是精准的数据，而允许有一些数据偏差呢？ </p>
+<p>数据库分库-数据均衡原理 </p>
+<p>使用patition key进行分库，在数据量较大，数据分布足够随机的情况下，各分库所有非patition key属性，在各个分库上的数据分布，统计概率情况应该是一致的。 </p>
+<p>例如，在uid随机的情况下，使用uid取模分两库，db0和db1： </p>
+<ul>
+<li>性别属性，如果db0库上的男性用户占比70%，则db1上男性用户占比也应为70%；</li>
+<li>年龄属性，如果db0库上18-28岁少女用户比例占比15%，则db1上少女用户比例也应为15%；</li>
+<li>时间属性，如果db0库上每天10:00之前登录的用户占比为20%，则db1上应该是相同的统计规律；</li>
+<li>…</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/rdb-paging/11.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>利用这一原理，要查询全局100页数据，offset 9900 limit 100改写为offset 4950 limit 50，每个分库偏移4950（一半），获取50条数据（半页），得到的数据集的并集，基本能够认为，是全局数据的offset 9900 limit 100的数据，当然，这一页数据的精度，并不是精准的。 </p>
+<p>根据实际业务经验，用户都要查询第100页网页、帖子、邮件的数据了，这一页数据的精准性损失，业务上往往是可以接受的，但此时技术方案的复杂度便大大降低列，既不需要返回更多的数据，也不需要进行服务内存排序了。 </p>
+<h1 id="四、终极武器：二次查询法"><a href="#四、终极武器：二次查询法" class="headerlink" title="四、终极武器：二次查询法"></a>四、终极武器：二次查询法</h1><p>有没有一种技术方案，即能够满足业务的精确需要，无需业务折衷，又高性能的方法呢？这就是接下来要介绍的终极武器：“二次查询法”。 </p>
+<p>为了方便举例，假设一页只有5条数据，查询第200页的SQL语句为<code>select*from T order by time offset 1000 limit 5</code>。 </p>
+<h1 id="步骤一：查询改写"><a href="#步骤一：查询改写" class="headerlink" title="步骤一：查询改写"></a>步骤一：查询改写</h1><p>将<code>select*from T order by time offset 1000 limit 5</code>改写为<code>select*from T order by time offset 500 limit 5</code>并投递给所有的分库，注意，这个<code>offset</code>的500，来自于全局<code>offset</code>的总偏移量1000，除以水平切分数据库个数2。 </p>
+<p>如果是3个分库，则可以改写为<code>select*from T order by time offset 333 limit 5</code>，假设这三个分库返回的数据(time, uid)如下： </p>
+<p><img src="/img/rdb-paging/12.png" alt></p>
+<p>可以看到，每个分库都是返回的按照time排序的一页数据。 </p>
+<h2 id="步骤二：找到所返回3页全部数据的最小值"><a href="#步骤二：找到所返回3页全部数据的最小值" class="headerlink" title="步骤二：找到所返回3页全部数据的最小值"></a>步骤二：找到所返回3页全部数据的最小值</h2><ul>
+<li>第一个库，5条数据的time最小值是1487501123</li>
+<li>第二个库，5条数据的time最小值是1487501133</li>
+<li>第三个库，5条数据的time最小值是1487501143</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/rdb-paging/13.png" alt title>
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>故，三页数据中，time最小值来自第一个库，time_min=1487501123，这个过程只需要比较各个分库第一条数据，时间复杂度很低。 </p>
+<h2 id="步骤三：查询二次改写"><a href="#步骤三：查询二次改写" class="headerlink" title="步骤三：查询二次改写"></a>步骤三：查询二次改写</h2><p>第一次改写的SQL语句是<code>select*from T order by time offset 333 limit 5</code>。第二次要改写成一个between语句，between的起点是time_min，between的终点是原来每个分库各自返回数据的最大值： </p>
+<p>第一个分库，第一次返回数据的最大值是1487501523；所以查询改写为<code>select*from T order by time where time between time_min and 1487501523</code>。 </p>
+<p>第二个分库，第一次返回数据的最大值是1487501323；所以查询改写为<code>select*from T order by time where time between time_min and 1487501323</code>。 </p>
+<p>第三个分库，第一次返回数据的最大值是1487501553；所以查询改写为<code>select*from T order by time where time between time_min and 1487501553</code>。 </p>
+<p>相对第一次查询，第二次查询条件放宽了，故第二次查询会返回比第一次查询结果集更多的数据，假设这三个分库返回的数据(time, uid)如下： </p>
+<p><img src="/img/rdb-paging/14.png" alt></p>
+<p>可以看到： </p>
+<ul>
+<li>由于time_min来自原来的分库一，所以分库一的返回结果集和第一次查询相同（所以其实这次查询是可以省略的）；</li>
+<li>分库二的结果集，比第一次多返回了1条数据，头部的1条记录（time最小的记录）是新的（上图中粉色记录）；</li>
+<li>分库三的结果集，比第一次多返回了2条数据，头部的2条记录（time最小的2条记录）是新的（上图中粉色记录）。</li>
+</ul>
+<h2 id="步骤四：在每个结果集中虚拟一个time-min记录，找到time-min在全局的offset"><a href="#步骤四：在每个结果集中虚拟一个time-min记录，找到time-min在全局的offset" class="headerlink" title="步骤四：在每个结果集中虚拟一个time_min记录，找到time_min在全局的offset"></a>步骤四：在每个结果集中虚拟一个time_min记录，找到time_min在全局的offset</h2><p><img src="/img/rdb-paging/15.png" alt></p>
+<ul>
+<li>在第一个库中，time_min在第一个库的offset是333；</li>
+<li>在第二个库中，(1487501133, uid_aa)的offset是333（根据第一次查询条件得出的），故虚拟time_min在第二个库的offset是331；</li>
+<li>在第三个库中，(1487501143, uid_aaa)的offset是333（根据第一次查询条件得出的），故虚拟time_min在第三个库的offset是330。</li>
+</ul>
+<p>综上，time_min在全局的offset是333+331+330=994。 </p>
+<p>步骤五：既然得到了time_min在全局的offset，就相当于有了全局视野，根据第二次的结果集，就能够得到全局offset 1000 limit 5的记录 </p>
+<p><img src="/img/rdb-paging/16.png" alt></p>
+<p>第二次查询在各个分库返回的结果集是有序的，又知道了time_min在全局的offset是994，一路排下来，容易知道全局offset 1000 limit 5的一页记录（上图中黄色记录）。 </p>
+<p>是不是非常巧妙？这种方法的优点是：可以精确的返回业务所需数据，每次返回的数据量都非常小，不会随着翻页增加数据的返回量。 </p>
+<p>不足是：需要进行两次数据库查询。 </p>
+<h1 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h1><p>今天分享了解决“夸N库分页”这一技术难题的四种方法，稍作总结： </p>
+<p>方法一：全局视野法 </p>
+<ul>
+<li>将<code>order by time offset X limit Y</code>，改写成<code>order by time offset 0 limit X+Y</code>。</li>
+<li>服务层对得到的N*(X+Y)条数据进行内存排序，内存排序后再取偏移量X后的Y条记录。</li>
+</ul>
+<p>方法二：业务折衷法-禁止跳页查询 </p>
+<ul>
+<li>用正常的方法取得第一页数据，并得到第一页记录的time_max。</li>
+<li>每次翻页，将<code>order by time offset X limit Y</code>，改写成<code>order by time where time&gt;$time_max limit Y</code>以保证每次只返回一页数据，性能为常量。</li>
+</ul>
+<p>方法三：业务折衷法-允许模糊数据</p>
+<ul>
+<li>将<code>order by time offset X limit Y</code>，改写成<code>order by time offset X/N limit Y/N</code>。</li>
+</ul>
+<p>方法四：二次查询法 </p>
+<ul>
+<li>将<code>order by time offset X limit Y</code>，改写成<code>order by time offset X/N limit Y</code>；</li>
+<li>找到最小值time_min；</li>
+<li>between二次查询，<code>order by time between $$time_min and $time_i_max</code>；</li>
+<li>设置虚拟time_min，找到time_min在各个分库的offset，从而得到time_min在全局的offset；</li>
+<li>得到了time_min在全局的offset，自然得到了全局的offset X limit Y。</li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.034Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20171124/40-distributed-db-paging.html" target="_blank" rel="external">https://ningyu1.github.io/20171124/40-distributed-db-paging.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/rdb-paging/">rdb-paging</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20171124/40-distributed-db-paging.html&title=《跨库分页-架构技术实践》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20171124/40-distributed-db-paging.html&title=《跨库分页-架构技术实践》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20171124/40-distributed-db-paging.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《跨库分页-架构技术实践》 — 凝雨 - Yun&url=https://ningyu1.github.io/20171124/40-distributed-db-paging.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20171124/40-distributed-db-paging.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20171211/41-apm.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Java开源APM概要</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20171115/39-btrace.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">BTrace使用笔记</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20171124/40-distributed-db-paging.html&title=《跨库分页-架构技术实践》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20171124/40-distributed-db-paging.html&title=《跨库分页-架构技术实践》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20171124/40-distributed-db-paging.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《跨库分页-架构技术实践》 — 凝雨 - Yun&url=https://ningyu1.github.io/20171124/40-distributed-db-paging.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20171124/40-distributed-db-paging.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACtUlEQVR42u3aMW4DMQwEQP//006TIoBz9pIUgwswqowEvtOokOQlH494PH+Mq/++fn79bjKu3nj19gMDDw8PbzD1+cuqgN7iJs/Hw8PD2+bl230Cy/+SLE11Dnh4eHh3411NJbmC59T3b8HDw8P7X7z3n/NJJ0/Aw8PDuzOvd51NDoBki+8tyuGsBQ8PDy/m5UHqfT6v1Pfw8PDwxlX1PG6obtBJSDGZ5/cT8PDw8BZ4+YabX1jzyfVijvI88fDw8NZ4eZibhALVAyCJJ3pLg4eHh7fB6x0D1cv0pBkrb1kohxR4eHh4LV6yueeX3bPNBNXiWaG+h4eHhzfgVQOFeWCR4/NjplnNw8PDwyvy8u04CRfmF+hqW1VU38PDw8Nb481h+aR7Z1e1HQEPDw9vg5dsr2c36+p38+XDw8PD+0ve2SanPOSdFOTK7Vl4eHh4h3i9KKFa6OodBtW//ALGw8PDW+Ylhah5M1a+cHmsfOCsw8PDw2vxJoWoalx79gp+OSs8PDy8BV6v3PXhIjtoKei1hX14Jh4eHt5RXj6JKiw/NqqMQqiBh4eHt8DrBbXzOCOPGPLmqqgzAg8PD+8Qr9cKkBeoqg1S1UgiCUrw8PDwTvGqF995yb93DPQiYzw8PLwNXk6alL568W51PlGVDw8PD+8obx7F5jHBpF0giZKjGzoeHh7emFdtsZpciPONPr++f2i6wsPDw1vmTdi9Lf5xaODh4eFt857FkV/Ee2WwZlvV1bLi4eHhLfCqG24vkO0dPNVD68B5goeHhxfz8jggD3knx8DkYLj8xYCHh4e3wMvL+b34tVokG+UreHh4eDfm9S7l1Ut2tR8ADw8P7268BNaLg+fjwMGAh4eHF/N6l+NqeNErffUiYDw8PLw93uQHf2858qgib0c43YqGh4eH9+v4AudoQQVXxjfYAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

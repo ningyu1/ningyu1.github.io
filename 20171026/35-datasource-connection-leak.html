@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>数据源连接泄漏问题分析 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="abandon connection,connection leak,datasource">
+    <meta name="description" content="数据源连接泄漏问题分析">
+<meta name="keywords" content="abandon connection,connection leak,datasource">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据源连接泄漏问题分析">
+<meta property="og:url" content="https://ningyu1.github.io/20171026/35-datasource-connection-leak.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="数据源连接泄漏问题分析">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://ningyu1.github.io/img/connection-leak/1.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/connection-leak/2.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/connection-leak/3.png">
+<meta property="og:image" content="https://ningyu1.github.io/img/connection-leak/4.png">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.033Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据源连接泄漏问题分析">
+<meta name="twitter:description" content="数据源连接泄漏问题分析">
+<meta name="twitter:image" content="https://ningyu1.github.io/img/connection-leak/1.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">数据源连接泄漏问题分析</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">数据源连接泄漏问题分析</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-10-26T05:29:36.000Z" itemprop="datePublished" class="page-time">
+  2017-10-26
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/trouble-shooting/">trouble shooting</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#目录："><span class="post-toc-number">1.</span> <span class="post-toc-text">目录：</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#问题现象"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">问题现象</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#问题分析"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">问题分析</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#修改验证"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">修改验证</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解决方案"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">解决方案</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">1.5.</span> <span class="post-toc-text">总结</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-35-datasource-connection-leak"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">数据源连接泄漏问题分析</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-10-26 13:29:36" datetime="2017-10-26T05:29:36.000Z"  itemprop="datePublished">2017-10-26</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/trouble-shooting/">trouble shooting</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="目录："><a href="#目录：" class="headerlink" title="目录："></a>目录：</h1><ol>
+<li><a href="#trouble">问题现象</a></li>
+<li><a href="#troubleshooting">问题分析</a></li>
+<li><a href="#validation">修改验证</a></li>
+<li><a href="#solutions">解决方案</a></li>
+<li><a href="#summed">总结</a></li>
+</ol>
+<h2 id="问题现象"><a href="#问题现象" class="headerlink" title="问题现象"></a><a name="trouble">问题现象</a></h2><p>开启druid数据源的连接泄漏开关（removeAbandoned=true），设置强制回收非法连接的超时时间为120（removeAbandonedTimeout=120,2分钟，目的是调试方便，让非法连接快速close掉）。<br>启动程序，等待2分钟会有连接泄漏的异常爆出，具体日志如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">2017-10-25 17:19:52.858 [qtp365976330-72] WARN  org.jasig.cas.client.session.SingleSignOutHandler - Front Channel single sign out redirects are disabled when the &apos;casServerUrlPrefix&apos; value is not set.</span><br><span class="line">2017-10-25 17:21:56.531 [Druid-ConnectionPool-Destroy-678372234] ERROR com.alibaba.druid.pool.DruidDataSource - abandon connection, open stackTrace</span><br><span class="line">    at java.lang.Thread.getStackTrace(Thread.java:1588)</span><br><span class="line">    at com.alibaba.druid.pool.DruidDataSource.getConnectionDirect(DruidDataSource.java:995)</span><br><span class="line">    at com.alibaba.druid.filter.FilterChainImpl.dataSource_connect(FilterChainImpl.java:4544)</span><br><span class="line">    at com.alibaba.druid.filter.FilterAdapter.dataSource_getConnection(FilterAdapter.java:2723)</span><br><span class="line">    at com.alibaba.druid.filter.FilterChainImpl.dataSource_connect(FilterChainImpl.java:4540)</span><br><span class="line">    at com.alibaba.druid.filter.stat.StatFilter.dataSource_getConnection(StatFilter.java:661)</span><br><span class="line">    at com.alibaba.druid.filter.FilterChainImpl.dataSource_connect(FilterChainImpl.java:4540)</span><br><span class="line">    at com.alibaba.druid.pool.DruidDataSource.getConnection(DruidDataSource.java:919)</span><br><span class="line">    at com.alibaba.druid.pool.DruidDataSource.getConnection(DruidDataSource.java:911)</span><br><span class="line">    at com.alibaba.druid.pool.DruidDataSource.getConnection(DruidDataSource.java:98)</span><br><span class="line">    at com.github.pagehelper.PageHelper.initSqlUtil(PageHelper.java:165)</span><br><span class="line">    at com.github.pagehelper.PageHelper.intercept(PageHelper.java:148)</span><br><span class="line">    at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:60)</span><br><span class="line">    at com.sun.proxy.$Proxy64.query(Unknown Source)</span><br><span class="line">    at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:108)</span><br><span class="line">    at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:102)</span><br><span class="line">    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)</span><br><span class="line">    at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)</span><br><span class="line">    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)</span><br><span class="line">    at java.lang.reflect.Method.invoke(Method.java:606)</span><br><span class="line">    at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:358)</span><br><span class="line">    at com.sun.proxy.$Proxy57.selectList(Unknown Source)</span><br><span class="line">    at org.mybatis.spring.SqlSessionTemplate.selectList(SqlSessionTemplate.java:198)</span><br><span class="line">    at com.xx.xx.xx.mybatis.MyBatisDao.selectList(MyBatisDao.java:391)</span><br><span class="line">    at com.xx.xx.xx.xx.xx.xx.XXDaoImpl.queryByDeliverCode(XXDaoImpl.java:158)</span><br><span class="line">    at com.xx.xx.xx.xx.xx.xx.XXServiceImpl.queryByDeliverCode(XXServiceImpl.java:159)</span><br><span class="line">    at com.xx.xx.xx.xx.xx.xx.XXServiceImpl$$FastClassByCGLIB$$41eff1cc.invoke(&lt;generated&gt;)</span><br><span class="line">    at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:204)</span><br><span class="line">    at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:642)</span><br><span class="line">    at com.xx.xx.xx.xx.xx.xx.XXServiceImpl$$EnhancerByCGLIB$$708c18f3.queryByDeliverCode(&lt;generated&gt;)</span><br><span class="line">    at com.xx.xx.xx.xx.xx.XXController.initId(XXController.java:168)</span><br><span class="line">    at com.xx.xx.xx.xx.xx.XXController.afterPropertiesSet(XXController.java:2080)</span><br><span class="line">    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1612)</span><br><span class="line">    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1549)</span><br><span class="line">    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:539)</span><br><span class="line">    at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:475)</span><br><span class="line">    at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:304)</span><br><span class="line">    at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:228)</span><br><span class="line">    at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:300)</span><br><span class="line">    at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:195)</span><br><span class="line">    at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:700)</span><br><span class="line">    at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:760)</span><br><span class="line">    at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:482)</span><br><span class="line">    at org.springframework.web.context.ContextLoader.configureAndRefreshWebApplicationContext(ContextLoader.java:381)</span><br><span class="line">    at org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:293)</span><br><span class="line">    at org.springframework.web.context.ContextLoaderListener.contextInitialized(ContextLoaderListener.java:106)</span><br><span class="line">    at com.bstek.dorado.web.servlet.SpringContextLoaderListener.contextInitialized(SpringContextLoaderListener.java:73)</span><br><span class="line">    at org.eclipse.jetty.server.handler.ContextHandler.callContextInitialized(ContextHandler.java:782)</span><br><span class="line">    at org.eclipse.jetty.servlet.ServletContextHandler.callContextInitialized(ServletContextHandler.java:424)</span><br><span class="line">    at org.eclipse.jetty.server.handler.ContextHandler.startContext(ContextHandler.java:774)</span><br><span class="line">    at org.eclipse.jetty.servlet.ServletContextHandler.startContext(ServletContextHandler.java:249)</span><br><span class="line">    at org.eclipse.jetty.webapp.WebAppContext.startContext(WebAppContext.java:1242)</span><br><span class="line">    at org.eclipse.jetty.server.handler.ContextHandler.doStart(ContextHandler.java:717)</span><br><span class="line">    at org.eclipse.jetty.webapp.WebAppContext.doStart(WebAppContext.java:494)</span><br><span class="line">    at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:64)</span><br><span class="line">    at org.eclipse.jetty.server.handler.HandlerWrapper.doStart(HandlerWrapper.java:95)</span><br><span class="line">    at org.eclipse.jetty.server.Server.doStart(Server.java:282)</span><br><span class="line">    at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:64)</span><br><span class="line">    at net.sourceforge.eclipsejetty.starter.embedded.JettyEmbeddedAdapter.start(JettyEmbeddedAdapter.java:67)</span><br><span class="line">    at net.sourceforge.eclipsejetty.starter.common.AbstractJettyLauncherMain.launch(AbstractJettyLauncherMain.java:84)</span><br><span class="line">    at net.sourceforge.eclipsejetty.starter.embedded.JettyEmbeddedLauncherMain.main(JettyEmbeddedLauncherMain.java:42)</span><br></pre></td></tr></table></figure>
+<h2 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a><a name="troubleshooting">问题分析</a></h2><p>断点调试com.alibaba.druid.pool.DruidDataSource与com.alibaba.druid.pool.DruidPooledConnection中的close方法均有调用，如果都有关闭的话那怎么还会有连接泄漏呢？肯定有地方不对劲，因此进一步查询，开启druid的管理页面查看连接数，如下</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/connection-leak/1.png" alt="1.png" title>
+                </div>
+                <div class="image-caption">1.png</div>
+            </figure>
+<p>逻辑连接打开次数132，逻辑连接关闭次数131，发现问题有一个连接是没有放回连接池的，当到2分钟报了连接泄漏异常后再刷新查看，如下：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/connection-leak/2.png" alt="2.png" title>
+                </div>
+                <div class="image-caption">2.png</div>
+            </figure>
+<p>逻辑连接打开次数和关闭次数一致了。</p>
+<p>于是从上面的错误日志跟踪代码，第一感觉就是自己的业务代码出现了问题，找到业务代码的地方</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">at com.xx.xx.xx.xx.xx.xx.XXDaoImpl.queryByDeliverCode(XXDaoImpl.java:158)</span><br><span class="line">at com.xx.xx.xx.xx.xx.xx.XXServiceImpl.queryByDeliverCode(XXServiceImpl.java:159)</span><br><span class="line">at com.xx.xx.xx.xx.xx.xx.XXServiceImpl$$FastClassByCGLIB$$41eff1cc.invoke(&lt;generated&gt;)</span><br></pre></td></tr></table></figure>
+<p>打开：XXServiceImpl.queryByDeliverCode代码第159行，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@Override</span><br><span class="line">public DeliverEntity queryByDeliverCode(String code) &#123;</span><br><span class="line">    return deliverDao.queryByDeliverCode(code);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码非常简单调用dao的方法，代开dao的queryByDeliverCode方法，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@Override</span><br><span class="line">public DeliverEntity queryByDeliverCode(String deliverCode) &#123;</span><br><span class="line">    Map&lt;String,Object&gt; map=new HashMap&lt;String,Object&gt;();</span><br><span class="line">    map.put(&quot;deliverCode&quot;, deliverCode);</span><br><span class="line">    List&lt;DeliverEntity&gt; list = selectList(&quot;com.xx.xx.xx.xx.xx.XXMapper.queryByDeliverCode&quot;, map);</span><br><span class="line">    return list.size() &gt; 0 ? list.get(0) : null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码也非常简单调用的是基类：MybatisDao的selectList方法，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public List&lt;E&gt; selectList(final String aStatement, final Map&lt;String, Object&gt; aCondition) &#123;</span><br><span class="line">    SqlSession session = getSqlSessionTemplate();</span><br><span class="line">    return session.selectList(aStatement, aCondition);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>就是调用sqlsession的selectList方法，这个没有问题，连接是可以正常回收的，如果不能回收那上面的数字不可能是只有1个连接泄漏，应该是逻辑打开的132个都没有关闭才对。因此排除了这个地方，那还有什么地方会有问题呢？<br>肯定是有地方getConnection之后没有close导致!<br>继续分析连接泄漏打出来的日志！日志中的代码逐个分析，最终找到PageHelper.initSqlUtil方法</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">at com.github.pagehelper.PageHelper.initSqlUtil(PageHelper.java:165)</span><br><span class="line">at com.github.pagehelper.PageHelper.intercept(PageHelper.java:148)</span><br></pre></td></tr></table></figure>
+<p>打开PageHelper.initSqlUtil代码，如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public synchronized void initSqlUtil(Invocation invocation) &#123;</span><br><span class="line">       if (sqlUtil == null) &#123;</span><br><span class="line">            String url = null;</span><br><span class="line">            try &#123;</span><br><span class="line">                MappedStatement ms = (MappedStatement) invocation.getArgs()[0];</span><br><span class="line">                MetaObject msObject = SystemMetaObject.forObject(ms);</span><br><span class="line">                DataSource dataSource = (DataSource) msObject.getValue(&quot;configuration.environment.dataSource&quot;);</span><br><span class="line">                url = dataSource.getConnection().getMetaData().getURL();</span><br><span class="line">            &#125; catch (SQLException e) &#123;</span><br><span class="line">                throw new RuntimeException(&quot;分页插件初始化异常:&quot; + e.getMessage());</span><br><span class="line">            &#125;</span><br><span class="line">            if (url == null || url.length() == 0) &#123;</span><br><span class="line">                throw new RuntimeException(&quot;无法自动获取jdbcUrl，请在分页插件中配置dialect参数!&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">            String dialect = Dialect.fromJdbcUrl(url);</span><br><span class="line">            if (dialect == null) &#123;</span><br><span class="line">                throw new RuntimeException(&quot;无法自动获取数据库类型，请通过dialect参数指定!&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">            sqlUtil = new SqlUtil(dialect);</span><br><span class="line">            sqlUtil.setProperties(properties);</span><br><span class="line">            properties = null;</span><br><span class="line">            autoDialect = false;</span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>貌似问题找到了，第8行代码：dataSource.getConnection()，但是没有在finally中对connection进行回收，罪魁祸首竟然是PageHelper</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public Object intercept(Invocation invocation) throws Throwable &#123;</span><br><span class="line">    if (autoDialect) &#123;</span><br><span class="line">        initSqlUtil(invocation);</span><br><span class="line">    &#125;</span><br><span class="line">    return sqlUtil.processPage(invocation);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>根据代码逻辑发现当autoDialect=true时会调用initSqlUtil(invocation);，因此核对了我们的配置mybatis-config.xml</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;plugins&gt;</span><br><span class="line">        &lt;!-- com.github.pagehelper为PageHelper类所在包名 --&gt;</span><br><span class="line">        &lt;plugin interceptor=&quot;com.github.pagehelper.PageHelper&quot;&gt;</span><br><span class="line">&lt;!--             &lt;property name=&quot;dialect&quot; value=&quot;mysql&quot; /&gt; --&gt;</span><br><span class="line">             </span><br><span class="line">            &lt;property name=&quot;autoDialect&quot; value=&quot;true&quot; /&gt;</span><br><span class="line">             </span><br><span class="line">            &lt;!-- 该参数默认为false --&gt;</span><br><span class="line">            &lt;!-- 设置为true时，会将RowBounds第一个参数offset当成pageNum页码使用 --&gt;</span><br><span class="line">            &lt;!-- 和startPage中的pageNum效果一样 --&gt;</span><br><span class="line">            &lt;property name=&quot;offsetAsPageNum&quot; value=&quot;true&quot; /&gt;</span><br><span class="line">            &lt;!-- 该参数默认为false --&gt;</span><br><span class="line">            &lt;!-- 设置为true时，使用RowBounds分页会进行count查询 --&gt;</span><br><span class="line">            &lt;property name=&quot;rowBoundsWithCount&quot; value=&quot;true&quot; /&gt;</span><br><span class="line">            &lt;!-- 设置为true时，如果pageSize=0或者RowBounds.limit = 0就会查询出全部的结果 --&gt;</span><br><span class="line">            &lt;!-- （相当于没有执行分页查询，但是返回结果仍然是Page类型） --&gt;</span><br><span class="line">            &lt;property name=&quot;pageSizeZero&quot; value=&quot;true&quot; /&gt;</span><br><span class="line">            &lt;!-- 3.3.0版本可用 - 分页参数合理化，默认false禁用 --&gt;</span><br><span class="line">            &lt;!-- 启用合理化时，如果pageNum&lt;1会查询第一页，如果pageNum&gt;pages会查询最后一页 --&gt;</span><br><span class="line">            &lt;!-- 禁用合理化时，如果pageNum&lt;1或pageNum&gt;pages会返回空数据 --&gt;</span><br><span class="line">            &lt;property name=&quot;reasonable&quot; value=&quot;false&quot; /&gt;</span><br><span class="line">            &lt;!-- 3.5.0版本可用 - 为了支持startPage(Object params)方法 --&gt;</span><br><span class="line">            &lt;!-- 增加了一个`params`参数来配置参数映射，用于从Map或ServletRequest中取值 --&gt;</span><br><span class="line">            &lt;!-- 可以配置pageNum,pageSize,count,pageSizeZero,reasonable,不配置映射的用默认值 --&gt;</span><br><span class="line">            &lt;!-- 不理解该含义的前提下，不要随便复制该配置 --&gt;</span><br><span class="line">            &lt;property name=&quot;params&quot; value=&quot;pageNum=start;pageSize=limit;&quot; /&gt;</span><br><span class="line">        &lt;/plugin&gt;</span><br><span class="line">    &lt;/plugins&gt;</span><br></pre></td></tr></table></figure>
+<p>我们果然配置的是：autoDialect=true，PageHelper在没有设置数据库方言的时候，他会主动的获取jdbc url来判断时那种数据库，因此会发生有一个连接是泄漏的，那这个问题如何解决呢？<br>我们打开PageHelper.setProperties方法，如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public void setProperties(Properties p) &#123;</span><br><span class="line">    //MyBatis3.2.0版本校验</span><br><span class="line">    try &#123;</span><br><span class="line">        Class.forName(&quot;org.apache.ibatis.scripting.xmltags.SqlNode&quot;);//SqlNode是3.2.0之后新增的类</span><br><span class="line">    &#125; catch (ClassNotFoundException e) &#123;</span><br><span class="line">        throw new RuntimeException(&quot;您使用的MyBatis版本太低，MyBatis分页插件PageHelper支持MyBatis3.2.0及以上版本!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    //数据库方言</span><br><span class="line">    String dialect = p.getProperty(&quot;dialect&quot;);</span><br><span class="line">    if (dialect == null || dialect.length() == 0) &#123;</span><br><span class="line">        autoDialect = true;</span><br><span class="line">        this.properties = p;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        autoDialect = false;</span><br><span class="line">        sqlUtil = new SqlUtil(dialect);</span><br><span class="line">        sqlUtil.setProperties(p);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>只要我们在plugin配置的时候设置具体的方言就可以避免这个问题：dialect=mysql，如果有明确的dialect设置，autoDialect就会等于false，因此在intercept方法中就不会走initSqlUtil(invocation);方法，这就间接的避免了PageHelper的这个bug。<br>但是如果我们的数据源有不同的dialect怎么办呢？有两个办法解决</p>
+<ol>
+<li>构造SessionFactory的时候加载不同的mybatis-config.xml配置，如果有两种数据库类型就写两个mybatis-config.xml分别配置不同的dialect</li>
+<li>查看PageHelper高版本是否修复了这个bug，升级PageHelper版本</li>
+<li>修改PageHelper源码，在dataSource.getConnection()之后增加close调用</li>
+</ol>
+<p><strong>ps. 我们现在用的PageHelper版本–&gt;4.0.0，根据官方的chang log可以看出4.X的版本修复了这个问题，可以升级到4.x的final released version –&gt; 4.2.1解决这个问题，5.x版本变更比较大。</strong></p>
+<h2 id="修改验证"><a href="#修改验证" class="headerlink" title="修改验证"></a><a name="validation">修改验证</a></h2><p>修改mybatis-config.xml的plugin中PageHelper的dialect的配置</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;plugin interceptor=&quot;com.github.pagehelper.PageHelper&quot;&gt;</span><br><span class="line">            &lt;property name=&quot;dialect&quot; value=&quot;mysql&quot; /&gt;</span><br><span class="line">&lt;!--             &lt;property name=&quot;autoDialect&quot; value=&quot;true&quot; /&gt; --&gt;</span><br><span class="line"> </span><br><span class="line">&lt;/plugin&gt;</span><br></pre></td></tr></table></figure>
+<p>修改后启动程序，打开druid的管理页面和等待2分钟超时看是否还有泄漏的异常爆出，如下：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/connection-leak/3.png" alt="3.png" title>
+                </div>
+                <div class="image-caption">3.png</div>
+            </figure>
+<p>超过2分钟并没有泄漏异常爆出</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a><a name="solutions">解决方案</a></h2><p>升级pagehelper版本–&gt;4.2.1,升级jsqlparser版本–&gt;0.9.5,其余配置无需变更</p>
+<p><span style="color: rgb(255,0,0);">如果升级了4.2.1，如果出现SqlUtil.java(120)行报NullPointerException，具体异常如下：</span></p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/img/connection-leak/4.png" alt="4.png" title>
+                </div>
+                <div class="image-caption">4.png</div>
+            </figure>
+<p><span style="color: rgb(255,0,0);">遇到上面问题，请修改pagehelper的配置参数，参数修改有两种方式，如下：</span></p>
+<ol>
+<li><span style="color: rgb(255,0,0);">直接配置dialect=目标数据源类型</span><span style="color: rgb(255,204,0);"><strong>（适合使用场景：项目中只有一个固定的数据库类型，例如：mysql，无需开启自动发现dialect）</strong></span></li>
+<li><span style="color: rgb(255,0,0);">配置autoRuntimeDialect=true走自动获取，这个属性是替换老属性（autoDialect），老的属性为了向下兼容在并发获取dialect时会有bug存在。</span><span style="color: rgb(255,204,0);"><strong>（适合使用场景：项目中有多个数据库类型，需要运行中自动发现时使用）</strong></span></li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a><a name="summed">总结</a></h2><p>这个问题告诉我们使用第三方的组件的风险很大。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.033Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20171026/35-datasource-connection-leak.html" target="_blank" rel="external">https://ningyu1.github.io/20171026/35-datasource-connection-leak.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/abandon-connection/">abandon connection</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/connection-leak/">connection leak</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/datasource/">datasource</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20171026/35-datasource-connection-leak.html&title=《数据源连接泄漏问题分析》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20171026/35-datasource-connection-leak.html&title=《数据源连接泄漏问题分析》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20171026/35-datasource-connection-leak.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《数据源连接泄漏问题分析》 — 凝雨 - Yun&url=https://ningyu1.github.io/20171026/35-datasource-connection-leak.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20171026/35-datasource-connection-leak.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20171102/36-atomikos-transactions-trouble.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">atomikos jta(xa) transaction问题：Already mapped: xxxx</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20171009/34-redis-rdb.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Redis RDB文件格式全解析</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20171026/35-datasource-connection-leak.html&title=《数据源连接泄漏问题分析》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20171026/35-datasource-connection-leak.html&title=《数据源连接泄漏问题分析》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20171026/35-datasource-connection-leak.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《数据源连接泄漏问题分析》 — 凝雨 - Yun&url=https://ningyu1.github.io/20171026/35-datasource-connection-leak.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20171026/35-datasource-connection-leak.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACqklEQVR42u3a0U7DMAwF0P3/T8MrEqy9tmMo0snTtJY2J0iJZ/v1isfHl3H9TfJX86uHBx4eHt5g6t/H9T3J1VNTT974w3Pw8PDw1njJ4/Jj4/r7ye6dzxkPDw/vObzr+2+26cv783vw8PDw/i/vOsxNkhT50/Dw8PCexuuFs72kQy/4Xs+14OHh4cW8vIr0nM8r9T08PDy8cVU9KXedbTJInlCYLR4eHt4Cr1q2z8G9IlbegFUoxeHh4eEd5eUNUknat1ce67V2RYuIh4eHt8yrlvmTslYeWOeJhkIKGA8PD2+N1wuC8/A3X5pqq8HNVTw8PLwFXlLOz1O3+VR67QL5cuDh4eHt8XphcbWlIIdV26qiZAQeHh7eAi9h5GncUwfG5Kh45b8S8PDw8Iq8PAqN0qYxuNcikCQjmkE2Hh4eXsybJw6SElo1TK8u+tureHh4eAu8arDbC38n6Yxe8wEeHh7eNq9X/s9D3t5RUX17My+Ch4eHN+Alr6/mOfJFObVAhWQuHh4eXmuGkxaoJPiupnR7x9jbZ+Lh4eEt8CaBdbJZ956TNx+Uw248PDy8MS+fUN5M0Gtp/YOeMjw8PLwWLy9KTSadjCTB0ewpw8PDwzvKq27N1enmLVaT76P/Gx4eHt4hXjUgzpHVRoFJUuNGgYeHh7fGqxarkpTBHH+g1QAPDw9vjXeq3NUrXJ06ePDw8PB+k1dtnOpt8b0GgtHAw8PDW4D1krPzgDufT7NBAQ8PD2+BN9ljq8fMPMlbLdfh4eHh7fF6h8GxlQsSIr1CHR4eHt42r7fFn9r6J8sUNV3h4eHhPYyXB7un2gLyAwMPDw/vOby8eF8NlCfjWEiNh4eHV2y6SgLfXjA9PxLKS4yHh4e3wJv84J+U8/MmrWpojoeHh7fG+wRgZJxx9w2eHgAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

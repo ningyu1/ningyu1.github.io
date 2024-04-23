@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>MySql Lock wait timeout exceeded该如何处理？ | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="mysql,Lock wait timeout exceeded">
+    <meta name="description" content="MySql Lock wait timeout exceeded该如何处理？">
+<meta name="keywords" content="mysql,Lock wait timeout exceeded">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySql Lock wait timeout exceeded该如何处理？">
+<meta property="og:url" content="https://ningyu1.github.io/20180408/75-mysql-lock-wait-timeout-exceeded.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="MySql Lock wait timeout exceeded该如何处理？">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.037Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySql Lock wait timeout exceeded该如何处理？">
+<meta name="twitter:description" content="MySql Lock wait timeout exceeded该如何处理？">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">MySql Lock wait timeout exceeded该如何处理？</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">MySql Lock wait timeout exceeded该如何处理？</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-04-08T10:02:00.000Z" itemprop="datePublished" class="page-time">
+  2018-04-08
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/mysql/">mysql</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#问题现象"><span class="post-toc-number">1.</span> <span class="post-toc-text">问题现象</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#解决方法"><span class="post-toc-number">2.</span> <span class="post-toc-text">解决方法</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#innodb-表的解释"><span class="post-toc-number">3.</span> <span class="post-toc-text">innodb_*表的解释</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#锁等待的处理步骤"><span class="post-toc-number">4.</span> <span class="post-toc-text">锁等待的处理步骤</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-75-mysql-lock-wait-timeout-exceeded"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">MySql Lock wait timeout exceeded该如何处理？</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-04-08 18:02:00" datetime="2018-04-08T10:02:00.000Z"  itemprop="datePublished">2018-04-08</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/mysql/">mysql</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>这个问题我相信大家对它并不陌生，但是有很多人对它产生的原因以及处理吃的不是特别透，很多情况都是交给DBA去定位和处理问题，接下来我们就针对这个问题来展开讨论。</p>
+<p>Mysql造成锁的情况有很多，下面我们就列举一些情况：</p>
+<ol>
+<li>执行DML操作没有commit，再执行删除操作就会锁表。</li>
+<li>在同一事务内先后对同一条数据进行插入和更新操作。</li>
+<li>表索引设计不当，导致数据库出现死锁。</li>
+<li>长事物，阻塞DDL，继而阻塞所有同表的后续操作。</li>
+</ol>
+<p>但是要区分的是<code>Lock wait timeout exceeded</code>与<code>Dead Lock</code>是不一样。</p>
+<ul>
+<li><code>Lock wait timeout exceeded</code>：后提交的事务等待前面处理的事务释放锁，但是在等待的时候超过了mysql的锁等待时间，就会引发这个异常。</li>
+<li><code>Dead Lock</code>：两个事务互相等待对方释放相同资源的锁，从而造成的死循环，就会引发这个异常。</li>
+</ul>
+<p>还有一个要注意的是<code>innodb_lock_wait_timeout</code>与<code>lock_wait_timeout</code>也是不一样的。</p>
+<ul>
+<li><code>innodb_lock_wait_timeout</code>：innodb的dml操作的行级锁的等待时间 </li>
+<li><code>lock_wait_timeout</code>：数据结构ddl操作的锁的等待时间</li>
+</ul>
+<p>如何查看innodb_lock_wait_timeout的具体值？</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SHOW VARIABLES LIKE &apos;innodb_lock_wait_timeout&apos;</span><br></pre></td></tr></table></figure>
+<p>如何修改innode lock wait timeout的值？</p>
+<p>参数修改的范围有Session和Global，并且支持动态修改，可以有两种方法修改：</p>
+<p>方法一：</p>
+<p>通过下面语句修改</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">set innodb_lock_wait_timeout=100;</span><br><span class="line">set global innodb_lock_wait_timeout=100;</span><br></pre></td></tr></table></figure>
+<p><span style="color:red"><em>ps. 注意global的修改对当前线程是不生效的，只有建立新的连接才生效。</em></span></p>
+<p>方法二：</p>
+<p>修改参数文件<code>/etc/my.cnf</code><br><code>innodb_lock_wait_timeout = 50</code></p>
+<p><span style="color:red"><em>ps. <code>innodb_lock_wait_timeout</code>指的是事务等待获取资源等待的最长时间，超过这个时间还未分配到资源则会返回应用失败； 当锁等待超过设置时间的时候，就会报如下的错误；<code>ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction</code>。其参数的时间单位是秒，最小可设置为1s(一般不会设置得这么小)，最大可设置1073741824秒，默认安装时这个值是50s(默认参数设置)。</em></span></p>
+<p>下面介绍在遇到这类问题该如何处理</p>
+<h1 id="问题现象"><a href="#问题现象" class="headerlink" title="问题现象"></a>问题现象</h1><ul>
+<li>数据更新或新增后数据经常自动回滚。</li>
+<li>表操作总报 <code>Lock wait timeout exceeded</code> 并长时间无反应</li>
+</ul>
+<h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><ul>
+<li>应急方法：<code>show full processlist;</code> <code>kill</code>掉出现问题的进程。 <span style="color:blue"><em>ps.有的时候通过processlist是看不出哪里有锁等待的，当两个事务都在commit阶段是无法体现在processlist上</em></span></li>
+<li>根治方法：<code>select * from innodb_trx;</code>查看有是哪些事务占据了表资源。 <span style="color:blue"><em>ps.通过这个办法就需要对innodb有一些了解才好处理</em></span></li>
+</ul>
+<p><span style="color:blue">说起来很简单找到它杀掉它就搞定了，但是实际上并没有想象的这么简单，当问题出现要分析问题的原因，通过原因定位业务代码可能某些地方实现的有问题，从而来避免今后遇到同样的问题。</span></p>
+<h1 id="innodb-表的解释"><a href="#innodb-表的解释" class="headerlink" title="innodb_*表的解释"></a>innodb_*表的解释</h1><p><code>Mysql</code>的<code>InnoDB</code>存储引擎是支持事务的，事务开启后没有被主动<code>Commit</code>。导致该资源被长期占用，其他事务在抢占该资源时，因上一个事务的锁而导致抢占失败！因此出现 <code>Lock wait timeout exceeded</code></p>
+<p>下面几张表是innodb的事务和锁的信息表，理解这些表就能很好的定位问题。</p>
+<p><code>innodb_trx</code> ## 当前运行的所有事务<br><code>innodb_locks</code> ## 当前出现的锁<br><code>innodb_lock_waits</code> ## 锁等待的对应关系</p>
+<p>下面对 <code>innodb_trx</code> 表的每个字段进行解释：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">trx_id：事务ID。</span><br><span class="line">trx_state：事务状态，有以下几种状态：RUNNING、LOCK WAIT、ROLLING BACK 和 COMMITTING。</span><br><span class="line">trx_started：事务开始时间。</span><br><span class="line">trx_requested_lock_id：事务当前正在等待锁的标识，可以和 INNODB_LOCKS 表 JOIN 以得到更多详细信息。</span><br><span class="line">trx_wait_started：事务开始等待的时间。</span><br><span class="line">trx_weight：事务的权重。</span><br><span class="line">trx_mysql_thread_id：事务线程 ID，可以和 PROCESSLIST 表 JOIN。</span><br><span class="line">trx_query：事务正在执行的 SQL 语句。</span><br><span class="line">trx_operation_state：事务当前操作状态。</span><br><span class="line">trx_tables_in_use：当前事务执行的 SQL 中使用的表的个数。</span><br><span class="line">trx_tables_locked：当前执行 SQL 的行锁数量。</span><br><span class="line">trx_lock_structs：事务保留的锁数量。</span><br><span class="line">trx_lock_memory_bytes：事务锁住的内存大小，单位为 BYTES。</span><br><span class="line">trx_rows_locked：事务锁住的记录数。包含标记为 DELETED，并且已经保存到磁盘但对事务不可见的行。</span><br><span class="line">trx_rows_modified：事务更改的行数。</span><br><span class="line">trx_concurrency_tickets：事务并发票数。</span><br><span class="line">trx_isolation_level：当前事务的隔离级别。</span><br><span class="line">trx_unique_checks：是否打开唯一性检查的标识。</span><br><span class="line">trx_foreign_key_checks：是否打开外键检查的标识。</span><br><span class="line">trx_last_foreign_key_error：最后一次的外键错误信息。</span><br><span class="line">trx_adaptive_hash_latched：自适应散列索引是否被当前事务锁住的标识。</span><br><span class="line">trx_adaptive_hash_timeout：是否立刻放弃为自适应散列索引搜索 LATCH 的标识。</span><br></pre></td></tr></table></figure>
+<p>下面对 <code>innodb_locks</code> 表的每个字段进行解释：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">lock_id：锁 ID。</span><br><span class="line">lock_trx_id：拥有锁的事务 ID。可以和 INNODB_TRX 表 JOIN 得到事务的详细信息。</span><br><span class="line">lock_mode：锁的模式。有如下锁类型：行级锁包括：S、X、IS、IX，分别代表：共享锁、排它锁、意向共享锁、意向排它锁。表级锁包括：S_GAP、X_GAP、IS_GAP、IX_GAP 和 AUTO_INC，分别代表共享间隙锁、排它间隙锁、意向共享间隙锁、意向排它间隙锁和自动递增锁。</span><br><span class="line">lock_type：锁的类型。RECORD 代表行级锁，TABLE 代表表级锁。</span><br><span class="line">lock_table：被锁定的或者包含锁定记录的表的名称。</span><br><span class="line">lock_index：当 LOCK_TYPE=’RECORD’ 时，表示索引的名称；否则为 NULL。</span><br><span class="line">lock_space：当 LOCK_TYPE=’RECORD’ 时，表示锁定行的表空间 ID；否则为 NULL。</span><br><span class="line">lock_page：当 LOCK_TYPE=’RECORD’ 时，表示锁定行的页号；否则为 NULL。</span><br><span class="line">lock_rec：当 LOCK_TYPE=’RECORD’ 时，表示一堆页面中锁定行的数量，亦即被锁定的记录号；否则为 NULL。</span><br><span class="line">lock_data：当 LOCK_TYPE=’RECORD’ 时，表示锁定行的主键；否则为NULL。</span><br></pre></td></tr></table></figure>
+<p>下面对 innodb_lock_waits 表的每个字段进行解释：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">requesting_trx_id：请求事务的 ID。</span><br><span class="line">requested_lock_id：事务所等待的锁定的 ID。可以和 INNODB_LOCKS 表 JOIN。</span><br><span class="line">blocking_trx_id：阻塞事务的 ID。</span><br><span class="line">blocking_lock_id：某一事务的锁的 ID，该事务阻塞了另一事务的运行。可以和 INNODB_LOCKS 表 JOIN。</span><br></pre></td></tr></table></figure>
+<h1 id="锁等待的处理步骤"><a href="#锁等待的处理步骤" class="headerlink" title="锁等待的处理步骤"></a>锁等待的处理步骤</h1><ul>
+<li>直接查看 innodb_lock_waits 表</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SELECT * FROM innodb_lock_waits;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>innodb_locks 表和 innodb_lock_waits 表结合：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SELECT * FROM innodb_locks WHERE lock_trx_id IN (SELECT blocking_trx_id FROM innodb_lock_waits);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>innodb_locks 表 JOIN innodb_lock_waits 表:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SELECT innodb_locks.* FROM innodb_locks JOIN innodb_lock_waits ON (innodb_locks.lock_trx_id = innodb_lock_waits.blocking_trx_id);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查询 innodb_trx 表:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SELECT trx_id, trx_requested_lock_id, trx_mysql_thread_id, trx_query FROM innodb_trx WHERE trx_state = &apos;LOCK WAIT&apos;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>trx_mysql_thread_id 即kill掉事务线程 ID</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SHOW ENGINE INNODB STATUS ;</span><br><span class="line">SHOW PROCESSLIST ;</span><br></pre></td></tr></table></figure>
+<p>从上述方法中得到了相关信息，我们可以得到发生锁等待的线程 ID，然后将其 KILL 掉。<br>KILL 掉发生锁等待的线程。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kill ID;</span><br></pre></td></tr></table></figure>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.037Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20180408/75-mysql-lock-wait-timeout-exceeded.html" target="_blank" rel="external">https://ningyu1.github.io/20180408/75-mysql-lock-wait-timeout-exceeded.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Lock-wait-timeout-exceeded/">Lock wait timeout exceeded</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mysql/">mysql</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180408/75-mysql-lock-wait-timeout-exceeded.html&title=《MySql Lock wait timeout exceeded该如何处理？》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180408/75-mysql-lock-wait-timeout-exceeded.html&title=《MySql Lock wait timeout exceeded该如何处理？》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180408/75-mysql-lock-wait-timeout-exceeded.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《MySql Lock wait timeout exceeded该如何处理？》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180408/75-mysql-lock-wait-timeout-exceeded.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180408/75-mysql-lock-wait-timeout-exceeded.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20180410/76-tidb-notes.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">TiDB使用笔记 —— 测试环境集群部署</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20180330/74-redisearch.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">RediSearch基于Redis的高性能全文搜索引擎，资料整理</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180408/75-mysql-lock-wait-timeout-exceeded.html&title=《MySql Lock wait timeout exceeded该如何处理？》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180408/75-mysql-lock-wait-timeout-exceeded.html&title=《MySql Lock wait timeout exceeded该如何处理？》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180408/75-mysql-lock-wait-timeout-exceeded.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《MySql Lock wait timeout exceeded该如何处理？》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180408/75-mysql-lock-wait-timeout-exceeded.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180408/75-mysql-lock-wait-timeout-exceeded.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACrElEQVR42u3aQY7CMAwFUO5/6c4WCdF+20npSC+rEQMhL4smfPv1isfxNl6D8T7D55z5fxcPPDw8vMHSP8e393xbdLIp5/NXt+Z8bXh4eHj7eMl0k6X0nt7VOfHw8PCeyUs+27vr5hd6PDw8vP/Fq35N/ohPLs14eHh4z+HNp8uvwkk88YOsBQ8PDy/m9QpXv/17S30PDw8Pb1xVT0LVXvGs2iJwtAYeHh7eDl6vQDX/VPX6m78fDw8Pbzcvb4c6X1yy6OoRkgQZF/EHHh4e3i28amzaW3q+0F4sEp14eHh4eC1er0g/eXznx8YklcXDw8Pbxzsv81ejgUlUkbQmVNeJh4eHt5s3KWgly03w1Ud/VN/Dw8PD28bLC07lOGADPjoq8PDw8Lbx8mXll/KEMWkRiD6Fh4eHt4GXP74noUAhUW6FJoVNxMPDw1vE67VA5V9cbVCYz4+Hh4e3j9e7whZ2Lmg4yI+N8jUdDw8P7xZe9ZVem1S1faE5Px4eHt423uQHf69tKwl8eyHIRWcEHh4e3lJe/oM/b4TKQ41kW8utYHh4eHgbeKvi2rx8NWm6WtYfgYeHhzfgTRpMq5i8KSE5WqJ14uHh4d3Cy784L1ZVwb2w+GvrAB4eHt5SXs6ofmXeoDCPOZrHAx4eHt6YV11u7/DohbwJaVRnw8PDw2vxqv9NHtPJ9uXRQ3UGPDw8vHt4vStyLzioBsQLymB4eHh4Y95RHHnMmpfWcnw5OMbDw8PbwJucJ8kSq9tRvaZPmrTw8PDwJrw8bK0WzObX8erBgIeHh3cnr1fompSpVgUTF4cEHh4e3mN4eXzQW1weB1+8joeHh/cAXu/AyGOI3oj2Dw8PD28prxez9mCr3pm8joeHh7eDV/3BP7ki5wdGr8w2qu/h4eHhXa/nD8nHpksF6T9dAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

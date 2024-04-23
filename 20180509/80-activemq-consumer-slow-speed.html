@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-113235655-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+<!-- End Google Analytics -->
+
+
+    
+
+    
+<!-- Baidu Tongji -->
+<script>var _hmt = _hmt || []</script>
+<script async src="//hm.baidu.com/hm.js?83434579b8f6b6a6c80fd1b4fe2d9afa"></script>
+<!-- End Baidu Tongji -->
+
+
+
+
+    <meta charset="utf-8">
+    
+    <meta name="google-site-verification" content="tyyr-WLO-Sq85TjMOOOHRRc5YD4W8if8mCXbUD_p_7k">
+    
+    
+    <meta name="sogou_site_verification" content="PlW7T4UKFR">
+    
+    
+    <meta name="baidu-site-verification" content="AdjyK6UssW">
+    
+    
+    <meta name="msvalidate.01" content="BC20DDADC069448DFBCA67D9D7D57546">
+    
+    
+    <meta name="360-site-verification" content="3addb98f1fb5f6b4d1ce03efc23bf5b8">
+    
+    
+    
+    <title>ActiveMQ消息消费慢问题排查 | 凝雨 - Yun | 快乐编程每一天 - Happy Coding Every Day</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="activemq,activemq slow speed">
+    <meta name="description" content="ActiveMQ消息消费慢问题排查">
+<meta name="keywords" content="activemq,activemq slow speed">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ActiveMQ消息消费慢问题排查">
+<meta property="og:url" content="https://ningyu1.github.io/20180509/80-activemq-consumer-slow-speed.html">
+<meta property="og:site_name" content="凝雨 - Yun">
+<meta property="og:description" content="ActiveMQ消息消费慢问题排查">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-04-23T01:48:15.037Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ActiveMQ消息消费慢问题排查">
+<meta name="twitter:description" content="ActiveMQ消息消费慢问题排查">
+    
+        <link rel="alternate" type="application/atom+xml" title="凝雨 - Yun" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">凝雨</h5>
+          <a href="mailto:ningbe111@163.com" title="ningbe111@163.com" class="mail">ningbe111@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives/"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories/"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags/"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ningyu1" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about/"  >
+                <i class="icon icon-lg icon-user"></i>
+                About
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/atom.xml" target="_blank" >
+                <i class="icon icon-lg icon-rss"></i>
+                Rss
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://g2.okk.dog/?path=register&code=qn7nOwdj" target="_blank" >
+                <i class="icon icon-lg icon-rocket"></i>
+                科学上网
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">ActiveMQ消息消费慢问题排查</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">ActiveMQ消息消费慢问题排查</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-05-09T07:38:00.000Z" itemprop="datePublished" class="page-time">
+  2018-05-09
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/trouble-shooting/">trouble shooting</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>文章目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#问题现象"><span class="post-toc-number">1.</span> <span class="post-toc-text">问题现象</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#问题原因"><span class="post-toc-number">2.</span> <span class="post-toc-text">问题原因</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#解决方案"><span class="post-toc-number">3.</span> <span class="post-toc-text">解决方案</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#第一种使用JMS消费消息："><span class="post-toc-number">3.1.</span> <span class="post-toc-text">第一种使用JMS消费消息：</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#第二种使用listener-container消费消息："><span class="post-toc-number">3.2.</span> <span class="post-toc-text">第二种使用listener-container消费消息：</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-80-activemq-consumer-slow-speed"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">ActiveMQ消息消费慢问题排查</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-05-09 15:38:00" datetime="2018-05-09T07:38:00.000Z"  itemprop="datePublished">2018-05-09</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/trouble-shooting/">trouble shooting</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="问题现象"><a href="#问题现象" class="headerlink" title="问题现象"></a>问题现象</h1><p>有的时候会发现<code>ActiveMQ</code>中某个个队列的消息在写入后，不是立刻就被调度消费，而是需要等待一小会才能被调度消费（大概时间是1分钟），而且还伴随着这样的现象，当消息写入速度很快时消费很快，当消息写入消息速度很慢时反而消费很慢，我们的理解就是当写入慢的时候很多消费者都是闲置的那为什么消费反而会变慢？</p>
+<h1 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h1><p>跟了一下代码发现了跟我们的设置有很大关系，因为我们设置的<code>receiveTimeout=6000</code>（1分钟）接受阻塞时间为1分钟。</p>
+<p><code>ActiveMQ</code>在消费时每个<code>consumer</code>会独占一个<code>Thread</code>，<code>Thead</code>中通过<code>consumer.receive()</code>去阻塞，只有当<code>consumer</code>消费了<code>maxMessagesPerTask</code>个消息后，才会退出线程，由<code>taskExecutor</code>重新调度，<code>maxMessagesPerTask</code>这个值默认为10，可以通过下面代码得知：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@Override</span><br><span class="line">public void initialize() &#123;</span><br><span class="line">    // Adapt default cache level.</span><br><span class="line">    if (this.cacheLevel == CACHE_AUTO) &#123;</span><br><span class="line">        this.cacheLevel = (getTransactionManager() != null ? CACHE_NONE : CACHE_CONSUMER);</span><br><span class="line">    &#125;</span><br><span class="line">    // Prepare taskExecutor and maxMessagesPerTask.</span><br><span class="line">    synchronized (this.lifecycleMonitor) &#123;</span><br><span class="line">        if (this.taskExecutor == null) &#123;</span><br><span class="line">            this.taskExecutor = createDefaultTaskExecutor();</span><br><span class="line">        &#125;</span><br><span class="line">        else if (this.taskExecutor instanceof SchedulingTaskExecutor &amp;&amp;</span><br><span class="line">                ((SchedulingTaskExecutor) this.taskExecutor).prefersShortLivedTasks() &amp;&amp;</span><br><span class="line">                this.maxMessagesPerTask == Integer.MIN_VALUE) &#123;</span><br><span class="line">            // TaskExecutor indicated a preference for short-lived tasks. According to</span><br><span class="line">            // setMaxMessagesPerTask javadoc, we&apos;ll use 10 message per task in this case</span><br><span class="line">            // unless the user specified a custom value.</span><br><span class="line">            this.maxMessagesPerTask = 10;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    // Proceed with actual listener initialization.</span><br><span class="line">    super.initialize();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><span style="color:red"><strong>ps. 我们使用的taskExecutor为：org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor，因此上面代码走到else if中设置this.maxMessagesPerTask = 10;</strong></span></p>
+<p><span style="color:blue"><strong>如果消息写入很快的时候，你会发现消费的很快，只有当消息写入很慢的时候（比如说：1分钟写入不到10条）的时候，才会发现消息消费的有些慢</strong></span></p>
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><p>如果有这类情况，可以调整<code>receiveTime</code>这个参数，具体参数设置多少合理自己去结合业务场景去权衡，可以根据消息写入的速度和写入量来设置该参数（<strong><code>maxMessagesPerTask</code></strong> 和 <strong><code>receiveTimeout</code></strong>），调整这个参数有两种方式：</p>
+<h2 id="第一种使用JMS消费消息："><a href="#第一种使用JMS消费消息：" class="headerlink" title="第一种使用JMS消费消息："></a>第一种使用JMS消费消息：</h2><p>使用JMS消费消息时调整：<code>jmsTemplate</code>的<code>receiveTimeout</code>参数（以毫秒为单位，0表示阻塞接收不超时，默认值为0毫秒表示阻塞接受没有超时）</p>
+<h2 id="第二种使用listener-container消费消息："><a href="#第二种使用listener-container消费消息：" class="headerlink" title="第二种使用listener-container消费消息："></a>第二种使用listener-container消费消息：</h2><p>使用<code>jms:listener-container</code>消费消息时调整：<code>receive-timeout</code>参数（以毫秒为单位， 默认值为1000毫秒（1秒）; -1指示器根本没有超时。）</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2024-04-23T01:48:15.037Z" itemprop="dateUpdated">2024-04-23 09:48:15</time>
+</span><br>
+
+
+        
+        原始链接：<a href="/20180509/80-activemq-consumer-slow-speed.html" target="_blank" rel="external">https://ningyu1.github.io/20180509/80-activemq-consumer-slow-speed.html</a><br>版权声明：本文由 <strong>凝雨-Yun</strong> 原创，采用<strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a></strong>进行许可。 <br><strong>转载请注明作者及出处！</strong><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png"></a>
+        
+    </div>
+    
+    <footer>
+        <a href="https://ningyu1.github.io">
+            <img src="/img/avatar.jpg" alt="凝雨">
+            凝雨
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/activemq/">activemq</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/activemq-slow-speed/">activemq slow speed</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180509/80-activemq-consumer-slow-speed.html&title=《ActiveMQ消息消费慢问题排查》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180509/80-activemq-consumer-slow-speed.html&title=《ActiveMQ消息消费慢问题排查》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180509/80-activemq-consumer-slow-speed.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《ActiveMQ消息消费慢问题排查》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180509/80-activemq-consumer-slow-speed.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180509/80-activemq-consumer-slow-speed.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/20180514/81-mysql-utf8mb4.html" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Mysql数据库字符集utf8mb4使用问题</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/20180427/79-docker-registry-pull-filesystem-layer.html" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Trouble Shooting —— Docker Pull Image : Filesystem layer verification failed for digest sha256错误</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="comments" id="comments">
+    <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+        var id = location.pathname
+        if (location.pathname.length > 50) {
+          id = location.pathname.replace(/\/\d+\/\d+\/\d+\//, '').replace('/', '').substring(0, 50)
+        }
+        const gitalk = new Gitalk({
+          clientID: '298f0d78bd14c9c0ff01',
+          clientSecret: 'e81e4d36caf1a13d2f05ed5dcf30e636dde749ac',
+          repo: 'blog',
+          owner: 'ningyu1',
+          admin: ['ningyu1'],
+          id: id,      // Ensure uniqueness and length less than 50
+	  //id: 'Comments',
+          title: document.title.split('|')[0],
+          distractionFreeMode: false  // Facebook-like distraction free mode
+        })
+
+        gitalk.render('gitalk-container')
+    </script>
+</section>
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        可以吃个鸡腿吗？
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.zh">知识共享署名-相同方式共享 4.0 国际许可协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>凝雨 &copy; 2016 - 2024</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://ningyu1.github.io/20180509/80-activemq-consumer-slow-speed.html&title=《ActiveMQ消息消费慢问题排查》 — 凝雨 - Yun&pic=https://ningyu1.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://ningyu1.github.io/20180509/80-activemq-consumer-slow-speed.html&title=《ActiveMQ消息消费慢问题排查》 — 凝雨 - Yun&source=快乐编程每一天 - Happy Coding Every Day" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://ningyu1.github.io/20180509/80-activemq-consumer-slow-speed.html" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《ActiveMQ消息消费慢问题排查》 — 凝雨 - Yun&url=https://ningyu1.github.io/20180509/80-activemq-consumer-slow-speed.html&via=https://ningyu1.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://ningyu1.github.io/20180509/80-activemq-consumer-slow-speed.html" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACuklEQVR42u3aQY7bQAwEQP//08l1kURyN6kxHKB8MrSCdkoHzrjJ1yv+/Prx+Xnl6vvf99/f2f714Q8eHh7eYulXi7ta7tXTkiv50u/Xc/9C8fDw8M7x7heaL/r+37c1PF/P5XU8PDy8r+HdLyghtffg4eHh/b+8/ICbHKnzUAMPDw/v23j542ZRQv5q2uc8lrXg4eHhxby8i/Q934/09/Dw8PDWXfW2ZM/aVLMjeLRaPDw8vAO8vOC2R+H8aD4b+SruxMPDw3uUNyu1sx//+WaTjyy8GTLAw8PDO8ZLjrYbxonnR9sGHh4e3kd4+XE5Ks3xljCLM4oYAg8PD+8hXl1qy3iiZe8bcrudBA8PD+89r40D8u8JbNPrjxpseHh4eAd4s6K/3wbyGj7bKup+Gh4eHl7M2y+6XeLmFdSDBXh4eHiHeUn0sCG1B99NSwwPDw/vHG/T7E82kmRTyUONfPjgH10+PDw8vEd5eRWdBQf5S9mPF7zaPQoPDw9vxJuV5vZ6e+Cexbhvhq7w8PDw1rzkENwOB7Qhwqwxlgwf4OHh4X2G1y43P4LPzvh5c+5ypgwPDw/vI7wZezN6lYcdxVaBh4eHd5iXY/LS/NTQwDDOwMPDwzvMywt33rbfN/tXGwkeHh7eAV4bAeTFOm9xtS23B2IOPDw8vDUvj1PbACJpsOXjVskTivQCDw8Pb81rQ4ckgNiU/jzIePMS8fDw8I7xcmoevObNsDpQ2EcPeHh4eAvYsy2rdlSrjS2KYzceHh7eAd6sxs7K+uxYvGme4eHh4Z3jtYHCLH7dtLjajQEPDw/vM7zkoNxGG3mJ3+xdw9EBPDw8vA/y9tR2LGATHOPh4eF9J2/T2j8xTICHh4f3GV7bfMoD1k0LLX/1bzYGPDw8vEd5mx/87aJnQXAR2j6bZ+Dh4eH9+fkN3q8NAUQmw18AAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-indigo-patch@1.0.0/source/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
